@@ -1,0 +1,133 @@
+/home/aks-lab/mani_venv/lib/python3.12/site-packages/jax/_src/interpreters/xla.py:132: RuntimeWarning: overflow encountered in cast
+  return np.asarray(x, dtypes.canonicalize_dtype(x.dtype))
+Arm 0 → B
+  [XML] Substituted XML → /home/aks-lab/manipulator_mujoco/real_demo/ur5e_hande_mjx/objects.xml
+self.P (10, 11)
+Found geom: id=8, name='robot_1'
+Found geom: id=13, name='robot_2'
+Found geom: id=14, name='robot_3'
+Found geom: id=19, name='robot_4'
+Found geom: id=20, name='robot_5'
+Found geom: id=24, name='robot_6'
+Found geom: id=28, name='robot_7'
+Found geom: id=29, name='robot_8'
+Found geom: id=33, name='robot_0'
+Found geom: id=35, name='robot_01'
+Found geom: id=37, name='robot_02'
+Found geom: id=45, name='robot_11'
+Found geom: id=50, name='robot_12'
+Found geom: id=51, name='robot_13'
+Found geom: id=56, name='robot_14'
+Found geom: id=57, name='robot_15'
+Found geom: id=61, name='robot_16'
+Found geom: id=65, name='robot_17'
+Found geom: id=66, name='robot_18'
+Found geom: id=69, name='robot_10'
+Found geom: id=72, name='robot_101'
+Found geom: id=76, name='robot_103'
+Found geom: id=80, name='robot_102'
+Found geom: id=84, name='robot_104'
+Found geom: id=94, name='object_tray_base_mocap_target'
+Found geom: id=95, name='object_tray_left_mocap_target'
+Found geom: id=96, name='object_tray_right_mocap_target'
+Found geom: id=97, name='object_tray_back_mocap_target'
+Found geom: id=98, name='object_tray_front_mocap_target'
+TRAY GEOM ID_ARRAY [87 88 89 90 91]
+
+ Default backend: gpu
+ Timestep: 0.1 
+ CEM Iter: 1 
+ Projection Iter: 5 
+ Number of batches: 750 
+ Number of steps per trajectory: 10 
+ Time per trajectory: 1.0 
+ Number of variables: 132 
+ Number of Total constraints: 960 
+ Number of geomteric IDs for colllision: 29
+
+[Fresh init check] policy output vs DEFAULT_LOG_WEIGHTS  (type=mlp, learn_pick=False)
+  key                         reference      output      |diff|
+  collision                      6.6201      6.6214    0.001376
+  theta                          1.6094      1.6095    0.000048
+  eef_height_level               0.0000     -0.0001    0.000074
+  rot_axis_tray_alignment       -0.6931     -0.6930    0.000187
+  eef_tray_rigid_body_velocity      0.0000     -0.0040    0.003969
+  position_pick                  2.4849      2.4864    0.001460
+  orientation_pick               2.3026      2.3020    0.000589
+  distance                       2.3026      2.3006    0.001977
+  position_tray                  2.7081      2.7128    0.004783
+  orientation_tray               2.9957      2.9961    0.000402
+  position_move                  3.9120      3.9108    0.001272
+  orientation_move               3.9120      3.9103    0.001738
+  max |diff| = 0.004783
+  OK: init output matches DEFAULT_LOG_WEIGHTS.
+  pick targets: using fixed geometric defaults (learn_pick_params=False)
+  [ARSV2] Restored obs stats (count=123801600)
+  [ARSV2] Resumed from real_demo/real_demo/ars_v2_mlp_policy_4124.json  (shape (1467,), start_it=806, best_reward=-248.869)
+
+[Loaded policy check] policy output vs DEFAULT_LOG_WEIGHTS  (type=mlp, learn_pick=False)
+  key                         reference      output      |diff|
+  collision                      6.6201      6.6383    0.018193
+  theta                          1.6094      1.7430    0.133522
+  eef_height_level               0.0000      0.7731    0.773055
+  rot_axis_tray_alignment       -0.6931      0.0154    0.708555
+  eef_tray_rigid_body_velocity      0.0000      0.2706    0.270630
+  position_pick                  2.4849      3.5971    1.112157
+  orientation_pick               2.3026      2.5184    0.215773
+  distance                       2.3026      2.4857    0.183079
+  position_tray                  2.7081      2.4926    0.215402
+  orientation_tray               2.9957      2.6093    0.386468
+  position_move                  3.9120      4.6625    0.750470
+  orientation_move               3.9120      3.7816    0.130438
+  max |diff| = 1.112157
+  (Loaded policy — deviation from defaults is expected)
+  pick targets: using fixed geometric defaults (learn_pick_params=False)
+Mode: RL policy in ALL phases — exact training match
+/usr/lib/python3.12/subprocess.py:1885: RuntimeWarning: os.fork() was called. os.fork() is incompatible with multithreaded code, and JAX is multithreaded, so this will likely lead to a deadlock.
+  self.pid = _fork_exec(
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/policy_batch750/20260623_223100/ep_0000_seed0023_fall.mp4
+[  1/20] seed=  23  outcome=fall      steps=357(pick=73,move=284)  g_pick=0.0957  g_tray=0.1558  cem_min=828.815  SR=0/1(0%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/policy_batch750/20260623_223100/ep_0001_seed0023_success.mp4
+[  2/20] seed=  23  outcome=success   steps=294(pick=163,move=131)  g_pick=0.0986  g_tray=0.1498  cem_min=144.523  SR=1/2(50%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/policy_batch750/20260623_223100/ep_0002_seed0023_fall.mp4
+[  3/20] seed=  23  outcome=fall      steps=428(pick=130,move=298)  g_pick=0.1470  g_tray=0.2222  cem_min=10552.199  SR=1/3(33%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/policy_batch750/20260623_223100/ep_0003_seed0023_success.mp4
+[  4/20] seed=  23  outcome=success   steps=207(pick=97,move=110)  g_pick=0.1175  g_tray=0.0998  cem_min=121.418  SR=2/4(50%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/policy_batch750/20260623_223100/ep_0004_seed0023_success.mp4
+[  5/20] seed=  23  outcome=success   steps=208(pick=144,move=64)  g_pick=0.1245  g_tray=0.1402  cem_min=139.763  SR=3/5(60%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/policy_batch750/20260623_223100/ep_0005_seed0023_success.mp4
+[  6/20] seed=  23  outcome=success   steps=195(pick=103,move=92)  g_pick=0.1178  g_tray=0.1584  cem_min=204.667  SR=4/6(67%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/policy_batch750/20260623_223100/ep_0006_seed0023_timeout.mp4
+[  7/20] seed=  23  outcome=timeout   steps=600(pick=333,move=267)  g_pick=0.1043  g_tray=0.2658  cem_min=225.736  SR=4/7(57%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/policy_batch750/20260623_223100/ep_0007_seed0023_fall.mp4
+[  8/20] seed=  23  outcome=fall      steps=390(pick=78,move=312)  g_pick=0.1040  g_tray=0.1888  cem_min=947.736  SR=4/8(50%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/policy_batch750/20260623_223100/ep_0008_seed0023_timeout.mp4
+[  9/20] seed=  23  outcome=timeout   steps=600(pick=389,move=211)  g_pick=0.1325  g_tray=0.5245  cem_min=449.036  SR=4/9(44%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/policy_batch750/20260623_223100/ep_0009_seed0023_fall.mp4
+[ 10/20] seed=  23  outcome=fall      steps=582(pick=69,move=513)  g_pick=0.1090  g_tray=0.1573  cem_min=716.409  SR=4/10(40%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/policy_batch750/20260623_223100/ep_0010_seed0023_success.mp4
+[ 11/20] seed=  23  outcome=success   steps=204(pick=93,move=111)  g_pick=0.1277  g_tray=0.1327  cem_min=209.694  SR=5/11(45%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/policy_batch750/20260623_223100/ep_0011_seed0023_success.mp4
+[ 12/20] seed=  23  outcome=success   steps=125(pick=69,move=56)  g_pick=0.1538  g_tray=0.1528  cem_min=252.908  SR=6/12(50%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/policy_batch750/20260623_223100/ep_0012_seed0023_success.mp4
+[ 13/20] seed=  23  outcome=success   steps=209(pick=107,move=102)  g_pick=0.1133  g_tray=0.1352  cem_min=3625.053  SR=7/13(54%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/policy_batch750/20260623_223100/ep_0013_seed0023_timeout.mp4
+[ 14/20] seed=  23  outcome=timeout   steps=600(pick=600,move=0)  g_pick=0.0880  g_tray=nan  cem_min=1313.656  SR=7/14(50%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/policy_batch750/20260623_223100/ep_0014_seed0023_success.mp4
+[ 15/20] seed=  23  outcome=success   steps=146(pick=77,move=69)  g_pick=0.1370  g_tray=0.1353  cem_min=146.044  SR=8/15(53%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/policy_batch750/20260623_223100/ep_0015_seed0023_success.mp4
+[ 16/20] seed=  23  outcome=success   steps=200(pick=73,move=127)  g_pick=0.1141  g_tray=0.1417  cem_min=166.550  SR=9/16(56%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/policy_batch750/20260623_223100/ep_0016_seed0023_fall.mp4
+[ 17/20] seed=  23  outcome=fall      steps=345(pick=77,move=268)  g_pick=0.1047  g_tray=0.3071  cem_min=1010.365  SR=9/17(53%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/policy_batch750/20260623_223100/ep_0017_seed0023_success.mp4
+[ 18/20] seed=  23  outcome=success   steps=196(pick=114,move=82)  g_pick=0.1195  g_tray=0.1427  cem_min=161.952  SR=10/18(56%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/policy_batch750/20260623_223100/ep_0018_seed0023_success.mp4
+[ 19/20] seed=  23  outcome=success   steps=292(pick=177,move=115)  g_pick=0.1085  g_tray=0.1627  cem_min=61.842  SR=11/19(58%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/policy_batch750/20260623_223100/ep_0019_seed0023_fall.mp4
+[ 20/20] seed=  23  outcome=fall      steps=353(pick=81,move=272)  g_pick=0.1065  g_tray=0.1843  cem_min=5036.505  SR=11/20(55%)
+
+=== Results ===
+  success : 11/20 (55.0%)
+  fall    : 6/20 (30.0%)
+  timeout : 3/20 (15.0%)
+Data saved → /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/npz/policy_batch750/eval_policy_batch750_n20_seed23.npz

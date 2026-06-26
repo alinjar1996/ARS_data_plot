@@ -1,0 +1,111 @@
+
+============================================================
+ JAX Evaluate — handtuned  batch=500  n_eval=20
+============================================================
+ Cost weights:
+   collision       : 200.0000
+   theta           : 0.2000
+   eef_vel         : 0.0400
+   eef_pos         : 1.5000
+   distance        : 5.0000
+   smoothness      : 0.0100
+   orientation     : 0.5000
+   eef_to_obj      : 5.0000
+   obj_to_targ     : 5.0000
+ Video dir   : /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/handtuned_batch500
+
+Found geom: id=7, name='robot_1'
+Found geom: id=12, name='robot_2'
+Found geom: id=13, name='robot_3'
+Found geom: id=18, name='robot_4'
+Found geom: id=19, name='robot_5'
+Found geom: id=23, name='robot_6'
+Found geom: id=27, name='robot_7'
+Found geom: id=28, name='robot_8'
+Found geom: id=32, name='robot_0'
+Found geom: id=34, name='robot_01'
+Found geom: id=36, name='robot_02'
+Found geom: id=43, name='robot_11'
+Found geom: id=48, name='robot_12'
+Found geom: id=49, name='robot_13'
+Found geom: id=54, name='robot_14'
+Found geom: id=55, name='robot_15'
+Found geom: id=59, name='robot_16'
+Found geom: id=63, name='robot_17'
+Found geom: id=64, name='robot_18'
+Found geom: id=67, name='robot_10'
+Found geom: id=70, name='robot_101'
+Found geom: id=74, name='robot_103'
+Found geom: id=78, name='robot_102'
+Found geom: id=82, name='robot_104'
+(144,)
+(10, 144)
+
+ Default backend: gpu
+ Timestep: 0.1 
+ CEM Iter: 2 
+ Projection Iter: 5 
+ Number of batches: 500 
+ Number of steps per trajectory: 10 
+ Time per trajectory: 1.0 
+ Number of variables: 120 
+ Number of Total constraints: 888 
+ Number of geomteric IDs for colllision: 24
+[Warm-up] Compiling JIT kernels …
+[Warm-up] Done.
+
+/usr/lib/python3.10/subprocess.py:1796: RuntimeWarning: os.fork() was called. os.fork() is incompatible with multithreaded code, and JAX is multithreaded, so this will likely lead to a deadlock.
+  self.pid = _posixsubprocess.fork_exec(
+  [Video] 300 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/handtuned_batch500/ep001_timeout.mp4
+[Ep   1/20]  success=0  reason=timeout   task_time=  9.57s  mean_comp=  29.48ms  SR=0.00
+  [Video] 124 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/handtuned_batch500/ep002_success.mp4
+[Ep   2/20]  success=1  reason=success   task_time=  4.00s  mean_comp=  29.91ms  SR=0.50
+  [Video] 300 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/handtuned_batch500/ep003_timeout.mp4
+[Ep   3/20]  success=0  reason=timeout   task_time=  9.54s  mean_comp=  29.48ms  SR=0.33
+  [Video] 206 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/handtuned_batch500/ep004_success.mp4
+[Ep   4/20]  success=1  reason=success   task_time=  6.51s  mean_comp=  29.21ms  SR=0.50
+  [Video] 300 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/handtuned_batch500/ep005_timeout.mp4
+[Ep   5/20]  success=0  reason=timeout   task_time=  9.54s  mean_comp=  29.42ms  SR=0.40
+  [Video] 148 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/handtuned_batch500/ep006_success.mp4
+[Ep   6/20]  success=1  reason=success   task_time=  4.78s  mean_comp=  29.90ms  SR=0.50
+  [Video] 163 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/handtuned_batch500/ep007_success.mp4
+[Ep   7/20]  success=1  reason=success   task_time=  5.28s  mean_comp=  30.01ms  SR=0.57
+  [Video] 256 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/handtuned_batch500/ep008_success.mp4
+[Ep   8/20]  success=1  reason=success   task_time=  8.18s  mean_comp=  29.55ms  SR=0.62
+  [Video] 300 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/handtuned_batch500/ep009_timeout.mp4
+[Ep   9/20]  success=0  reason=timeout   task_time=  9.60s  mean_comp=  29.68ms  SR=0.56
+  [Video] 300 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/handtuned_batch500/ep010_timeout.mp4
+[Ep  10/20]  success=0  reason=timeout   task_time=  9.60s  mean_comp=  29.65ms  SR=0.50
+  [Video] 185 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/handtuned_batch500/ep011_success.mp4
+[Ep  11/20]  success=1  reason=success   task_time=  6.06s  mean_comp=  30.23ms  SR=0.55
+  [Video] 300 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/handtuned_batch500/ep012_timeout.mp4
+[Ep  12/20]  success=0  reason=timeout   task_time=  9.61s  mean_comp=  29.64ms  SR=0.50
+  [Video] 183 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/handtuned_batch500/ep013_success.mp4
+[Ep  13/20]  success=1  reason=success   task_time=  5.84s  mean_comp=  29.53ms  SR=0.54
+  [Video] 300 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/handtuned_batch500/ep014_timeout.mp4
+[Ep  14/20]  success=0  reason=timeout   task_time=  9.61s  mean_comp=  29.69ms  SR=0.50
+  [Video] 130 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/handtuned_batch500/ep015_success.mp4
+[Ep  15/20]  success=1  reason=success   task_time=  4.16s  mean_comp=  29.62ms  SR=0.53
+  [Video] 188 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/handtuned_batch500/ep016_success.mp4
+[Ep  16/20]  success=1  reason=success   task_time=  6.03s  mean_comp=  29.74ms  SR=0.56
+  [Video] 300 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/handtuned_batch500/ep017_timeout.mp4
+[Ep  17/20]  success=0  reason=timeout   task_time=  9.48s  mean_comp=  29.30ms  SR=0.53
+  [Video] 300 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/handtuned_batch500/ep018_timeout.mp4
+[Ep  18/20]  success=0  reason=timeout   task_time=  9.44s  mean_comp=  29.19ms  SR=0.50
+  [Video] 223 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/handtuned_batch500/ep019_success.mp4
+[Ep  19/20]  success=1  reason=success   task_time=  6.86s  mean_comp=  28.59ms  SR=0.53
+  [Video] 300 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/handtuned_batch500/ep020_timeout.mp4
+[Ep  20/20]  success=0  reason=timeout   task_time=  9.46s  mean_comp=  29.23ms  SR=0.50
+Saving → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/npz/handtuned_batch500/eval_handtuned_batch500_n20_20260624_132344.npz
+  OK
+
+============================================================
+ RESULTS — handtuned  batch=500
+============================================================
+  success_rate    : 0.500  (10/20)
+  mean_task_time  : 5.77 s  (successful episodes only)
+  mean_comp_time  : 29.52 ms/step
+  median_comp_time: 29.05 ms/step
+  Saved → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/npz/handtuned_batch500/eval_handtuned_batch500_n20_20260624_132344.npz
+  Videos → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/handtuned_batch500/
+

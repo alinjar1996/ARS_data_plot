@@ -1,0 +1,95 @@
+/home/aks-lab/mani_venv/lib/python3.12/site-packages/jax/_src/interpreters/xla.py:132: RuntimeWarning: overflow encountered in cast
+  return np.asarray(x, dtypes.canonicalize_dtype(x.dtype))
+Arm 0 → B
+  [XML] Substituted XML → /home/aks-lab/manipulator_mujoco/real_demo/ur5e_hande_mjx/objects.xml
+self.P (10, 11)
+Found geom: id=8, name='robot_1'
+Found geom: id=13, name='robot_2'
+Found geom: id=14, name='robot_3'
+Found geom: id=19, name='robot_4'
+Found geom: id=20, name='robot_5'
+Found geom: id=24, name='robot_6'
+Found geom: id=28, name='robot_7'
+Found geom: id=29, name='robot_8'
+Found geom: id=33, name='robot_0'
+Found geom: id=35, name='robot_01'
+Found geom: id=37, name='robot_02'
+Found geom: id=45, name='robot_11'
+Found geom: id=50, name='robot_12'
+Found geom: id=51, name='robot_13'
+Found geom: id=56, name='robot_14'
+Found geom: id=57, name='robot_15'
+Found geom: id=61, name='robot_16'
+Found geom: id=65, name='robot_17'
+Found geom: id=66, name='robot_18'
+Found geom: id=69, name='robot_10'
+Found geom: id=72, name='robot_101'
+Found geom: id=76, name='robot_103'
+Found geom: id=80, name='robot_102'
+Found geom: id=84, name='robot_104'
+Found geom: id=94, name='object_tray_base_mocap_target'
+Found geom: id=95, name='object_tray_left_mocap_target'
+Found geom: id=96, name='object_tray_right_mocap_target'
+Found geom: id=97, name='object_tray_back_mocap_target'
+Found geom: id=98, name='object_tray_front_mocap_target'
+TRAY GEOM ID_ARRAY [87 88 89 90 91]
+
+ Default backend: gpu
+ Timestep: 0.1 
+ CEM Iter: 1 
+ Projection Iter: 5 
+ Number of batches: 500 
+ Number of steps per trajectory: 10 
+ Time per trajectory: 1.0 
+ Number of variables: 132 
+ Number of Total constraints: 960 
+ Number of geomteric IDs for colllision: 29
+Mode: DEFAULT weights for ALL phases (pure CEM baseline — no policy)
+/usr/lib/python3.12/subprocess.py:1885: RuntimeWarning: os.fork() was called. os.fork() is incompatible with multithreaded code, and JAX is multithreaded, so this will likely lead to a deadlock.
+  self.pid = _fork_exec(
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/handtuned_batch500/20260623_152334/ep_0000_seed0023_timeout.mp4
+[  1/20] seed=  23  outcome=timeout   steps=600(pick=170,move=430)  g_pick=0.1433  g_tray=0.1238  cem_min=362.684  SR=0/1(0%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/handtuned_batch500/20260623_152334/ep_0001_seed0023_fall.mp4
+[  2/20] seed=  23  outcome=fall      steps=372(pick=114,move=258)  g_pick=0.2296  g_tray=0.1263  cem_min=1330.085  SR=0/2(0%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/handtuned_batch500/20260623_152334/ep_0002_seed0023_fall.mp4
+[  3/20] seed=  23  outcome=fall      steps=526(pick=105,move=421)  g_pick=0.1413  g_tray=0.1634  cem_min=1208.053  SR=0/3(0%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/handtuned_batch500/20260623_152334/ep_0003_seed0023_timeout.mp4
+[  4/20] seed=  23  outcome=timeout   steps=600(pick=381,move=219)  g_pick=0.2376  g_tray=0.3824  cem_min=541.136  SR=0/4(0%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/handtuned_batch500/20260623_152334/ep_0004_seed0023_timeout.mp4
+[  5/20] seed=  23  outcome=timeout   steps=600(pick=156,move=444)  g_pick=0.1749  g_tray=0.1990  cem_min=218.906  SR=0/5(0%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/handtuned_batch500/20260623_152334/ep_0005_seed0023_timeout.mp4
+[  6/20] seed=  23  outcome=timeout   steps=600(pick=600,move=0)  g_pick=0.1330  g_tray=nan  cem_min=64.307  SR=0/6(0%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/handtuned_batch500/20260623_152334/ep_0006_seed0023_timeout.mp4
+[  7/20] seed=  23  outcome=timeout   steps=600(pick=163,move=437)  g_pick=0.1354  g_tray=0.1250  cem_min=228.072  SR=0/7(0%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/handtuned_batch500/20260623_152334/ep_0007_seed0023_fall.mp4
+[  8/20] seed=  23  outcome=fall      steps=406(pick=69,move=337)  g_pick=0.2002  g_tray=0.2206  cem_min=1186.642  SR=0/8(0%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/handtuned_batch500/20260623_152334/ep_0008_seed0023_success.mp4
+[  9/20] seed=  23  outcome=success   steps=301(pick=221,move=80)  g_pick=0.1872  g_tray=0.1130  cem_min=209.804  SR=1/9(11%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/handtuned_batch500/20260623_152334/ep_0009_seed0023_timeout.mp4
+[ 10/20] seed=  23  outcome=timeout   steps=600(pick=170,move=430)  g_pick=0.1752  g_tray=0.1975  cem_min=374.599  SR=1/10(10%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/handtuned_batch500/20260623_152334/ep_0010_seed0023_success.mp4
+[ 11/20] seed=  23  outcome=success   steps=221(pick=100,move=121)  g_pick=0.1765  g_tray=0.1510  cem_min=168.843  SR=2/11(18%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/handtuned_batch500/20260623_152334/ep_0011_seed0023_success.mp4
+[ 12/20] seed=  23  outcome=success   steps=377(pick=205,move=172)  g_pick=0.1519  g_tray=0.1331  cem_min=214.167  SR=3/12(25%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/handtuned_batch500/20260623_152334/ep_0012_seed0023_timeout.mp4
+[ 13/20] seed=  23  outcome=timeout   steps=600(pick=206,move=394)  g_pick=0.1432  g_tray=0.2552  cem_min=248.688  SR=3/13(23%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/handtuned_batch500/20260623_152334/ep_0013_seed0023_timeout.mp4
+[ 14/20] seed=  23  outcome=timeout   steps=600(pick=128,move=472)  g_pick=0.1660  g_tray=0.1279  cem_min=235.553  SR=3/14(21%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/handtuned_batch500/20260623_152334/ep_0014_seed0023_timeout.mp4
+[ 15/20] seed=  23  outcome=timeout   steps=600(pick=133,move=467)  g_pick=0.1842  g_tray=0.2869  cem_min=3897.099  SR=3/15(20%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/handtuned_batch500/20260623_152334/ep_0015_seed0023_timeout.mp4
+[ 16/20] seed=  23  outcome=timeout   steps=600(pick=156,move=444)  g_pick=0.1788  g_tray=0.1121  cem_min=92.477  SR=3/16(19%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/handtuned_batch500/20260623_152334/ep_0016_seed0023_timeout.mp4
+[ 17/20] seed=  23  outcome=timeout   steps=600(pick=506,move=94)  g_pick=0.1230  g_tray=0.3405  cem_min=228.578  SR=3/17(18%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/handtuned_batch500/20260623_152334/ep_0017_seed0023_timeout.mp4
+[ 18/20] seed=  23  outcome=timeout   steps=600(pick=600,move=0)  g_pick=0.2259  g_tray=nan  cem_min=2301.140  SR=3/18(17%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/handtuned_batch500/20260623_152334/ep_0018_seed0023_timeout.mp4
+[ 19/20] seed=  23  outcome=timeout   steps=600(pick=240,move=360)  g_pick=0.1694  g_tray=0.1570  cem_min=258.742  SR=3/19(16%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/videos/handtuned_batch500/20260623_152334/ep_0019_seed0023_success.mp4
+[ 20/20] seed=  23  outcome=success   steps=483(pick=175,move=308)  g_pick=0.1944  g_tray=0.1766  cem_min=178.432  SR=4/20(20%)
+
+=== Results ===
+  success : 4/20 (20.0%)
+  fall    : 3/20 (15.0%)
+  timeout : 13/20 (65.0%)
+Data saved → /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_5/npz/handtuned_batch500/eval_handtuned_batch500_n20_seed23.npz

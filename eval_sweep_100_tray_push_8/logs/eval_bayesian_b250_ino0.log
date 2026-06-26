@@ -1,0 +1,95 @@
+/home/aks-lab/mani_venv/lib/python3.12/site-packages/jax/_src/interpreters/xla.py:132: RuntimeWarning: overflow encountered in cast
+  return np.asarray(x, dtypes.canonicalize_dtype(x.dtype))
+Arm 0 → B
+  [XML] Substituted XML → /home/aks-lab/manipulator_mujoco/real_demo/ur5e_hande_mjx/objects.xml
+self.P (10, 11)
+Found geom: id=8, name='robot_1'
+Found geom: id=13, name='robot_2'
+Found geom: id=14, name='robot_3'
+Found geom: id=19, name='robot_4'
+Found geom: id=20, name='robot_5'
+Found geom: id=24, name='robot_6'
+Found geom: id=28, name='robot_7'
+Found geom: id=29, name='robot_8'
+Found geom: id=33, name='robot_0'
+Found geom: id=35, name='robot_01'
+Found geom: id=37, name='robot_02'
+Found geom: id=45, name='robot_11'
+Found geom: id=50, name='robot_12'
+Found geom: id=51, name='robot_13'
+Found geom: id=56, name='robot_14'
+Found geom: id=57, name='robot_15'
+Found geom: id=61, name='robot_16'
+Found geom: id=65, name='robot_17'
+Found geom: id=66, name='robot_18'
+Found geom: id=69, name='robot_10'
+Found geom: id=72, name='robot_101'
+Found geom: id=76, name='robot_103'
+Found geom: id=80, name='robot_102'
+Found geom: id=84, name='robot_104'
+Found geom: id=94, name='object_tray_base_mocap_target'
+Found geom: id=95, name='object_tray_left_mocap_target'
+Found geom: id=96, name='object_tray_right_mocap_target'
+Found geom: id=97, name='object_tray_back_mocap_target'
+Found geom: id=98, name='object_tray_front_mocap_target'
+TRAY GEOM ID_ARRAY [87 88 89 90 91]
+
+ Default backend: gpu
+ Timestep: 0.1 
+ CEM Iter: 1 
+ Projection Iter: 5 
+ Number of batches: 250 
+ Number of steps per trajectory: 10 
+ Time per trajectory: 1.0 
+ Number of variables: 132 
+ Number of Total constraints: 960 
+ Number of geomteric IDs for colllision: 29
+Mode: BAYESIAN weights for ALL phases (pure CEM baseline — no policy)
+/usr/lib/python3.12/subprocess.py:1885: RuntimeWarning: os.fork() was called. os.fork() is incompatible with multithreaded code, and JAX is multithreaded, so this will likely lead to a deadlock.
+  self.pid = _fork_exec(
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_8/videos/bayesian_batch250/20260626_010715/ep_0000_seed0099_timeout.mp4
+[  1/20] seed=  99  outcome=timeout   steps=600(pick=600,move=0)  g_pick=0.3757  g_tray=nan  cem_min=12175.281  SR=0/1(0%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_8/videos/bayesian_batch250/20260626_010715/ep_0001_seed0099_fall.mp4
+[  2/20] seed=  99  outcome=fall      steps=554(pick=126,move=428)  g_pick=0.1227  g_tray=0.1845  cem_min=17326.350  SR=0/2(0%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_8/videos/bayesian_batch250/20260626_010715/ep_0002_seed0099_timeout.mp4
+[  3/20] seed=  99  outcome=timeout   steps=600(pick=489,move=111)  g_pick=0.1703  g_tray=0.2691  cem_min=543.792  SR=0/3(0%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_8/videos/bayesian_batch250/20260626_010715/ep_0003_seed0099_fall.mp4
+[  4/20] seed=  99  outcome=fall      steps=456(pick=122,move=334)  g_pick=0.1188  g_tray=0.1434  cem_min=2074.669  SR=0/4(0%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_8/videos/bayesian_batch250/20260626_010715/ep_0004_seed0099_fall.mp4
+[  5/20] seed=  99  outcome=fall      steps=418(pick=138,move=280)  g_pick=0.1641  g_tray=0.1852  cem_min=2317.595  SR=0/5(0%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_8/videos/bayesian_batch250/20260626_010715/ep_0005_seed0099_success.mp4
+[  6/20] seed=  99  outcome=success   steps=297(pick=148,move=149)  g_pick=0.1257  g_tray=0.1326  cem_min=317.960  SR=1/6(17%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_8/videos/bayesian_batch250/20260626_010715/ep_0006_seed0099_success.mp4
+[  7/20] seed=  99  outcome=success   steps=283(pick=87,move=196)  g_pick=0.1365  g_tray=0.1134  cem_min=16498.896  SR=2/7(29%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_8/videos/bayesian_batch250/20260626_010715/ep_0007_seed0099_success.mp4
+[  8/20] seed=  99  outcome=success   steps=319(pick=131,move=188)  g_pick=0.1208  g_tray=0.1091  cem_min=237.052  SR=3/8(38%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_8/videos/bayesian_batch250/20260626_010715/ep_0008_seed0099_success.mp4
+[  9/20] seed=  99  outcome=success   steps=570(pick=464,move=106)  g_pick=0.1208  g_tray=0.1044  cem_min=1816.378  SR=4/9(44%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_8/videos/bayesian_batch250/20260626_010715/ep_0009_seed0099_fall.mp4
+[ 10/20] seed=  99  outcome=fall      steps=405(pick=114,move=291)  g_pick=0.1324  g_tray=0.2139  cem_min=3777.098  SR=4/10(40%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_8/videos/bayesian_batch250/20260626_010715/ep_0010_seed0099_timeout.mp4
+[ 11/20] seed=  99  outcome=timeout   steps=600(pick=122,move=478)  g_pick=0.1009  g_tray=0.1182  cem_min=409.803  SR=4/11(36%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_8/videos/bayesian_batch250/20260626_010715/ep_0011_seed0099_fall.mp4
+[ 12/20] seed=  99  outcome=fall      steps=580(pick=92,move=488)  g_pick=0.0989  g_tray=0.1428  cem_min=8385.634  SR=4/12(33%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_8/videos/bayesian_batch250/20260626_010715/ep_0012_seed0099_success.mp4
+[ 13/20] seed=  99  outcome=success   steps=532(pick=264,move=268)  g_pick=0.0948  g_tray=0.1344  cem_min=228.150  SR=5/13(38%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_8/videos/bayesian_batch250/20260626_010715/ep_0013_seed0099_success.mp4
+[ 14/20] seed=  99  outcome=success   steps=371(pick=246,move=125)  g_pick=0.1346  g_tray=0.0928  cem_min=164.568  SR=6/14(43%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_8/videos/bayesian_batch250/20260626_010715/ep_0014_seed0099_timeout.mp4
+[ 15/20] seed=  99  outcome=timeout   steps=600(pick=274,move=326)  g_pick=0.2111  g_tray=0.1519  cem_min=366.062  SR=6/15(40%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_8/videos/bayesian_batch250/20260626_010715/ep_0015_seed0099_success.mp4
+[ 16/20] seed=  99  outcome=success   steps=488(pick=299,move=189)  g_pick=0.1403  g_tray=0.1328  cem_min=309.969  SR=7/16(44%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_8/videos/bayesian_batch250/20260626_010715/ep_0016_seed0099_success.mp4
+[ 17/20] seed=  99  outcome=success   steps=279(pick=130,move=149)  g_pick=0.1189  g_tray=0.1295  cem_min=325.624  SR=8/17(47%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_8/videos/bayesian_batch250/20260626_010715/ep_0017_seed0099_fall.mp4
+[ 18/20] seed=  99  outcome=fall      steps=589(pick=136,move=453)  g_pick=0.1222  g_tray=0.1495  cem_min=2065.781  SR=8/18(44%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_8/videos/bayesian_batch250/20260626_010715/ep_0018_seed0099_timeout.mp4
+[ 19/20] seed=  99  outcome=timeout   steps=600(pick=455,move=145)  g_pick=0.2524  g_tray=0.1460  cem_min=188.750  SR=8/19(42%)
+  saved /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_8/videos/bayesian_batch250/20260626_010715/ep_0019_seed0099_timeout.mp4
+[ 20/20] seed=  99  outcome=timeout   steps=600(pick=163,move=437)  g_pick=0.1237  g_tray=0.2259  cem_min=315.116  SR=8/20(40%)
+
+=== Results ===
+  success : 8/20 (40.0%)
+  fall    : 6/20 (30.0%)
+  timeout : 6/20 (30.0%)
+Data saved → /home/aks-lab/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_tray_push_8/npz/bayesian_batch250/eval_bayesian_batch250_n20_seed99.npz

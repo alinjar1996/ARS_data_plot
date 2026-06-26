@@ -1,0 +1,104 @@
+  [Policy] Loaded linear from /home/aks-lab/colcon_ws/src/manipulator_mujoco/ars_v2_linear_policy_3912.json  (params (387,), count=32025600)
+
+============================================================
+ JAX Evaluate — policy  batch=750  n_eval=20
+============================================================
+ Policy path : /home/aks-lab/colcon_ws/src/manipulator_mujoco/ars_v2_linear_policy_3912.json
+ (policy outputs adaptive weights per step)
+ Video dir   : /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/policy_batch750
+
+Found geom: id=7, name='robot_1'
+Found geom: id=12, name='robot_2'
+Found geom: id=13, name='robot_3'
+Found geom: id=18, name='robot_4'
+Found geom: id=19, name='robot_5'
+Found geom: id=23, name='robot_6'
+Found geom: id=27, name='robot_7'
+Found geom: id=28, name='robot_8'
+Found geom: id=32, name='robot_0'
+Found geom: id=34, name='robot_01'
+Found geom: id=36, name='robot_02'
+Found geom: id=43, name='robot_11'
+Found geom: id=48, name='robot_12'
+Found geom: id=49, name='robot_13'
+Found geom: id=54, name='robot_14'
+Found geom: id=55, name='robot_15'
+Found geom: id=59, name='robot_16'
+Found geom: id=63, name='robot_17'
+Found geom: id=64, name='robot_18'
+Found geom: id=67, name='robot_10'
+Found geom: id=70, name='robot_101'
+Found geom: id=74, name='robot_103'
+Found geom: id=78, name='robot_102'
+Found geom: id=82, name='robot_104'
+(144,)
+(10, 144)
+
+ Default backend: gpu
+ Timestep: 0.1 
+ CEM Iter: 2 
+ Projection Iter: 5 
+ Number of batches: 750 
+ Number of steps per trajectory: 10 
+ Time per trajectory: 1.0 
+ Number of variables: 120 
+ Number of Total constraints: 888 
+ Number of geomteric IDs for colllision: 24
+[Warm-up] Compiling JIT kernels …
+[Warm-up] Done.
+
+/usr/lib/python3.10/subprocess.py:1796: RuntimeWarning: os.fork() was called. os.fork() is incompatible with multithreaded code, and JAX is multithreaded, so this will likely lead to a deadlock.
+  self.pid = _posixsubprocess.fork_exec(
+  [Video] 70 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/policy_batch750/ep001_success.mp4
+[Ep   1/20]  success=1  reason=success   task_time=  3.04s  mean_comp=  35.33ms  SR=1.00
+  [Video] 79 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/policy_batch750/ep002_success.mp4
+[Ep   2/20]  success=1  reason=success   task_time=  3.45s  mean_comp=  35.26ms  SR=1.00
+  [Video] 80 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/policy_batch750/ep003_success.mp4
+[Ep   3/20]  success=1  reason=success   task_time=  3.44s  mean_comp=  34.99ms  SR=1.00
+  [Video] 70 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/policy_batch750/ep004_success.mp4
+[Ep   4/20]  success=1  reason=success   task_time=  3.06s  mean_comp=  35.49ms  SR=1.00
+  [Video] 73 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/policy_batch750/ep005_success.mp4
+[Ep   5/20]  success=1  reason=success   task_time=  3.18s  mean_comp=  35.45ms  SR=1.00
+  [Video] 81 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/policy_batch750/ep006_success.mp4
+[Ep   6/20]  success=1  reason=success   task_time=  3.49s  mean_comp=  35.04ms  SR=1.00
+  [Video] 61 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/policy_batch750/ep007_success.mp4
+[Ep   7/20]  success=1  reason=success   task_time=  2.62s  mean_comp=  34.94ms  SR=1.00
+  [Video] 69 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/policy_batch750/ep008_success.mp4
+[Ep   8/20]  success=1  reason=success   task_time=  3.01s  mean_comp=  35.23ms  SR=1.00
+  [Video] 88 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/policy_batch750/ep009_success.mp4
+[Ep   9/20]  success=1  reason=success   task_time=  3.85s  mean_comp=  35.39ms  SR=1.00
+  [Video] 66 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/policy_batch750/ep010_success.mp4
+[Ep  10/20]  success=1  reason=success   task_time=  2.89s  mean_comp=  35.39ms  SR=1.00
+  [Video] 78 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/policy_batch750/ep011_success.mp4
+[Ep  11/20]  success=1  reason=success   task_time=  3.43s  mean_comp=  35.61ms  SR=1.00
+  [Video] 161 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/policy_batch750/ep012_success.mp4
+[Ep  12/20]  success=1  reason=success   task_time=  7.10s  mean_comp=  35.61ms  SR=1.00
+  [Video] 77 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/policy_batch750/ep013_success.mp4
+[Ep  13/20]  success=1  reason=success   task_time=  3.35s  mean_comp=  35.31ms  SR=1.00
+  [Video] 72 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/policy_batch750/ep014_success.mp4
+[Ep  14/20]  success=1  reason=success   task_time=  3.16s  mean_comp=  35.52ms  SR=1.00
+  [Video] 70 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/policy_batch750/ep015_success.mp4
+[Ep  15/20]  success=1  reason=success   task_time=  3.02s  mean_comp=  35.11ms  SR=1.00
+  [Video] 71 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/policy_batch750/ep016_success.mp4
+[Ep  16/20]  success=1  reason=success   task_time=  3.09s  mean_comp=  35.36ms  SR=1.00
+  [Video] 71 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/policy_batch750/ep017_success.mp4
+[Ep  17/20]  success=1  reason=success   task_time=  3.16s  mean_comp=  35.86ms  SR=1.00
+  [Video] 77 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/policy_batch750/ep018_success.mp4
+[Ep  18/20]  success=1  reason=success   task_time=  3.30s  mean_comp=  35.04ms  SR=1.00
+  [Video] 71 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/policy_batch750/ep019_success.mp4
+[Ep  19/20]  success=1  reason=success   task_time=  3.11s  mean_comp=  35.45ms  SR=1.00
+  [Video] 70 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/policy_batch750/ep020_success.mp4
+[Ep  20/20]  success=1  reason=success   task_time=  3.00s  mean_comp=  34.90ms  SR=1.00
+Saving → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/npz/policy_batch750/eval_policy_batch750_n20_20260624_154037.npz
+  OK
+
+============================================================
+ RESULTS — policy  batch=750
+============================================================
+  success_rate    : 1.000  (20/20)
+  mean_task_time  : 3.39 s  (successful episodes only)
+  mean_comp_time  : 35.33 ms/step
+  median_comp_time: 34.94 ms/step
+  Saved → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/npz/policy_batch750/eval_policy_batch750_n20_20260624_154037.npz
+  Videos → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/policy_batch750/
+

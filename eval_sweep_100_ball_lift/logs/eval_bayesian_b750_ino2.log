@@ -1,0 +1,111 @@
+
+============================================================
+ JAX Evaluate — bayesian  batch=750  n_eval=20
+============================================================
+ Cost weights:
+   collision       : 65.3200
+   theta           : 0.8482
+   eef_vel         : 0.0988
+   eef_pos         : 5.7448
+   distance        : 40.4455
+   smoothness      : 0.0100
+   orientation     : 3.4813
+   eef_to_obj      : 16.8088
+   obj_to_targ     : 12.1228
+ Video dir   : /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/bayesian_batch750
+
+Found geom: id=7, name='robot_1'
+Found geom: id=12, name='robot_2'
+Found geom: id=13, name='robot_3'
+Found geom: id=18, name='robot_4'
+Found geom: id=19, name='robot_5'
+Found geom: id=23, name='robot_6'
+Found geom: id=27, name='robot_7'
+Found geom: id=28, name='robot_8'
+Found geom: id=32, name='robot_0'
+Found geom: id=34, name='robot_01'
+Found geom: id=36, name='robot_02'
+Found geom: id=43, name='robot_11'
+Found geom: id=48, name='robot_12'
+Found geom: id=49, name='robot_13'
+Found geom: id=54, name='robot_14'
+Found geom: id=55, name='robot_15'
+Found geom: id=59, name='robot_16'
+Found geom: id=63, name='robot_17'
+Found geom: id=64, name='robot_18'
+Found geom: id=67, name='robot_10'
+Found geom: id=70, name='robot_101'
+Found geom: id=74, name='robot_103'
+Found geom: id=78, name='robot_102'
+Found geom: id=82, name='robot_104'
+(144,)
+(10, 144)
+
+ Default backend: gpu
+ Timestep: 0.1 
+ CEM Iter: 2 
+ Projection Iter: 5 
+ Number of batches: 750 
+ Number of steps per trajectory: 10 
+ Time per trajectory: 1.0 
+ Number of variables: 120 
+ Number of Total constraints: 888 
+ Number of geomteric IDs for colllision: 24
+[Warm-up] Compiling JIT kernels …
+[Warm-up] Done.
+
+/usr/lib/python3.10/subprocess.py:1796: RuntimeWarning: os.fork() was called. os.fork() is incompatible with multithreaded code, and JAX is multithreaded, so this will likely lead to a deadlock.
+  self.pid = _posixsubprocess.fork_exec(
+  [Video] 55 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/bayesian_batch750/ep001_success.mp4
+[Ep   1/20]  success=1  reason=success   task_time=  2.06s  mean_comp=  34.67ms  SR=1.00
+  [Video] 81 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/bayesian_batch750/ep002_success.mp4
+[Ep   2/20]  success=1  reason=success   task_time=  3.02s  mean_comp=  34.83ms  SR=1.00
+  [Video] 51 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/bayesian_batch750/ep003_success.mp4
+[Ep   3/20]  success=1  reason=success   task_time=  1.94s  mean_comp=  35.48ms  SR=1.00
+  [Video] 56 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/bayesian_batch750/ep004_success.mp4
+[Ep   4/20]  success=1  reason=success   task_time=  2.19s  mean_comp=  36.32ms  SR=1.00
+  [Video] 75 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/bayesian_batch750/ep005_success.mp4
+[Ep   5/20]  success=1  reason=success   task_time=  2.75s  mean_comp=  34.42ms  SR=1.00
+  [Video] 56 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/bayesian_batch750/ep006_success.mp4
+[Ep   6/20]  success=1  reason=success   task_time=  2.12s  mean_comp=  35.28ms  SR=1.00
+  [Video] 69 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/bayesian_batch750/ep007_success.mp4
+[Ep   7/20]  success=1  reason=success   task_time=  2.54s  mean_comp=  34.52ms  SR=1.00
+  [Video] 70 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/bayesian_batch750/ep008_success.mp4
+[Ep   8/20]  success=1  reason=success   task_time=  2.59s  mean_comp=  34.61ms  SR=1.00
+  [Video] 82 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/bayesian_batch750/ep009_success.mp4
+[Ep   9/20]  success=1  reason=success   task_time=  3.04s  mean_comp=  34.65ms  SR=1.00
+  [Video] 70 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/bayesian_batch750/ep010_success.mp4
+[Ep  10/20]  success=1  reason=success   task_time=  2.71s  mean_comp=  36.00ms  SR=1.00
+  [Video] 55 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/bayesian_batch750/ep011_success.mp4
+[Ep  11/20]  success=1  reason=success   task_time=  2.11s  mean_comp=  35.77ms  SR=1.00
+  [Video] 52 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/bayesian_batch750/ep012_success.mp4
+[Ep  12/20]  success=1  reason=success   task_time=  2.02s  mean_comp=  36.15ms  SR=1.00
+  [Video] 82 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/bayesian_batch750/ep013_success.mp4
+[Ep  13/20]  success=1  reason=success   task_time=  3.03s  mean_comp=  34.49ms  SR=1.00
+  [Video] 56 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/bayesian_batch750/ep014_success.mp4
+[Ep  14/20]  success=1  reason=success   task_time=  2.06s  mean_comp=  34.47ms  SR=1.00
+  [Video] 55 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/bayesian_batch750/ep015_success.mp4
+[Ep  15/20]  success=1  reason=success   task_time=  2.06s  mean_comp=  35.01ms  SR=1.00
+  [Video] 52 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/bayesian_batch750/ep016_success.mp4
+[Ep  16/20]  success=1  reason=success   task_time=  1.97s  mean_comp=  35.11ms  SR=1.00
+  [Video] 88 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/bayesian_batch750/ep017_success.mp4
+[Ep  17/20]  success=1  reason=success   task_time=  3.30s  mean_comp=  34.91ms  SR=1.00
+  [Video] 58 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/bayesian_batch750/ep018_success.mp4
+[Ep  18/20]  success=1  reason=success   task_time=  2.17s  mean_comp=  34.89ms  SR=1.00
+  [Video] 46 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/bayesian_batch750/ep019_success.mp4
+[Ep  19/20]  success=1  reason=success   task_time=  1.71s  mean_comp=  34.75ms  SR=1.00
+  [Video] 59 frames → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/bayesian_batch750/ep020_success.mp4
+[Ep  20/20]  success=1  reason=success   task_time=  2.24s  mean_comp=  35.43ms  SR=1.00
+Saving → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/npz/bayesian_batch750/eval_bayesian_batch750_n20_20260624_145430.npz
+  OK
+
+============================================================
+ RESULTS — bayesian  batch=750
+============================================================
+  success_rate    : 1.000  (20/20)
+  mean_task_time  : 2.38 s  (successful episodes only)
+  mean_comp_time  : 35.04 ms/step
+  median_comp_time: 34.61 ms/step
+  Saved → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/npz/bayesian_batch750/eval_bayesian_batch750_n20_20260624_145430.npz
+  Videos → /home/aks-lab/colcon_ws/src/manipulator_mujoco/real_demo/real_demo/eval_sweep_100_ball_lift/videos/bayesian_batch750/
+

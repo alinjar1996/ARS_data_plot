@@ -111,6 +111,41 @@ These alternatives are **not used by the current plots**. Expected coverage is b
 
 Ball PPO4951 `best_training` now also has five files per batch, but the notebook uses the `best_eval` variant. Alternatives should not be silently mixed into the current results to fill gaps.
 
+## 7. NPZ folders used for the analysis
+
+Paths below are relative to the directory containing the notebook. `{b}` means one of **250, 500, 750, 1000**; `{block}` means **0, 1, 2, 3, 4**. Asterisks are filename wildcards. The notebook currently aggregates **240 NPZ files**, 20 per task–method combination.
+
+| Task | Method | Folder template | NPZ filename pattern | Files per batch | Total files |
+|---|---|---|---|---:|---:|
+| Ball Lift | Hand-Tuned | `eval_sweep_100_ball_lift/npz/handtuned_batch{b}/` | `eval_handtuned_batch{b}_n20_*.npz` | 5 | 20 |
+| Ball Lift | Bayesian | `eval_sweep_100_ball_lift/npz/bayesian_batch{b}/` | `eval_bayesian_batch{b}_n20_*.npz` | 5 | 20 |
+| Ball Lift | PPO 4951, best eval | `ppo_results/Ball_lift/ppo4951_best_eval/batch{b}/block{block}/` | `eval_policy_batch{b}_n20_*.npz` | 5 across blocks | 20 |
+| Ball Lift | ARS | `eval_sweep_100_ball_lift/npz/policy_batch{b}/` | `eval_policy_batch{b}_n20_*.npz` | 5 | 20 |
+| Box Lift | Hand-Tuned | `eval_sweep_100_box_lift_3/npz/handtuned_batch{b}/` | `eval_handtuned_batch{b}_n20_seed*.npz` | 5 | 20 |
+| Box Lift | Bayesian | `eval_sweep_100_box_lift_3/npz/bayesian_batch{b}/` | `eval_bayesian_batch{b}_n20_seed*.npz` | 5 | 20 |
+| Box Lift | PPO 5005, best eval | `ppo_results/Box_lift/ppo5005besteval_batch{b}/` | `eval_ppo5005besteval_batch{b}_n20_seed*.npz` | 5 | 20 |
+| Box Lift | ARS | `eval_sweep_100_box_lift_3/npz/policy_batch{b}/` | `eval_policy_batch{b}_n20_seed*.npz` | 5 | 20 |
+| Tray Push | Hand-Tuned | `eval_sweep_100_tray_push_8/npz/handtuned_batch{b}/` | `eval_handtuned_batch{b}_n20_seed*.npz` | 5 | 20 |
+| Tray Push | Bayesian | `eval_sweep_100_tray_push_8/npz/bayesian_batch{b}/` | `eval_bayesian_batch{b}_n20_seed*.npz` | 5 | 20 |
+| Tray Push | PPO 5307, best val | `ppo_results/Tray_push/ppo5307_best_val_batch{b}/` | `eval_ppo5307_best_val_batch{b}_n20_seed*.npz` | 5 | 20 |
+| Tray Push | ARS | `eval_sweep_100_tray_push_8/npz/policy_batch{b}/` | `eval_policy_batch{b}_n20_seed*.npz` | 5 | 20 |
+
+The **exact folder and filename of every plotted NPZ** are listed in [BENCHMARK_NPZ_FILES.md](BENCHMARK_NPZ_FILES.md). The manifest was generated from the notebook's current file-discovery logic and all listed files were checked to exist.
+
+Ball PPO filenames contain `policy`, not `ppo`; their parent folder identifies the PPO checkpoint. The original-method `policy_batch{b}` folders correspond to ARS. These sources must not be confused solely because their filenames use the same token.
+
+### Additional datasets inspected, excluded from the plots
+
+| Task / variant | Folder template | NPZ filename pattern | Files for batches 250 / 500 / 750 / 1000 | Purpose |
+|---|---|---|---|---|
+| Ball ARS3950 | `ppo_results/Ball_lift/ars3950/batch{b}/block{block}/` | `eval_policy_batch{b}_n20_*.npz` | 3 / 4 / 5 / 1 | Horizon-15 timing comparison and missing-block audit |
+| Ball ARS3982 | `ppo_results/Ball_lift/ars3982/batch{b}/block{block}/` | `eval_policy_batch{b}_n20_*.npz` | 4 / 5 / 5 / 2 | Horizon-15 timing comparison and missing-block audit |
+| Ball PPO4951 best training | `ppo_results/Ball_lift/ppo4951_best_training/batch{b}/block{block}/` | `eval_policy_batch{b}_n20_*.npz` | 5 / 5 / 5 / 5 | Alternative-checkpoint inspection and current coverage check |
+| Box PPO5005 best training | `ppo_results/Box_lift/ppo5005best_batch{b}/` | `eval_ppo5005best_batch{b}_n20_seed*.npz` | 5 / 5 / 5 / 5 | Alternative-checkpoint timing inspection |
+| Tray PPO5307 best training | `ppo_results/Tray_push/ppo5307_best_train_batch{b}/` | `eval_ppo5307_best_train_batch{b}_n20_seed*.npz` | 5 / 5 / 5 / 5 | Alternative-checkpoint timing inspection |
+
+Other directories present in `ppo_results` are not inputs to the notebook's plots. In particular, the Box ARS4218/ARS4280 and Tray PPO5306 directories are not substituted for the selected datasets above.
+
 ## Evidence locations and follow-up
 
 | Task | Original-method NPZs and logs | Selected PPO NPZ pattern |

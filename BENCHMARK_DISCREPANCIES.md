@@ -1,83 +1,97 @@
-# Benchmark discrepancies and missing data
+# Benchmark discrepancies and data limitations
 
-Verified: 2026-09-23. Scope: the datasets currently used by [benchmark_stat_batch.ipynb](benchmark_stat_batch.ipynb). This report is a snapshot; it does not update automatically when files or notebook settings change.
+Verified: 2026-09-24. Scope: the datasets currently discovered and aggregated by [benchmark_stat_batch.ipynb](benchmark_stat_batch.ipynb). This is a snapshot; it does not update automatically when files or notebook settings change.
 
 ## Current data coverage
 
-All 12 task–method combinations currently used by the notebook have **five NPZ files per batch**, for batch sizes 250, 500, 750, and 1000. The selected PPO files each contain 20 episodes, giving 100 episodes per task and batch.
+The notebook currently aggregates **240 NPZ files**: 3 tasks × 4 methods × 4 batch sizes × 5 files. Every file contains 20 saved episodes, so each task–method–batch result is based on 100 saved episodes before metric-specific filtering.
 
-- **Resolved:** Ball PPO 4951 best-evaluation results now include blocks 0–4 for every batch. The previously missing six files are present.
-- **Verified:** All selected PPO files contain `success`, `total_time`, and `step_time`, with matching lengths of 20.
-- **Still missing:** Box PPO has zero-filled per-step timing arrays for 80 of the 100 episodes in each batch. File coverage is complete, but timing coverage is not.
+- All 12 task–method combinations have five files for each batch size: 250, 500, 750, and 1000.
+- Every selected file contains `success`, `total_time`, and `step_time` with 20 episode entries.
+- Every selected episode has at least one positive finite `step_time` entry. The previously selected Box PPO data with zero-filled timings are no longer plotted.
+- The exact active sources and filenames are listed in [BENCHMARK_NPZ_FILES.md](BENCHMARK_NPZ_FILES.md).
 
-## Summary of discrepancies
+## Summary
 
-| Finding | Status | Consequence |
+| Finding | Current status | Consequence |
 |---|---|---|
-| Ball PPO uses horizon 15; plotted Ball baselines use horizon 10 | Verified configuration mismatch | Computation-time comparisons use different MPC workloads |
-| Box PPO has all-zero step timings in 16 of 20 episodes per file | Verified missing measurements; averaging corrected | Computation time is estimated from only four measured episodes per file |
-| Box PPO's episodes without step timings have much larger `total_time` | Verified association; cause unresolved | Large Task Time bars cannot be attributed confidently to slower task execution |
-| Tray PPO has much lower computation time despite matching recorded core planner settings | Verified timing difference; cause unresolved | Speedup cannot yet be attributed to the PPO algorithm |
-| Box and Tray PPO timestep is absent from saved metadata/config fields inspected | Missing metadata | Physical task duration cannot be reconstructed from episode lengths without an independently verified timestep |
-| Matched evaluator code, timing boundaries, hardware, and software provenance are not established | Comparison evidence incomplete | Cross-run timing equivalence remains unverified |
+| Ball methods previously used different horizons | Resolved in the active inputs | All four Ball methods now use horizon 15, 2 CEM iterations, and 5 projection iterations |
+| Box PPO previously had zero-filled timing arrays in 80% of episodes | Resolved in the active inputs | The matched Box Hand-Tuned, PPO, and ARS files have valid per-step timings for every saved episode |
+| Box PPO previously had anomalously large `total_time` values | Resolved by replacing the active source | Current Box PPO Task Time is 6.88–16.32 s rather than 46.54–69.40 s |
+| Box Hand-Tuned, PPO, and ARS render and encode a video for every saved episode | Verified current protocol | Their `total_time` includes rendering and MP4 encoding and is not pure controller execution time |
+| Box Bayesian still comes from the earlier sweep | Source/protocol mismatch | Its timing should not be treated as fully matched to the other three Box methods |
+| Matched Box files use `seed_stride=0` | Verified current protocol | Each 20-episode file records one repeated episode seed; there are five recorded seed values per method/batch, not 100 distinct seed values |
+| Tray PPO remains much faster despite matching recorded core planner settings | Verified timing difference; cause unresolved | The speed difference cannot be attributed to PPO alone |
+| Tray PPO timestep is absent from the inspected metadata/config fields | Missing metadata | Simulated task duration cannot be reconstructed from its episode lengths without an independently verified timestep |
+| Hardware, software, and evaluator provenance are not uniform across all active sources | Comparison evidence incomplete | Cross-source wall-clock comparisons remain conditional |
 
-## 1. Ball Lift: different planning horizons
+## 1. Ball Lift: horizon mismatch resolved
 
-| Method currently plotted | Horizon | CEM iterations | Projection iterations |
-|---|---:|---:|---:|
-| Hand-Tuned | 10 | 2 | 5 |
-| Bayesian | 10 | 2 | 5 |
-| PPO 4951, best eval | 15 | 2 | 5 |
-| ARS | 10 | 2 | 5 |
+The notebook now uses the September 23 horizon-15 sweep for Hand-Tuned, Bayesian, and ARS. PPO4951 best-evaluation already uses horizon 15.
 
-The PPO planner uses a 50% longer horizon. This is a strong explanation for its higher per-step computation time, but the data do not isolate the causal contribution of every runtime difference.
+| Active method | Horizon | CEM iterations | Projection iterations | Timestep (s) |
+|---|---:|---:|---:|---:|
+| Hand-Tuned | 15 | 2 | 5 | 0.1 |
+| Bayesian | 15 | 2 | 5 | 0.1 |
+| PPO 4951, best eval | 15 | 2 | 5 | 0.1 |
+| ARS | 15 | 2 | 5 | 0.1 |
 
-Additional ARS3982 results in `ppo_results/Ball_lift/ars3982/` use horizon 15, CEM iterations 2, and projection iterations 5. Their computation times are close to PPO's:
+All 80 active Ball NPZs contain these settings in metadata. The older horizon-10 files under `eval_sweep_100_ball_lift/npz/` and the ARS3950/ARS3982 diagnostic directories are not plotted.
 
-| Batch | Plotted ARS, horizon 10 (ms) | ARS3982, horizon 15 (ms) | PPO4951, horizon 15 (ms) |
-|---:|---:|---:|---:|
-| 250 | 24.07 | 31.41 | 31.81 |
-| 500 | 29.48 | 43.20 | 43.94 |
-| 750 | 35.37 | 56.19 | 55.03 |
-| 1000 | 42.31 | 64.36 | 63.01 |
+The resulting computation-time means are now similar within each batch:
 
-The ARS3982 comparison is indicative: it has incomplete file coverage and is **not** the ARS dataset plotted in the notebook. A controlled comparison needs all methods evaluated with the same horizon and execution setup.
+| Batch | Hand-Tuned (ms) | Bayesian (ms) | PPO (ms) | ARS (ms) |
+|---:|---:|---:|---:|---:|
+| 250 | 32.26 | 31.14 | 31.81 | 32.89 |
+| 500 | 43.61 | 43.07 | 43.94 | 46.19 |
+| 750 | 54.03 | 54.03 | 55.03 | 57.52 |
+| 1000 | 61.74 | 63.61 | 63.01 | 63.83 |
 
-## 2. Box Lift: missing computation-time measurements
+Matching these recorded settings removes the known horizon confound, but does not by itself establish identical evaluator code, devices, or software versions.
 
-Across the selected PPO5005 best-evaluation files, only zero-based episode indices **0, 5, 10, 15** contain nonzero `step_time` values. The remaining 16 episodes contain zero-filled arrays.
+## 2. Box Lift: selected sources and timing protocol
 
-The notebook now excludes the first step of each episode, then excludes zero, negative, and non-finite entries. An episode with no valid timings does not contribute to computation time. No negative or non-finite post-first-step timings were found in the selected PPO datasets during this audit.
+The active Box sources are:
 
-| Batch | Previous mean including zero-filled episodes (ms) | Current mean from measured episodes (ms) | Measured episodes / total |
-|---:|---:|---:|---:|
-| 250 | 11.00 | 55.01 | 20 / 100 |
-| 500 | 14.00 | 69.98 | 20 / 100 |
-| 750 | 17.74 | 88.69 | 20 / 100 |
-| 1000 | 21.59 | 107.93 | 20 / 100 |
+| Method | Active source | Protocol status |
+|---|---|---|
+| Hand-Tuned | `eval_box_lift_matched_20260924_105842/handtuned_batch*/*.npz` | Matched evaluator metadata |
+| Bayesian | `eval_sweep_100_box_lift_3/npz/bayesian_batch*/*.npz` | Earlier sweep |
+| PPO 5005, best eval | `eval_box_lift_matched_20260923_205507/npz/ppo5005besteval_batch*/*.npz` | Matched evaluator |
+| ARS 4218 | `eval_box_lift_matched_20260923_205507/npz/ars4218_batch*/*.npz` | Matched evaluator |
 
-**Remaining limitation:** filtering corrects the downward bias caused by averaging missing measurements as zeros. It does not recover the missing timings or prove that the measured episodes represent the unmeasured episodes. The evaluator needs inspection to explain why only every fifth episode has step timings.
+All four methods use horizon 15, 3 CEM iterations, 5 projection iterations, and a 0.1 s timestep according to NPZ metadata and, for the earlier Bayesian files, their evaluation logs.
 
-## 3. Box Lift: unusually large recorded Task Time
+The matched evaluator fixes the former sparse-timing problem: every selected Hand-Tuned, PPO, and ARS episode contains positive finite per-step timings. Their current computation-time results track closely, while the earlier Bayesian run is consistently lower:
 
-Task Time still uses `total_time` from all successful episodes except episode 0, including episodes whose step timings are zero-filled. No computation-time filter is applied to Task Time.
+| Batch | Hand-Tuned (ms) | Bayesian, earlier sweep (ms) | PPO (ms) | ARS (ms) |
+|---:|---:|---:|---:|---:|
+| 250 | 67.29 | 59.34 | 66.67 | 67.87 |
+| 500 | 85.61 | 70.81 | 84.14 | 84.83 |
+| 750 | 117.65 | 87.00 | 114.71 | 114.77 |
+| 1000 | 149.87 | 108.63 | 147.86 | 147.92 |
 
-| Batch | Current plotted Task Time (s) | Successful episodes with step timings: mean (s), count | Successful episodes with zero-filled timings: mean (s), count |
-|---:|---:|---|---|
-| 250 | 46.54 | 6.75, n=3 | 52.90, n=23 |
-| 500 | 52.26 | 6.58, n=7 | 59.22, n=39 |
-| 750 | 59.51 | 8.02, n=6 | 69.93, n=39 |
-| 1000 | 69.40 | 9.21, n=10 | 85.49, n=40 |
+### What the matched timing fields include
 
-The plotted column uses the notebook's equal-weight mean of per-file means. The two diagnostic subgroup columns pool eligible episodes across files, so their weighted average need not exactly reproduce the plotted column.
+The selected NPZ metadata and the evaluator/launcher copied with the September 23 matched run establish the following:
 
-At batch 1000, the two groups average approximately **80.9 and 81.25 steps**, respectively. The roughly 76-second duration difference therefore cannot be explained by proportionally longer episode trajectories.
+- `step_time` is milliseconds around observation, policy, CEM/environment step, and device synchronization. Rendering occurs after this timer, so it is excluded from `step_time`.
+- `total_time` is seconds around the complete `run_episode` call.
+- Every selected matched file records `execution_mode='render'` for all 20 episodes. The copied PPO/ARS launcher passes `--video --video_stride 1`; the separate Hand-Tuned directory records the same execution mode and warm-up metadata but does not contain its launcher.
+- The render path creates frames and writes an MP4 with `imageio.mimsave` before returning. Consequently, matched `total_time` includes rendering and video encoding.
+- One headless timed warm-up episode is run before the 20 saved episodes in each process and is recorded as `warmup_episodes=1`.
 
-**Inference:** the pattern suggests different evaluation overhead or a timing/logging issue. Compilation, synchronization, or another evaluator operation are possible explanations, not established causes. The evaluator's timer boundaries and execution paths must be inspected before interpreting the large bars as slower control. Stored values have been retained as requested.
+The notebook nevertheless excludes saved episode 0 from Task Time for every dataset. For the matched Box runs this drops an additional measured episode after the evaluator's unsaved warm-up. This is the implemented statistic, but it is not required for compilation warm-up in those runs.
 
-## 4. Tray Push: unexplained lower timings
+Because Box Bayesian remains from the earlier sweep, the four Box Task Time bars do not share a fully established timer/rendering protocol. The matched Hand-Tuned, PPO, and ARS bars are mutually more comparable, but should be described as end-to-end rendered evaluation time rather than pure task execution time.
 
-Tray PPO has valid nonzero timings throughout the selected files. Its `step_time` and `step_time_ms` fields agree. The plotted ARS and PPO evaluations both report horizon 10, one CEM iteration, and five projection iterations.
+### Episode seeds
+
+The matched launcher uses base seeds `0`, `5`, `4`, `10`, and `15`, with `seed_stride=0`. Each file therefore stores the same `episode_seed` for all 20 episodes. The notebook correctly reports 100 saved episode outcomes per method/batch, but those are not 100 distinct recorded seeds. Any uncertainty analysis should account for the five file-level seed groups and possible within-process dependence.
+
+## 3. Tray Push: lower PPO timings remain unexplained
+
+Tray PPO has valid nonzero timings throughout its selected files. Its `step_time` and `step_time_ms` fields agree. All four methods report horizon 10, one CEM iteration, and five projection iterations.
 
 | Batch | ARS computation (ms) | PPO computation (ms) | ARS Task Time (s) | PPO Task Time (s) |
 |---:|---:|---:|---:|---:|
@@ -86,80 +100,45 @@ Tray PPO has valid nonzero timings throughout the selected files. Its `step_time
 | 750 | 51.92 | 21.76 | 9.93 | 4.89 |
 | 1000 | 56.27 | 26.12 | 10.42 | 5.75 |
 
-Lower per-step times account for much of the lower wall-clock episode duration. PPO does not consistently finish in fewer steps: at batch 250 the mean of per-file successful-episode step-count means is approximately 219 for PPO and 197 for ARS, excluding episode 0.
+Matching the recorded core planner settings does not establish identical evaluator implementations, timing boundaries, devices, or software versions. The data support a recorded speed difference, not an isolated PPO speedup. Tray PPO's timestep is also not stored in the inspected NPZ metadata/config fields.
 
-**Unresolved:** matching these recorded planner settings does not establish identical evaluator implementations, timing boundaries, devices, or software versions. The current data support a recorded speed difference, not an isolated algorithmic speedup.
+## 4. Implemented metric definitions
 
-## 5. Metric definitions and interpretation
+- **Success rate:** mean over all 20 episodes in each file, then mean over the five files. Because file sizes are equal, this also equals the pooled rate over 100 saved episodes.
+- **Task Time:** `total_time` in seconds, restricted to successful saved episodes after removing episode 0 from each file. The notebook averages eligible episodes within each file and then gives each finite file mean equal weight.
+- **Computation Time:** positive finite `step_time` values after removing step 0 from each episode. It averages steps within each measured episode, then episodes within each file, then the five file means. Successful and failed episodes both contribute.
+- **Error bars:** population standard deviation (`numpy.nanstd`, default `ddof=0`) across the five per-file means. They are not episode-level standard deviations, standard errors, or confidence intervals.
+- **Best-file check:** the notebook separately identifies the highest-success candidate for verification, but plots aggregate every candidate discovered for the method and batch. It does not plot only the best file.
+- **Overview plots:** use only batches 250 and 500; the per-task plots use all four batches.
+- **Training versus evaluation batch size:** Box and Tray PPO checkpoint configs record training batch size 50, while the plotted evaluation batch sizes are 250, 500, 750, and 1000.
 
-- **Success rate:** all episodes, averaged per file and then across files. With equal file sizes this equals the pooled episode success rate.
-- **Task Time:** `total_time` in seconds, restricted to successful episodes and excluding episode 0 from each file. File means are averaged equally. This is the chosen wall-clock metric, not simulated task duration. Its exact timer scope still requires evaluator verification, especially for Box PPO.
-- **Ball's explicit `task_time`:** a separate simulated-duration field; `total_time` equals `wall_time` in the inspected Ball PPO data. The notebook intentionally uses `total_time` for consistency with the selected definition.
-- **Computation Time:** positive, finite `step_time` values in milliseconds after excluding step 0; averaged within each measured episode, then within each file, then across files. Both successful and failed measured episodes contribute. This is an episode-weighted statistic rather than one pooled average of every recorded step.
-- **Error bars:** standard deviation across per-file means, not episode-level standard deviation, standard error, or confidence intervals.
-- **Best-file check:** the notebook identifies the highest-success file for verification, but the plotted metrics aggregate all discovered candidate files for the configured method and batch. It does not plot only the best file.
-- **Training versus evaluation batch size:** Box and Tray PPO checkpoint configs record batch size 50; runtime results use 250, 500, 750, and 1000. This is an explicit evaluation change, not evidence that the current batch labels are wrong.
+## 5. Active NPZ folders
 
-## 6. Missing files in alternative Ball datasets
+`{b}` is one of 250, 500, 750, or 1000. Each row contributes five files per batch and 20 files total.
 
-These alternatives are **not used by the current plots**. Expected coverage is blocks 0–4 for each batch.
-
-| Alternative | Batch 250: missing blocks | Batch 500: missing blocks | Batch 750: missing blocks | Batch 1000: missing blocks |
-|---|---|---|---|---|
-| ARS3950 | 1, 4 | 4 | None | 0, 1, 2, 3 |
-| ARS3982 | 0 | None | None | 1, 3, 4 |
-
-Ball PPO4951 `best_training` now also has five files per batch, but the notebook uses the `best_eval` variant. Alternatives should not be silently mixed into the current results to fill gaps.
-
-## 7. NPZ folders used for the analysis
-
-Paths below are relative to the directory containing the notebook. `{b}` means one of **250, 500, 750, 1000**; `{block}` means **0, 1, 2, 3, 4**. Asterisks are filename wildcards. The notebook currently aggregates **240 NPZ files**, 20 per task–method combination.
-
-| Task | Method | Folder template | NPZ filename pattern | Files per batch | Total files |
-|---|---|---|---|---:|---:|
-| Ball Lift | Hand-Tuned | `eval_sweep_100_ball_lift/npz/handtuned_batch{b}/` | `eval_handtuned_batch{b}_n20_*.npz` | 5 | 20 |
-| Ball Lift | Bayesian | `eval_sweep_100_ball_lift/npz/bayesian_batch{b}/` | `eval_bayesian_batch{b}_n20_*.npz` | 5 | 20 |
-| Ball Lift | PPO 4951, best eval | `ppo_results/Ball_lift/ppo4951_best_eval/batch{b}/block{block}/` | `eval_policy_batch{b}_n20_*.npz` | 5 across blocks | 20 |
-| Ball Lift | ARS | `eval_sweep_100_ball_lift/npz/policy_batch{b}/` | `eval_policy_batch{b}_n20_*.npz` | 5 | 20 |
-| Box Lift | Hand-Tuned | `eval_sweep_100_box_lift_3/npz/handtuned_batch{b}/` | `eval_handtuned_batch{b}_n20_seed*.npz` | 5 | 20 |
-| Box Lift | Bayesian | `eval_sweep_100_box_lift_3/npz/bayesian_batch{b}/` | `eval_bayesian_batch{b}_n20_seed*.npz` | 5 | 20 |
-| Box Lift | PPO 5005, best eval | `ppo_results/Box_lift/ppo5005besteval_batch{b}/` | `eval_ppo5005besteval_batch{b}_n20_seed*.npz` | 5 | 20 |
-| Box Lift | ARS | `eval_sweep_100_box_lift_3/npz/policy_batch{b}/` | `eval_policy_batch{b}_n20_seed*.npz` | 5 | 20 |
-| Tray Push | Hand-Tuned | `eval_sweep_100_tray_push_8/npz/handtuned_batch{b}/` | `eval_handtuned_batch{b}_n20_seed*.npz` | 5 | 20 |
-| Tray Push | Bayesian | `eval_sweep_100_tray_push_8/npz/bayesian_batch{b}/` | `eval_bayesian_batch{b}_n20_seed*.npz` | 5 | 20 |
-| Tray Push | PPO 5307, best val | `ppo_results/Tray_push/ppo5307_best_val_batch{b}/` | `eval_ppo5307_best_val_batch{b}_n20_seed*.npz` | 5 | 20 |
-| Tray Push | ARS | `eval_sweep_100_tray_push_8/npz/policy_batch{b}/` | `eval_policy_batch{b}_n20_seed*.npz` | 5 | 20 |
-
-The **exact folder and filename of every plotted NPZ** are listed in [BENCHMARK_NPZ_FILES.md](BENCHMARK_NPZ_FILES.md). The manifest was generated from the notebook's current file-discovery logic and all listed files were checked to exist.
-
-Ball PPO filenames contain `policy`, not `ppo`; their parent folder identifies the PPO checkpoint. The original-method `policy_batch{b}` folders correspond to ARS. These sources must not be confused solely because their filenames use the same token.
-
-### Additional datasets inspected, excluded from the plots
-
-| Task / variant | Folder template | NPZ filename pattern | Files for batches 250 / 500 / 750 / 1000 | Purpose |
-|---|---|---|---|---|
-| Ball ARS3950 | `ppo_results/Ball_lift/ars3950/batch{b}/block{block}/` | `eval_policy_batch{b}_n20_*.npz` | 3 / 4 / 5 / 1 | Horizon-15 timing comparison and missing-block audit |
-| Ball ARS3982 | `ppo_results/Ball_lift/ars3982/batch{b}/block{block}/` | `eval_policy_batch{b}_n20_*.npz` | 4 / 5 / 5 / 2 | Horizon-15 timing comparison and missing-block audit |
-| Ball PPO4951 best training | `ppo_results/Ball_lift/ppo4951_best_training/batch{b}/block{block}/` | `eval_policy_batch{b}_n20_*.npz` | 5 / 5 / 5 / 5 | Alternative-checkpoint inspection and current coverage check |
-| Box PPO5005 best training | `ppo_results/Box_lift/ppo5005best_batch{b}/` | `eval_ppo5005best_batch{b}_n20_seed*.npz` | 5 / 5 / 5 / 5 | Alternative-checkpoint timing inspection |
-| Tray PPO5307 best training | `ppo_results/Tray_push/ppo5307_best_train_batch{b}/` | `eval_ppo5307_best_train_batch{b}_n20_seed*.npz` | 5 / 5 / 5 / 5 | Alternative-checkpoint timing inspection |
-
-Other directories present in `ppo_results` are not inputs to the notebook's plots. In particular, the Box ARS4218/ARS4280 and Tray PPO5306 directories are not substituted for the selected datasets above.
-
-## Evidence locations and follow-up
-
-| Task | Original-method NPZs and logs | Selected PPO NPZ pattern |
+| Task | Method | Active folder/pattern |
 |---|---|---|
-| Ball Lift | `eval_sweep_100_ball_lift/{npz,logs}/` | `ppo_results/Ball_lift/ppo4951_best_eval/**/*.npz` |
-| Box Lift | `eval_sweep_100_box_lift_3/{npz,logs}/` | `ppo_results/Box_lift/ppo5005besteval_batch*/*.npz` |
-| Tray Push | `eval_sweep_100_tray_push_8/{npz,logs}/` | `ppo_results/Tray_push/ppo5307_best_val_batch*/*.npz` |
+| Ball Lift | Hand-Tuned | `eval_sweep_100_ball_lift_h15_20260923_152226/handtuned_batch{b}/*.npz` |
+| Ball Lift | Bayesian | `eval_sweep_100_ball_lift_h15_20260923_152226/bayesian_batch{b}/*.npz` |
+| Ball Lift | PPO 4951, best eval | `ppo_results/Ball_lift/ppo4951_best_eval/batch{b}/block*/*.npz` |
+| Ball Lift | ARS | `eval_sweep_100_ball_lift_h15_20260923_152226/policy_batch{b}/*.npz` |
+| Box Lift | Hand-Tuned, matched | `eval_box_lift_matched_20260924_105842/handtuned_batch{b}/*.npz` |
+| Box Lift | Bayesian | `eval_sweep_100_box_lift_3/npz/bayesian_batch{b}/*.npz` |
+| Box Lift | PPO 5005 best eval, matched | `eval_box_lift_matched_20260923_205507/npz/ppo5005besteval_batch{b}/*.npz` |
+| Box Lift | ARS 4218, matched | `eval_box_lift_matched_20260923_205507/npz/ars4218_batch{b}/*.npz` |
+| Tray Push | Hand-Tuned | `eval_sweep_100_tray_push_8/npz/handtuned_batch{b}/*.npz` |
+| Tray Push | Bayesian | `eval_sweep_100_tray_push_8/npz/bayesian_batch{b}/*.npz` |
+| Tray Push | PPO 5307, best val | `ppo_results/Tray_push/ppo5307_best_val_batch{b}/*.npz` |
+| Tray Push | ARS | `eval_sweep_100_tray_push_8/npz/policy_batch{b}/*.npz` |
 
-Recommended investigation order:
+The old Ball horizon-10 inputs, old Box Hand-Tuned/ARS inputs, Box PPO files under `ppo_results/Box_lift/`, PPO5005 best-training files, and other result directories are not silently pooled into the active plots.
 
-1. Inspect the Box PPO evaluator for the every-fifth-episode timing pattern and the operations included in `total_time`.
-2. Recover or rerun missing Box step timings with a consistent timer for every episode; keep timing provenance with the results.
-3. Evaluate all Ball methods with a common horizon and otherwise matched settings.
-4. Compare Tray evaluator code and timing boundaries, including accelerator synchronization, and record hardware/software versions for both runs.
-5. Save explicit timing units, timer scope, timestep, runtime planner configuration, and evaluator version in future NPZs. Record additional CEM parameters such as elite selection and smoothing to support complete configuration comparisons.
+## Follow-up priorities
 
-This report documents findings only. It does not replace datasets, change checkpoint selection, or modify plotted statistics.
+1. Rerun or replace Box Bayesian using the matched evaluator and record the same timer/rendering protocol as the other Box methods.
+2. For wall-clock Task Time comparisons, evaluate without video or store controller time separately from rendering and encoding time.
+3. Use distinct episode seeds (`seed_stride > 0`) or explicitly model repeated-seed dependence.
+4. Compare Tray evaluator code and timing boundaries, including accelerator synchronization, and record hardware/software versions.
+5. Save timing units, timer scope, timestep, complete runtime planner configuration, evaluator version, and hardware/software provenance in every future NPZ.
+
+This report documents the current implementation and data limitations. It does not replace datasets, alter checkpoint selection, or change plotted statistics.

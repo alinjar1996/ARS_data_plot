@@ -1,308 +1,107 @@
 # NPZ files used by the benchmark
 
-Verified: 2026-09-23. Exact input files resolved using the discovery logic in `benchmark_stat_batch.ipynb`. Paths are relative to the directory containing the notebook. This manifest includes the files aggregated in the plots; additional diagnostic datasets are listed separately in `BENCHMARK_DISCREPANCIES.md`.
+Verified: 2026-09-24. This manifest is the exact expansion of the discovery patterns in [benchmark_stat_batch.ipynb](benchmark_stat_batch.ipynb). Paths are relative to the directory containing the notebook.
 
-Each file is listed once. The method order is Hand-Tuned, Bayesian, PPO, ARS. This is a snapshot, not an automatically refreshed manifest.
+The notebook aggregates **240 NPZ files**: 12 task–method combinations × 4 batches × 5 files. Every listed file exists and contains 20 saved episodes. The method order is Hand-Tuned, Bayesian, PPO, ARS.
 
-## Ball Lift — Hand-Tuned
+## Expansion notation
 
-| Batch | Folder | NPZ filename |
-|---:|---|---|
-| 250 | `eval_sweep_100_ball_lift/npz/handtuned_batch250/` | `eval_handtuned_batch250_n20_20260624_130406.npz` |
-| 250 | `eval_sweep_100_ball_lift/npz/handtuned_batch250/` | `eval_handtuned_batch250_n20_20260624_130752.npz` |
-| 250 | `eval_sweep_100_ball_lift/npz/handtuned_batch250/` | `eval_handtuned_batch250_n20_20260624_131138.npz` |
-| 250 | `eval_sweep_100_ball_lift/npz/handtuned_batch250/` | `eval_handtuned_batch250_n20_20260624_131530.npz` |
-| 250 | `eval_sweep_100_ball_lift/npz/handtuned_batch250/` | `eval_handtuned_batch250_n20_20260624_131939.npz` |
-| 500 | `eval_sweep_100_ball_lift/npz/handtuned_batch500/` | `eval_handtuned_batch500_n20_20260624_132344.npz` |
-| 500 | `eval_sweep_100_ball_lift/npz/handtuned_batch500/` | `eval_handtuned_batch500_n20_20260624_132753.npz` |
-| 500 | `eval_sweep_100_ball_lift/npz/handtuned_batch500/` | `eval_handtuned_batch500_n20_20260624_133206.npz` |
-| 500 | `eval_sweep_100_ball_lift/npz/handtuned_batch500/` | `eval_handtuned_batch500_n20_20260624_133619.npz` |
-| 500 | `eval_sweep_100_ball_lift/npz/handtuned_batch500/` | `eval_handtuned_batch500_n20_20260624_134047.npz` |
-| 750 | `eval_sweep_100_ball_lift/npz/handtuned_batch750/` | `eval_handtuned_batch750_n20_20260624_134510.npz` |
-| 750 | `eval_sweep_100_ball_lift/npz/handtuned_batch750/` | `eval_handtuned_batch750_n20_20260624_134919.npz` |
-| 750 | `eval_sweep_100_ball_lift/npz/handtuned_batch750/` | `eval_handtuned_batch750_n20_20260624_135318.npz` |
-| 750 | `eval_sweep_100_ball_lift/npz/handtuned_batch750/` | `eval_handtuned_batch750_n20_20260624_135726.npz` |
-| 750 | `eval_sweep_100_ball_lift/npz/handtuned_batch750/` | `eval_handtuned_batch750_n20_20260624_140142.npz` |
-| 1000 | `eval_sweep_100_ball_lift/npz/handtuned_batch1000/` | `eval_handtuned_batch1000_n20_20260624_140622.npz` |
-| 1000 | `eval_sweep_100_ball_lift/npz/handtuned_batch1000/` | `eval_handtuned_batch1000_n20_20260624_141117.npz` |
-| 1000 | `eval_sweep_100_ball_lift/npz/handtuned_batch1000/` | `eval_handtuned_batch1000_n20_20260624_141530.npz` |
-| 1000 | `eval_sweep_100_ball_lift/npz/handtuned_batch1000/` | `eval_handtuned_batch1000_n20_20260624_141956.npz` |
-| 1000 | `eval_sweep_100_ball_lift/npz/handtuned_batch1000/` | `eval_handtuned_batch1000_n20_20260624_142449.npz` |
+- `{b}` expands to exactly `250`, `500`, `750`, and `1000`.
+- A comma-separated set in braces expands to each listed value. For example, `seed{0,10,15,4,5}` denotes five exact filenames, not a wildcard search.
+- For Ball timestamped files, the tables list the five exact timestamp suffixes for every batch.
+- No unlisted result directory is part of the current plots.
 
-## Ball Lift — Bayesian
+## Ball Lift
 
-| Batch | Folder | NPZ filename |
-|---:|---|---|
-| 250 | `eval_sweep_100_ball_lift/npz/bayesian_batch250/` | `eval_bayesian_batch250_n20_20260624_142708.npz` |
-| 250 | `eval_sweep_100_ball_lift/npz/bayesian_batch250/` | `eval_bayesian_batch250_n20_20260624_142918.npz` |
-| 250 | `eval_sweep_100_ball_lift/npz/bayesian_batch250/` | `eval_bayesian_batch250_n20_20260624_143144.npz` |
-| 250 | `eval_sweep_100_ball_lift/npz/bayesian_batch250/` | `eval_bayesian_batch250_n20_20260624_143355.npz` |
-| 250 | `eval_sweep_100_ball_lift/npz/bayesian_batch250/` | `eval_bayesian_batch250_n20_20260624_143608.npz` |
-| 500 | `eval_sweep_100_ball_lift/npz/bayesian_batch500/` | `eval_bayesian_batch500_n20_20260624_143824.npz` |
-| 500 | `eval_sweep_100_ball_lift/npz/bayesian_batch500/` | `eval_bayesian_batch500_n20_20260624_144036.npz` |
-| 500 | `eval_sweep_100_ball_lift/npz/bayesian_batch500/` | `eval_bayesian_batch500_n20_20260624_144249.npz` |
-| 500 | `eval_sweep_100_ball_lift/npz/bayesian_batch500/` | `eval_bayesian_batch500_n20_20260624_144459.npz` |
-| 500 | `eval_sweep_100_ball_lift/npz/bayesian_batch500/` | `eval_bayesian_batch500_n20_20260624_144717.npz` |
-| 750 | `eval_sweep_100_ball_lift/npz/bayesian_batch750/` | `eval_bayesian_batch750_n20_20260624_144951.npz` |
-| 750 | `eval_sweep_100_ball_lift/npz/bayesian_batch750/` | `eval_bayesian_batch750_n20_20260624_145214.npz` |
-| 750 | `eval_sweep_100_ball_lift/npz/bayesian_batch750/` | `eval_bayesian_batch750_n20_20260624_145430.npz` |
-| 750 | `eval_sweep_100_ball_lift/npz/bayesian_batch750/` | `eval_bayesian_batch750_n20_20260624_145647.npz` |
-| 750 | `eval_sweep_100_ball_lift/npz/bayesian_batch750/` | `eval_bayesian_batch750_n20_20260624_145908.npz` |
-| 1000 | `eval_sweep_100_ball_lift/npz/bayesian_batch1000/` | `eval_bayesian_batch1000_n20_20260624_150136.npz` |
-| 1000 | `eval_sweep_100_ball_lift/npz/bayesian_batch1000/` | `eval_bayesian_batch1000_n20_20260624_150401.npz` |
-| 1000 | `eval_sweep_100_ball_lift/npz/bayesian_batch1000/` | `eval_bayesian_batch1000_n20_20260624_150630.npz` |
-| 1000 | `eval_sweep_100_ball_lift/npz/bayesian_batch1000/` | `eval_bayesian_batch1000_n20_20260624_150908.npz` |
-| 1000 | `eval_sweep_100_ball_lift/npz/bayesian_batch1000/` | `eval_bayesian_batch1000_n20_20260624_151132.npz` |
+### Hand-Tuned
 
-## Ball Lift — PPO
+Folder: `eval_sweep_100_ball_lift_h15_20260923_152226/handtuned_batch{b}/`
 
-| Batch | Folder | NPZ filename |
-|---:|---|---|
-| 250 | `ppo_results/Ball_lift/ppo4951_best_eval/batch250/block0/` | `eval_policy_batch250_n20_20260829_130129.npz` |
-| 250 | `ppo_results/Ball_lift/ppo4951_best_eval/batch250/block1/` | `eval_policy_batch250_n20_20260829_130342.npz` |
-| 250 | `ppo_results/Ball_lift/ppo4951_best_eval/batch250/block2/` | `eval_policy_batch250_n20_20260829_130553.npz` |
-| 250 | `ppo_results/Ball_lift/ppo4951_best_eval/batch250/block3/` | `eval_policy_batch250_n20_20260829_130804.npz` |
-| 250 | `ppo_results/Ball_lift/ppo4951_best_eval/batch250/block4/` | `eval_policy_batch250_n20_20260829_131024.npz` |
-| 500 | `ppo_results/Ball_lift/ppo4951_best_eval/batch500/block0/` | `eval_policy_batch500_n20_20260829_131258.npz` |
-| 500 | `ppo_results/Ball_lift/ppo4951_best_eval/batch500/block1/` | `eval_policy_batch500_n20_20260829_131554.npz` |
-| 500 | `ppo_results/Ball_lift/ppo4951_best_eval/batch500/block2/` | `eval_policy_batch500_n20_20260829_131822.npz` |
-| 500 | `ppo_results/Ball_lift/ppo4951_best_eval/batch500/block3/` | `eval_policy_batch500_n20_20260829_132058.npz` |
-| 500 | `ppo_results/Ball_lift/ppo4951_best_eval/batch500/block4/` | `eval_policy_batch500_n20_20260829_132339.npz` |
-| 750 | `ppo_results/Ball_lift/ppo4951_best_eval/batch750/block0/` | `eval_policy_batch750_n20_20260829_132629.npz` |
-| 750 | `ppo_results/Ball_lift/ppo4951_best_eval/batch750/block1/` | `eval_policy_batch750_n20_20260829_132915.npz` |
-| 750 | `ppo_results/Ball_lift/ppo4951_best_eval/batch750/block2/` | `eval_policy_batch750_n20_20260829_133158.npz` |
-| 750 | `ppo_results/Ball_lift/ppo4951_best_eval/batch750/block3/` | `eval_policy_batch750_n20_20260829_133445.npz` |
-| 750 | `ppo_results/Ball_lift/ppo4951_best_eval/batch750/block4/` | `eval_policy_batch750_n20_20260829_133746.npz` |
-| 1000 | `ppo_results/Ball_lift/ppo4951_best_eval/batch1000/block0/` | `eval_policy_batch1000_n20_20260829_134041.npz` |
-| 1000 | `ppo_results/Ball_lift/ppo4951_best_eval/batch1000/block1/` | `eval_policy_batch1000_n20_20260829_134336.npz` |
-| 1000 | `ppo_results/Ball_lift/ppo4951_best_eval/batch1000/block2/` | `eval_policy_batch1000_n20_20260829_134627.npz` |
-| 1000 | `ppo_results/Ball_lift/ppo4951_best_eval/batch1000/block3/` | `eval_policy_batch1000_n20_20260829_134922.npz` |
-| 1000 | `ppo_results/Ball_lift/ppo4951_best_eval/batch1000/block4/` | `eval_policy_batch1000_n20_20260829_135231.npz` |
+Filename form: `eval_handtuned_batch{b}_n20_{timestamp}.npz`
 
-## Ball Lift — ARS
+| Batch | Exact timestamp suffixes |
+|---:|---|
+| 250 | `20260923_152708`, `20260923_153141`, `20260923_153607`, `20260923_154018`, `20260923_154420` |
+| 500 | `20260923_154935`, `20260923_155526`, `20260923_160030`, `20260923_160552`, `20260923_161113` |
+| 750 | `20260923_161706`, `20260923_162323`, `20260923_162943`, `20260923_163535`, `20260923_164156` |
+| 1000 | `20260923_164532`, `20260923_164923`, `20260923_165321`, `20260923_165643`, `20260923_170059` |
 
-| Batch | Folder | NPZ filename |
-|---:|---|---|
-| 250 | `eval_sweep_100_ball_lift/npz/policy_batch250/` | `eval_policy_batch250_n20_20260624_151343.npz` |
-| 250 | `eval_sweep_100_ball_lift/npz/policy_batch250/` | `eval_policy_batch250_n20_20260624_151600.npz` |
-| 250 | `eval_sweep_100_ball_lift/npz/policy_batch250/` | `eval_policy_batch250_n20_20260624_151819.npz` |
-| 250 | `eval_sweep_100_ball_lift/npz/policy_batch250/` | `eval_policy_batch250_n20_20260624_152035.npz` |
-| 250 | `eval_sweep_100_ball_lift/npz/policy_batch250/` | `eval_policy_batch250_n20_20260624_152246.npz` |
-| 500 | `eval_sweep_100_ball_lift/npz/policy_batch500/` | `eval_policy_batch500_n20_20260624_152516.npz` |
-| 500 | `eval_sweep_100_ball_lift/npz/policy_batch500/` | `eval_policy_batch500_n20_20260624_152741.npz` |
-| 500 | `eval_sweep_100_ball_lift/npz/policy_batch500/` | `eval_policy_batch500_n20_20260624_153001.npz` |
-| 500 | `eval_sweep_100_ball_lift/npz/policy_batch500/` | `eval_policy_batch500_n20_20260624_153239.npz` |
-| 500 | `eval_sweep_100_ball_lift/npz/policy_batch500/` | `eval_policy_batch500_n20_20260624_153515.npz` |
-| 750 | `eval_sweep_100_ball_lift/npz/policy_batch750/` | `eval_policy_batch750_n20_20260624_153801.npz` |
-| 750 | `eval_sweep_100_ball_lift/npz/policy_batch750/` | `eval_policy_batch750_n20_20260624_154037.npz` |
-| 750 | `eval_sweep_100_ball_lift/npz/policy_batch750/` | `eval_policy_batch750_n20_20260624_154340.npz` |
-| 750 | `eval_sweep_100_ball_lift/npz/policy_batch750/` | `eval_policy_batch750_n20_20260624_154617.npz` |
-| 750 | `eval_sweep_100_ball_lift/npz/policy_batch750/` | `eval_policy_batch750_n20_20260624_154855.npz` |
-| 1000 | `eval_sweep_100_ball_lift/npz/policy_batch1000/` | `eval_policy_batch1000_n20_20260624_155136.npz` |
-| 1000 | `eval_sweep_100_ball_lift/npz/policy_batch1000/` | `eval_policy_batch1000_n20_20260624_155421.npz` |
-| 1000 | `eval_sweep_100_ball_lift/npz/policy_batch1000/` | `eval_policy_batch1000_n20_20260624_155713.npz` |
-| 1000 | `eval_sweep_100_ball_lift/npz/policy_batch1000/` | `eval_policy_batch1000_n20_20260624_160005.npz` |
-| 1000 | `eval_sweep_100_ball_lift/npz/policy_batch1000/` | `eval_policy_batch1000_n20_20260624_160251.npz` |
+### Bayesian
 
-## Box Lift — Hand-Tuned
+Folder: `eval_sweep_100_ball_lift_h15_20260923_152226/bayesian_batch{b}/`
 
-| Batch | Folder | NPZ filename |
-|---:|---|---|
-| 250 | `eval_sweep_100_box_lift_3/npz/handtuned_batch250/` | `eval_handtuned_batch250_n20_seed0.npz` |
-| 250 | `eval_sweep_100_box_lift_3/npz/handtuned_batch250/` | `eval_handtuned_batch250_n20_seed10.npz` |
-| 250 | `eval_sweep_100_box_lift_3/npz/handtuned_batch250/` | `eval_handtuned_batch250_n20_seed15.npz` |
-| 250 | `eval_sweep_100_box_lift_3/npz/handtuned_batch250/` | `eval_handtuned_batch250_n20_seed4.npz` |
-| 250 | `eval_sweep_100_box_lift_3/npz/handtuned_batch250/` | `eval_handtuned_batch250_n20_seed5.npz` |
-| 500 | `eval_sweep_100_box_lift_3/npz/handtuned_batch500/` | `eval_handtuned_batch500_n20_seed0.npz` |
-| 500 | `eval_sweep_100_box_lift_3/npz/handtuned_batch500/` | `eval_handtuned_batch500_n20_seed10.npz` |
-| 500 | `eval_sweep_100_box_lift_3/npz/handtuned_batch500/` | `eval_handtuned_batch500_n20_seed15.npz` |
-| 500 | `eval_sweep_100_box_lift_3/npz/handtuned_batch500/` | `eval_handtuned_batch500_n20_seed4.npz` |
-| 500 | `eval_sweep_100_box_lift_3/npz/handtuned_batch500/` | `eval_handtuned_batch500_n20_seed5.npz` |
-| 750 | `eval_sweep_100_box_lift_3/npz/handtuned_batch750/` | `eval_handtuned_batch750_n20_seed0.npz` |
-| 750 | `eval_sweep_100_box_lift_3/npz/handtuned_batch750/` | `eval_handtuned_batch750_n20_seed10.npz` |
-| 750 | `eval_sweep_100_box_lift_3/npz/handtuned_batch750/` | `eval_handtuned_batch750_n20_seed15.npz` |
-| 750 | `eval_sweep_100_box_lift_3/npz/handtuned_batch750/` | `eval_handtuned_batch750_n20_seed4.npz` |
-| 750 | `eval_sweep_100_box_lift_3/npz/handtuned_batch750/` | `eval_handtuned_batch750_n20_seed5.npz` |
-| 1000 | `eval_sweep_100_box_lift_3/npz/handtuned_batch1000/` | `eval_handtuned_batch1000_n20_seed0.npz` |
-| 1000 | `eval_sweep_100_box_lift_3/npz/handtuned_batch1000/` | `eval_handtuned_batch1000_n20_seed10.npz` |
-| 1000 | `eval_sweep_100_box_lift_3/npz/handtuned_batch1000/` | `eval_handtuned_batch1000_n20_seed15.npz` |
-| 1000 | `eval_sweep_100_box_lift_3/npz/handtuned_batch1000/` | `eval_handtuned_batch1000_n20_seed4.npz` |
-| 1000 | `eval_sweep_100_box_lift_3/npz/handtuned_batch1000/` | `eval_handtuned_batch1000_n20_seed5.npz` |
+Filename form: `eval_bayesian_batch{b}_n20_{timestamp}.npz`
 
-## Box Lift — Bayesian
+| Batch | Exact timestamp suffixes |
+|---:|---|
+| 250 | `20260923_170405`, `20260923_170656`, `20260923_171033`, `20260923_171354`, `20260923_171704` |
+| 500 | `20260923_172011`, `20260923_172338`, `20260923_172720`, `20260923_173104`, `20260923_173424` |
+| 750 | `20260923_173755`, `20260923_174122`, `20260923_174457`, `20260923_174846`, `20260923_175214` |
+| 1000 | `20260923_175637`, `20260923_180049`, `20260923_180458`, `20260923_180832`, `20260923_181230` |
 
-| Batch | Folder | NPZ filename |
-|---:|---|---|
-| 250 | `eval_sweep_100_box_lift_3/npz/bayesian_batch250/` | `eval_bayesian_batch250_n20_seed0.npz` |
-| 250 | `eval_sweep_100_box_lift_3/npz/bayesian_batch250/` | `eval_bayesian_batch250_n20_seed10.npz` |
-| 250 | `eval_sweep_100_box_lift_3/npz/bayesian_batch250/` | `eval_bayesian_batch250_n20_seed15.npz` |
-| 250 | `eval_sweep_100_box_lift_3/npz/bayesian_batch250/` | `eval_bayesian_batch250_n20_seed4.npz` |
-| 250 | `eval_sweep_100_box_lift_3/npz/bayesian_batch250/` | `eval_bayesian_batch250_n20_seed5.npz` |
-| 500 | `eval_sweep_100_box_lift_3/npz/bayesian_batch500/` | `eval_bayesian_batch500_n20_seed0.npz` |
-| 500 | `eval_sweep_100_box_lift_3/npz/bayesian_batch500/` | `eval_bayesian_batch500_n20_seed10.npz` |
-| 500 | `eval_sweep_100_box_lift_3/npz/bayesian_batch500/` | `eval_bayesian_batch500_n20_seed15.npz` |
-| 500 | `eval_sweep_100_box_lift_3/npz/bayesian_batch500/` | `eval_bayesian_batch500_n20_seed4.npz` |
-| 500 | `eval_sweep_100_box_lift_3/npz/bayesian_batch500/` | `eval_bayesian_batch500_n20_seed5.npz` |
-| 750 | `eval_sweep_100_box_lift_3/npz/bayesian_batch750/` | `eval_bayesian_batch750_n20_seed0.npz` |
-| 750 | `eval_sweep_100_box_lift_3/npz/bayesian_batch750/` | `eval_bayesian_batch750_n20_seed10.npz` |
-| 750 | `eval_sweep_100_box_lift_3/npz/bayesian_batch750/` | `eval_bayesian_batch750_n20_seed15.npz` |
-| 750 | `eval_sweep_100_box_lift_3/npz/bayesian_batch750/` | `eval_bayesian_batch750_n20_seed4.npz` |
-| 750 | `eval_sweep_100_box_lift_3/npz/bayesian_batch750/` | `eval_bayesian_batch750_n20_seed5.npz` |
-| 1000 | `eval_sweep_100_box_lift_3/npz/bayesian_batch1000/` | `eval_bayesian_batch1000_n20_seed0.npz` |
-| 1000 | `eval_sweep_100_box_lift_3/npz/bayesian_batch1000/` | `eval_bayesian_batch1000_n20_seed10.npz` |
-| 1000 | `eval_sweep_100_box_lift_3/npz/bayesian_batch1000/` | `eval_bayesian_batch1000_n20_seed15.npz` |
-| 1000 | `eval_sweep_100_box_lift_3/npz/bayesian_batch1000/` | `eval_bayesian_batch1000_n20_seed4.npz` |
-| 1000 | `eval_sweep_100_box_lift_3/npz/bayesian_batch1000/` | `eval_bayesian_batch1000_n20_seed5.npz` |
+### PPO 4951 — best evaluation checkpoint
 
-## Box Lift — PPO
+Folder form: `ppo_results/Ball_lift/ppo4951_best_eval/batch{b}/block{block}/`
 
-| Batch | Folder | NPZ filename |
-|---:|---|---|
-| 250 | `ppo_results/Box_lift/ppo5005besteval_batch250/` | `eval_ppo5005besteval_batch250_n20_seed0.npz` |
-| 250 | `ppo_results/Box_lift/ppo5005besteval_batch250/` | `eval_ppo5005besteval_batch250_n20_seed10.npz` |
-| 250 | `ppo_results/Box_lift/ppo5005besteval_batch250/` | `eval_ppo5005besteval_batch250_n20_seed15.npz` |
-| 250 | `ppo_results/Box_lift/ppo5005besteval_batch250/` | `eval_ppo5005besteval_batch250_n20_seed4.npz` |
-| 250 | `ppo_results/Box_lift/ppo5005besteval_batch250/` | `eval_ppo5005besteval_batch250_n20_seed5.npz` |
-| 500 | `ppo_results/Box_lift/ppo5005besteval_batch500/` | `eval_ppo5005besteval_batch500_n20_seed0.npz` |
-| 500 | `ppo_results/Box_lift/ppo5005besteval_batch500/` | `eval_ppo5005besteval_batch500_n20_seed10.npz` |
-| 500 | `ppo_results/Box_lift/ppo5005besteval_batch500/` | `eval_ppo5005besteval_batch500_n20_seed15.npz` |
-| 500 | `ppo_results/Box_lift/ppo5005besteval_batch500/` | `eval_ppo5005besteval_batch500_n20_seed4.npz` |
-| 500 | `ppo_results/Box_lift/ppo5005besteval_batch500/` | `eval_ppo5005besteval_batch500_n20_seed5.npz` |
-| 750 | `ppo_results/Box_lift/ppo5005besteval_batch750/` | `eval_ppo5005besteval_batch750_n20_seed0.npz` |
-| 750 | `ppo_results/Box_lift/ppo5005besteval_batch750/` | `eval_ppo5005besteval_batch750_n20_seed10.npz` |
-| 750 | `ppo_results/Box_lift/ppo5005besteval_batch750/` | `eval_ppo5005besteval_batch750_n20_seed15.npz` |
-| 750 | `ppo_results/Box_lift/ppo5005besteval_batch750/` | `eval_ppo5005besteval_batch750_n20_seed4.npz` |
-| 750 | `ppo_results/Box_lift/ppo5005besteval_batch750/` | `eval_ppo5005besteval_batch750_n20_seed5.npz` |
-| 1000 | `ppo_results/Box_lift/ppo5005besteval_batch1000/` | `eval_ppo5005besteval_batch1000_n20_seed0.npz` |
-| 1000 | `ppo_results/Box_lift/ppo5005besteval_batch1000/` | `eval_ppo5005besteval_batch1000_n20_seed10.npz` |
-| 1000 | `ppo_results/Box_lift/ppo5005besteval_batch1000/` | `eval_ppo5005besteval_batch1000_n20_seed15.npz` |
-| 1000 | `ppo_results/Box_lift/ppo5005besteval_batch1000/` | `eval_ppo5005besteval_batch1000_n20_seed4.npz` |
-| 1000 | `ppo_results/Box_lift/ppo5005besteval_batch1000/` | `eval_ppo5005besteval_batch1000_n20_seed5.npz` |
+Filename form: `eval_policy_batch{b}_n20_{timestamp}.npz`
 
-## Box Lift — ARS
+Each table entry is `block: timestamp` and therefore identifies one exact path.
 
-| Batch | Folder | NPZ filename |
-|---:|---|---|
-| 250 | `eval_sweep_100_box_lift_3/npz/policy_batch250/` | `eval_policy_batch250_n20_seed0.npz` |
-| 250 | `eval_sweep_100_box_lift_3/npz/policy_batch250/` | `eval_policy_batch250_n20_seed10.npz` |
-| 250 | `eval_sweep_100_box_lift_3/npz/policy_batch250/` | `eval_policy_batch250_n20_seed15.npz` |
-| 250 | `eval_sweep_100_box_lift_3/npz/policy_batch250/` | `eval_policy_batch250_n20_seed4.npz` |
-| 250 | `eval_sweep_100_box_lift_3/npz/policy_batch250/` | `eval_policy_batch250_n20_seed5.npz` |
-| 500 | `eval_sweep_100_box_lift_3/npz/policy_batch500/` | `eval_policy_batch500_n20_seed0.npz` |
-| 500 | `eval_sweep_100_box_lift_3/npz/policy_batch500/` | `eval_policy_batch500_n20_seed10.npz` |
-| 500 | `eval_sweep_100_box_lift_3/npz/policy_batch500/` | `eval_policy_batch500_n20_seed15.npz` |
-| 500 | `eval_sweep_100_box_lift_3/npz/policy_batch500/` | `eval_policy_batch500_n20_seed4.npz` |
-| 500 | `eval_sweep_100_box_lift_3/npz/policy_batch500/` | `eval_policy_batch500_n20_seed5.npz` |
-| 750 | `eval_sweep_100_box_lift_3/npz/policy_batch750/` | `eval_policy_batch750_n20_seed0.npz` |
-| 750 | `eval_sweep_100_box_lift_3/npz/policy_batch750/` | `eval_policy_batch750_n20_seed10.npz` |
-| 750 | `eval_sweep_100_box_lift_3/npz/policy_batch750/` | `eval_policy_batch750_n20_seed15.npz` |
-| 750 | `eval_sweep_100_box_lift_3/npz/policy_batch750/` | `eval_policy_batch750_n20_seed4.npz` |
-| 750 | `eval_sweep_100_box_lift_3/npz/policy_batch750/` | `eval_policy_batch750_n20_seed5.npz` |
-| 1000 | `eval_sweep_100_box_lift_3/npz/policy_batch1000/` | `eval_policy_batch1000_n20_seed0.npz` |
-| 1000 | `eval_sweep_100_box_lift_3/npz/policy_batch1000/` | `eval_policy_batch1000_n20_seed10.npz` |
-| 1000 | `eval_sweep_100_box_lift_3/npz/policy_batch1000/` | `eval_policy_batch1000_n20_seed15.npz` |
-| 1000 | `eval_sweep_100_box_lift_3/npz/policy_batch1000/` | `eval_policy_batch1000_n20_seed4.npz` |
-| 1000 | `eval_sweep_100_box_lift_3/npz/policy_batch1000/` | `eval_policy_batch1000_n20_seed5.npz` |
+| Batch | Exact block/timestamp pairs |
+|---:|---|
+| 250 | `0: 20260829_130129`, `1: 20260829_130342`, `2: 20260829_130553`, `3: 20260829_130804`, `4: 20260829_131024` |
+| 500 | `0: 20260829_131258`, `1: 20260829_131554`, `2: 20260829_131822`, `3: 20260829_132058`, `4: 20260829_132339` |
+| 750 | `0: 20260829_132629`, `1: 20260829_132915`, `2: 20260829_133158`, `3: 20260829_133445`, `4: 20260829_133746` |
+| 1000 | `0: 20260829_134041`, `1: 20260829_134336`, `2: 20260829_134627`, `3: 20260829_134922`, `4: 20260829_135231` |
 
-## Tray Push — Hand-Tuned
+The `policy` token in these filenames does not mean ARS; the parent folder selects PPO4951 best-eval.
 
-| Batch | Folder | NPZ filename |
-|---:|---|---|
-| 250 | `eval_sweep_100_tray_push_8/npz/handtuned_batch250/` | `eval_handtuned_batch250_n20_seed114.npz` |
-| 250 | `eval_sweep_100_tray_push_8/npz/handtuned_batch250/` | `eval_handtuned_batch250_n20_seed27.npz` |
-| 250 | `eval_sweep_100_tray_push_8/npz/handtuned_batch250/` | `eval_handtuned_batch250_n20_seed6.npz` |
-| 250 | `eval_sweep_100_tray_push_8/npz/handtuned_batch250/` | `eval_handtuned_batch250_n20_seed77.npz` |
-| 250 | `eval_sweep_100_tray_push_8/npz/handtuned_batch250/` | `eval_handtuned_batch250_n20_seed99.npz` |
-| 500 | `eval_sweep_100_tray_push_8/npz/handtuned_batch500/` | `eval_handtuned_batch500_n20_seed114.npz` |
-| 500 | `eval_sweep_100_tray_push_8/npz/handtuned_batch500/` | `eval_handtuned_batch500_n20_seed27.npz` |
-| 500 | `eval_sweep_100_tray_push_8/npz/handtuned_batch500/` | `eval_handtuned_batch500_n20_seed6.npz` |
-| 500 | `eval_sweep_100_tray_push_8/npz/handtuned_batch500/` | `eval_handtuned_batch500_n20_seed77.npz` |
-| 500 | `eval_sweep_100_tray_push_8/npz/handtuned_batch500/` | `eval_handtuned_batch500_n20_seed99.npz` |
-| 750 | `eval_sweep_100_tray_push_8/npz/handtuned_batch750/` | `eval_handtuned_batch750_n20_seed114.npz` |
-| 750 | `eval_sweep_100_tray_push_8/npz/handtuned_batch750/` | `eval_handtuned_batch750_n20_seed27.npz` |
-| 750 | `eval_sweep_100_tray_push_8/npz/handtuned_batch750/` | `eval_handtuned_batch750_n20_seed6.npz` |
-| 750 | `eval_sweep_100_tray_push_8/npz/handtuned_batch750/` | `eval_handtuned_batch750_n20_seed77.npz` |
-| 750 | `eval_sweep_100_tray_push_8/npz/handtuned_batch750/` | `eval_handtuned_batch750_n20_seed99.npz` |
-| 1000 | `eval_sweep_100_tray_push_8/npz/handtuned_batch1000/` | `eval_handtuned_batch1000_n20_seed114.npz` |
-| 1000 | `eval_sweep_100_tray_push_8/npz/handtuned_batch1000/` | `eval_handtuned_batch1000_n20_seed27.npz` |
-| 1000 | `eval_sweep_100_tray_push_8/npz/handtuned_batch1000/` | `eval_handtuned_batch1000_n20_seed6.npz` |
-| 1000 | `eval_sweep_100_tray_push_8/npz/handtuned_batch1000/` | `eval_handtuned_batch1000_n20_seed77.npz` |
-| 1000 | `eval_sweep_100_tray_push_8/npz/handtuned_batch1000/` | `eval_handtuned_batch1000_n20_seed99.npz` |
+### ARS
 
-## Tray Push — Bayesian
+Folder: `eval_sweep_100_ball_lift_h15_20260923_152226/policy_batch{b}/`
 
-| Batch | Folder | NPZ filename |
-|---:|---|---|
-| 250 | `eval_sweep_100_tray_push_8/npz/bayesian_batch250/` | `eval_bayesian_batch250_n20_seed114.npz` |
-| 250 | `eval_sweep_100_tray_push_8/npz/bayesian_batch250/` | `eval_bayesian_batch250_n20_seed27.npz` |
-| 250 | `eval_sweep_100_tray_push_8/npz/bayesian_batch250/` | `eval_bayesian_batch250_n20_seed6.npz` |
-| 250 | `eval_sweep_100_tray_push_8/npz/bayesian_batch250/` | `eval_bayesian_batch250_n20_seed77.npz` |
-| 250 | `eval_sweep_100_tray_push_8/npz/bayesian_batch250/` | `eval_bayesian_batch250_n20_seed99.npz` |
-| 500 | `eval_sweep_100_tray_push_8/npz/bayesian_batch500/` | `eval_bayesian_batch500_n20_seed114.npz` |
-| 500 | `eval_sweep_100_tray_push_8/npz/bayesian_batch500/` | `eval_bayesian_batch500_n20_seed27.npz` |
-| 500 | `eval_sweep_100_tray_push_8/npz/bayesian_batch500/` | `eval_bayesian_batch500_n20_seed6.npz` |
-| 500 | `eval_sweep_100_tray_push_8/npz/bayesian_batch500/` | `eval_bayesian_batch500_n20_seed77.npz` |
-| 500 | `eval_sweep_100_tray_push_8/npz/bayesian_batch500/` | `eval_bayesian_batch500_n20_seed99.npz` |
-| 750 | `eval_sweep_100_tray_push_8/npz/bayesian_batch750/` | `eval_bayesian_batch750_n20_seed114.npz` |
-| 750 | `eval_sweep_100_tray_push_8/npz/bayesian_batch750/` | `eval_bayesian_batch750_n20_seed27.npz` |
-| 750 | `eval_sweep_100_tray_push_8/npz/bayesian_batch750/` | `eval_bayesian_batch750_n20_seed6.npz` |
-| 750 | `eval_sweep_100_tray_push_8/npz/bayesian_batch750/` | `eval_bayesian_batch750_n20_seed77.npz` |
-| 750 | `eval_sweep_100_tray_push_8/npz/bayesian_batch750/` | `eval_bayesian_batch750_n20_seed99.npz` |
-| 1000 | `eval_sweep_100_tray_push_8/npz/bayesian_batch1000/` | `eval_bayesian_batch1000_n20_seed114.npz` |
-| 1000 | `eval_sweep_100_tray_push_8/npz/bayesian_batch1000/` | `eval_bayesian_batch1000_n20_seed27.npz` |
-| 1000 | `eval_sweep_100_tray_push_8/npz/bayesian_batch1000/` | `eval_bayesian_batch1000_n20_seed6.npz` |
-| 1000 | `eval_sweep_100_tray_push_8/npz/bayesian_batch1000/` | `eval_bayesian_batch1000_n20_seed77.npz` |
-| 1000 | `eval_sweep_100_tray_push_8/npz/bayesian_batch1000/` | `eval_bayesian_batch1000_n20_seed99.npz` |
+Filename form: `eval_policy_batch{b}_n20_{timestamp}.npz`
 
-## Tray Push — PPO
+| Batch | Exact timestamp suffixes |
+|---:|---|
+| 250 | `20260923_181449`, `20260923_181731`, `20260923_182011`, `20260923_182246`, `20260923_182517` |
+| 500 | `20260923_182827`, `20260923_183132`, `20260923_183437`, `20260923_183747`, `20260923_184053` |
+| 750 | `20260923_184415`, `20260923_184730`, `20260923_185049`, `20260923_185413`, `20260923_185730` |
+| 1000 | `20260923_190110`, `20260923_190428`, `20260923_190740`, `20260923_191058`, `20260923_191411` |
 
-| Batch | Folder | NPZ filename |
-|---:|---|---|
-| 250 | `ppo_results/Tray_push/ppo5307_best_val_batch250/` | `eval_ppo5307_best_val_batch250_n20_seed114.npz` |
-| 250 | `ppo_results/Tray_push/ppo5307_best_val_batch250/` | `eval_ppo5307_best_val_batch250_n20_seed27.npz` |
-| 250 | `ppo_results/Tray_push/ppo5307_best_val_batch250/` | `eval_ppo5307_best_val_batch250_n20_seed6.npz` |
-| 250 | `ppo_results/Tray_push/ppo5307_best_val_batch250/` | `eval_ppo5307_best_val_batch250_n20_seed77.npz` |
-| 250 | `ppo_results/Tray_push/ppo5307_best_val_batch250/` | `eval_ppo5307_best_val_batch250_n20_seed99.npz` |
-| 500 | `ppo_results/Tray_push/ppo5307_best_val_batch500/` | `eval_ppo5307_best_val_batch500_n20_seed114.npz` |
-| 500 | `ppo_results/Tray_push/ppo5307_best_val_batch500/` | `eval_ppo5307_best_val_batch500_n20_seed27.npz` |
-| 500 | `ppo_results/Tray_push/ppo5307_best_val_batch500/` | `eval_ppo5307_best_val_batch500_n20_seed6.npz` |
-| 500 | `ppo_results/Tray_push/ppo5307_best_val_batch500/` | `eval_ppo5307_best_val_batch500_n20_seed77.npz` |
-| 500 | `ppo_results/Tray_push/ppo5307_best_val_batch500/` | `eval_ppo5307_best_val_batch500_n20_seed99.npz` |
-| 750 | `ppo_results/Tray_push/ppo5307_best_val_batch750/` | `eval_ppo5307_best_val_batch750_n20_seed114.npz` |
-| 750 | `ppo_results/Tray_push/ppo5307_best_val_batch750/` | `eval_ppo5307_best_val_batch750_n20_seed27.npz` |
-| 750 | `ppo_results/Tray_push/ppo5307_best_val_batch750/` | `eval_ppo5307_best_val_batch750_n20_seed6.npz` |
-| 750 | `ppo_results/Tray_push/ppo5307_best_val_batch750/` | `eval_ppo5307_best_val_batch750_n20_seed77.npz` |
-| 750 | `ppo_results/Tray_push/ppo5307_best_val_batch750/` | `eval_ppo5307_best_val_batch750_n20_seed99.npz` |
-| 1000 | `ppo_results/Tray_push/ppo5307_best_val_batch1000/` | `eval_ppo5307_best_val_batch1000_n20_seed114.npz` |
-| 1000 | `ppo_results/Tray_push/ppo5307_best_val_batch1000/` | `eval_ppo5307_best_val_batch1000_n20_seed27.npz` |
-| 1000 | `ppo_results/Tray_push/ppo5307_best_val_batch1000/` | `eval_ppo5307_best_val_batch1000_n20_seed6.npz` |
-| 1000 | `ppo_results/Tray_push/ppo5307_best_val_batch1000/` | `eval_ppo5307_best_val_batch1000_n20_seed77.npz` |
-| 1000 | `ppo_results/Tray_push/ppo5307_best_val_batch1000/` | `eval_ppo5307_best_val_batch1000_n20_seed99.npz` |
+## Box Lift
 
-## Tray Push — ARS
+For every Box row below, `{s}` expands to exactly `0`, `10`, `15`, `4`, and `5`. Each row therefore identifies 5 files per batch and 20 files total.
 
-| Batch | Folder | NPZ filename |
-|---:|---|---|
-| 250 | `eval_sweep_100_tray_push_8/npz/policy_batch250/` | `eval_policy_batch250_n20_seed114.npz` |
-| 250 | `eval_sweep_100_tray_push_8/npz/policy_batch250/` | `eval_policy_batch250_n20_seed27.npz` |
-| 250 | `eval_sweep_100_tray_push_8/npz/policy_batch250/` | `eval_policy_batch250_n20_seed6.npz` |
-| 250 | `eval_sweep_100_tray_push_8/npz/policy_batch250/` | `eval_policy_batch250_n20_seed77.npz` |
-| 250 | `eval_sweep_100_tray_push_8/npz/policy_batch250/` | `eval_policy_batch250_n20_seed99.npz` |
-| 500 | `eval_sweep_100_tray_push_8/npz/policy_batch500/` | `eval_policy_batch500_n20_seed114.npz` |
-| 500 | `eval_sweep_100_tray_push_8/npz/policy_batch500/` | `eval_policy_batch500_n20_seed27.npz` |
-| 500 | `eval_sweep_100_tray_push_8/npz/policy_batch500/` | `eval_policy_batch500_n20_seed6.npz` |
-| 500 | `eval_sweep_100_tray_push_8/npz/policy_batch500/` | `eval_policy_batch500_n20_seed77.npz` |
-| 500 | `eval_sweep_100_tray_push_8/npz/policy_batch500/` | `eval_policy_batch500_n20_seed99.npz` |
-| 750 | `eval_sweep_100_tray_push_8/npz/policy_batch750/` | `eval_policy_batch750_n20_seed114.npz` |
-| 750 | `eval_sweep_100_tray_push_8/npz/policy_batch750/` | `eval_policy_batch750_n20_seed27.npz` |
-| 750 | `eval_sweep_100_tray_push_8/npz/policy_batch750/` | `eval_policy_batch750_n20_seed6.npz` |
-| 750 | `eval_sweep_100_tray_push_8/npz/policy_batch750/` | `eval_policy_batch750_n20_seed77.npz` |
-| 750 | `eval_sweep_100_tray_push_8/npz/policy_batch750/` | `eval_policy_batch750_n20_seed99.npz` |
-| 1000 | `eval_sweep_100_tray_push_8/npz/policy_batch1000/` | `eval_policy_batch1000_n20_seed114.npz` |
-| 1000 | `eval_sweep_100_tray_push_8/npz/policy_batch1000/` | `eval_policy_batch1000_n20_seed27.npz` |
-| 1000 | `eval_sweep_100_tray_push_8/npz/policy_batch1000/` | `eval_policy_batch1000_n20_seed6.npz` |
-| 1000 | `eval_sweep_100_tray_push_8/npz/policy_batch1000/` | `eval_policy_batch1000_n20_seed77.npz` |
-| 1000 | `eval_sweep_100_tray_push_8/npz/policy_batch1000/` | `eval_policy_batch1000_n20_seed99.npz` |
+| Method | Exact folder template | Exact filename template |
+|---|---|---|
+| Hand-Tuned, matched | `eval_box_lift_matched_20260924_105842/handtuned_batch{b}/` | `eval_handtuned_batch{b}_n20_seed{s}.npz` |
+| Bayesian, earlier sweep | `eval_sweep_100_box_lift_3/npz/bayesian_batch{b}/` | `eval_bayesian_batch{b}_n20_seed{s}.npz` |
+| PPO 5005, best eval, matched | `eval_box_lift_matched_20260923_205507/npz/ppo5005besteval_batch{b}/` | `eval_ppo5005besteval_batch{b}_n20_seed{s}.npz` |
+| ARS 4218, matched | `eval_box_lift_matched_20260923_205507/npz/ars4218_batch{b}/` | `eval_ars4218_batch{b}_n20_seed{s}.npz` |
 
-Total: **240 NPZ files** across 12 task–method combinations.
+The notebook does not use the old Box Hand-Tuned/ARS files in `eval_sweep_100_box_lift_3/npz/`, the PPO files in `ppo_results/Box_lift/`, or the matched `ppo5005best` training-checkpoint folders.
 
+## Tray Push
+
+For every Tray row below, `{s}` expands to exactly `114`, `27`, `6`, `77`, and `99`. Each row therefore identifies 5 files per batch and 20 files total.
+
+| Method | Exact folder template | Exact filename template |
+|---|---|---|
+| Hand-Tuned | `eval_sweep_100_tray_push_8/npz/handtuned_batch{b}/` | `eval_handtuned_batch{b}_n20_seed{s}.npz` |
+| Bayesian | `eval_sweep_100_tray_push_8/npz/bayesian_batch{b}/` | `eval_bayesian_batch{b}_n20_seed{s}.npz` |
+| PPO 5307, best validation | `ppo_results/Tray_push/ppo5307_best_val_batch{b}/` | `eval_ppo5307_best_val_batch{b}_n20_seed{s}.npz` |
+| ARS | `eval_sweep_100_tray_push_8/npz/policy_batch{b}/` | `eval_policy_batch{b}_n20_seed{s}.npz` |
+
+The other `eval_sweep_100_tray_push_*` directories and PPO5306/PPO5307 training-checkpoint variants are not inputs to the current plots.
+
+## Coverage totals
+
+| Task | Hand-Tuned | Bayesian | PPO | ARS | Task total |
+|---|---:|---:|---:|---:|---:|
+| Ball Lift | 20 | 20 | 20 | 20 | 80 |
+| Box Lift | 20 | 20 | 20 | 20 | 80 |
+| Tray Push | 20 | 20 | 20 | 20 | 80 |
+| **Total** | **60** | **60** | **60** | **60** | **240** |
+
+See [BENCHMARK_DISCREPANCIES.md](BENCHMARK_DISCREPANCIES.md) for metric definitions, resolved issues, and remaining comparability limitations.

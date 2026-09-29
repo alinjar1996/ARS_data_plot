@@ -17,3 +17,6 @@ venv/
 # OS
 .DS_Store
 *.log
+
+# Local-only box-lift evidence archive
+/box_lift_penetration_snapshots/archive/

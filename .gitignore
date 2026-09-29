@@ -23,3 +23,6 @@ venv/
 
 # Local-only tray-push audit and supplementary evidence
 /tray_push_penetration_snapshots/archive/
+
+# Local-only ball-lift audit and supplementary evidence
+/ball_lift_penetration_snapshots/archive/

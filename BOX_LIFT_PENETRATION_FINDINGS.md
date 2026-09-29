@@ -61,24 +61,31 @@ Not all box–table overlap is initialization: the top three all-episode maxima 
 
 Robot–table depth exceeds 5 mm in 18/1,200 episodes (1.5%), including 2/305 successful episodes (0.7%). Maximum depth is 17.60 mm overall and 8.83 mm among successful episodes. These values are smaller than robot–box maxima, but smaller overlap does not establish physical acceptability against a rigid table.
 
+## Robot self-contact and remaining categories
+
+The reconstructed audit also contains robot–robot penetration: 354/1,200 episodes have a positive depth, including 5/305 successful episodes. The three worst successful episodes reach **3.984, 3.290, and 3.102 mm**, all Bayesian batch 250, seed 15, episodes 16, 18, and 13 respectively. Their worst contact pair is `robot_01 / robot_103`, at playback times 4.0, 4.1, and 4.8 s. These are contact distances between robot collision geoms, not robot–box contacts.
+
+The audit's `other` category contains no negative contact distances in any saved state. Thus the combined successful-case figure covers all four categories with positive reconstructed depths. This does not establish absence of intersection for disabled or unmodeled collision pairs.
+
 ## Selected visual evidence
 
-Only two figures are retained for Git (approximately 0.83 MB combined):
+Only two figures are retained for Git (approximately 1.27 MB combined):
 
 1. [Maximum-penetration overview](box_lift_penetration_snapshots/maximum_penetrations_overview.jpg): six labeled panels comparing all-episode and successful-episode maxima for robot–box, box–table, and robot–table contacts. It includes late box–table overlap and distinguishes it from initial settling.
-2. [Top three successful robot–box episodes](box_lift_penetration_snapshots/box_robot_successful_top3.png): 55.60, 52.88, and 51.65 mm. These ARS/PPO examples demonstrate that substantial overlap is not restricted to failed episodes; they are extreme examples, not typical successful episodes.
+2. [Top three successful episodes per contact category](box_lift_penetration_snapshots/successful_worst_cases_top3.jpg): twelve panels covering robot–box, box–table, robot–table, and robot–robot. Each row ranks three distinct successful episodes by episode-maximum depth. The box–table row is explicitly labeled initial settling. These are extreme examples, not typical successful episodes; maxima need not occur at task completion.
 
-The full top-three numerical results remain below without duplicating their figures. Each set contains distinct episodes, ranked by episode maximum; successful-only and all-episode sets may overlap.
+The top-three numerical results are summarized below without separate per-category figures. Each set contains distinct episodes, ranked by episode maximum; successful-only and all-episode sets may overlap.
 
 | Contact | All episodes: top three depths (mm) | Successful episodes: top three depths (mm) |
 |---|---|---|
 | Robot–box | 75.97, 73.91, 73.29 | 55.60, 52.88, 51.65 |
 | Box–table | 86.21, 58.49, 54.46 | 24.69, 24.69, 24.69 |
 | Robot–table | 17.60, 12.01, 9.48 | 8.83, 5.97, 3.43 |
+| Robot–robot (self-contact) | 36.91, 34.50, 32.54 | 3.98, 3.29, 3.10 |
 
 The successful box–table examples are tied initialization cases; three representative episodes were selected using a deterministic tie-break, not three uniquely larger events.
 
-See the [selected-evidence index](box_lift_penetration_snapshots/README.md) for panel identities, timestamps, and local video references. Images are extracted from the original videos, not synthesized; only headers were added. Contact regions may be occluded by the camera. The complete original extraction, including raw frames, full top-three sets, and JSON metadata, is preserved in `box_lift_penetration_snapshots/archive/`, which is excluded from Git. Videos are also local data, not included in Git.
+See the [selected-evidence index](box_lift_penetration_snapshots/README.md) for panel identities, timestamps, and local video references. Images are extracted from the original videos, not synthesized; labels were added outside the source frames, with JPEG compression. All twelve selected depths were rechecked against the saved configurations. Contact regions may be occluded by the camera. The complete original extraction, including raw frames, full top-three sets, and JSON metadata, is preserved in `box_lift_penetration_snapshots/archive/`, which is excluded from Git. Videos are also local data, not included in Git.
 
 Video timestamps are playback times; episode and frame indices are zero-based. Saved pre-step state `s` corresponds to video frame `s−1`, because frames were recorded after simulation steps.
 
@@ -90,4 +97,4 @@ The current results should therefore be described as successful task outcomes **
 
 A softer box or compliant contact surface is a hypothesis to validate, not an established fix. In particular, the approximately 52–56 mm contact depths in the most extreme successful robot–box episodes cannot be translated directly into a required foam thickness or material stiffness. Physical validation would require force–deformation behavior, contact geometry, and grasp stability to be checked with a matching model or measurements.
 
-This summary adds documentation only; it does not change the notebook, simulation code, models, or benchmark data.
+This update changes documentation and selected evidence figures only; it does not change the notebook, simulation code, models, or benchmark data.

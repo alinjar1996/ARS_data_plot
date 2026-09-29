@@ -2,9 +2,9 @@
 
 This manifest covers [benchmark_stat_batch.ipynb](benchmark_stat_batch.ipynb) (batches 250, 500, 750, 1000) and [benchmark_stat_batch_sm.ipynb](benchmark_stat_batch_sm.ipynb) (batches 50, 150, 250). Paths are relative to the directory containing the notebooks.
 
-The original large-batch inventory below was verified on 2026-09-24; its expansion notation and exclusions apply to `benchmark_stat_batch.ipynb`. The [small-batch inventory](#small-batches-50-150-and-250) was verified on 2026-09-29.
+The large-batch inventory below was verified on 2026-09-29; its expansion notation and exclusions apply to `benchmark_stat_batch.ipynb`. The [small-batch inventory](#small-batches-50-150-and-250) was verified on 2026-09-29.
 
-The large-batch notebook aggregates **240 NPZ files**: 12 task–method combinations × 4 batches × 5 files. Every listed file exists and contains 20 saved episodes. The method order is Hand-Tuned, Bayesian, PPO, ARS.
+The large-batch notebook aggregates **300 NPZ files**: 15 task–series combinations × 4 batches × 5 files. Every listed file exists and contains 20 saved episodes. The series order is Hand-Tuned, Bayesian, PPO (best train), PPO (best val), ARS. Both PPO series are evaluation rollouts; the labels identify how each checkpoint was selected.
 
 ## Expansion notation
 
@@ -40,6 +40,21 @@ Filename form: `eval_bayesian_batch{b}_n20_{timestamp}.npz`
 | 500 | `20260923_172011`, `20260923_172338`, `20260923_172720`, `20260923_173104`, `20260923_173424` |
 | 750 | `20260923_173755`, `20260923_174122`, `20260923_174457`, `20260923_174846`, `20260923_175214` |
 | 1000 | `20260923_175637`, `20260923_180049`, `20260923_180458`, `20260923_180832`, `20260923_181230` |
+
+### PPO 4951 — best training checkpoint
+
+Folder form: `ppo_results/Ball_lift/ppo4951_best_training/batch{b}/block{block}/`
+
+Filename form: `eval_policy_batch{b}_n20_{timestamp}.npz`
+
+Each entry identifies an exact `block: timestamp` pair.
+
+| Batch | Exact block/timestamp pairs |
+|---:|---|
+| 250 | `0: 20260829_120727`, `1: 20260829_120939`, `2: 20260829_121150`, `3: 20260829_121406`, `4: 20260829_121626` |
+| 500 | `0: 20260829_121900`, `1: 20260829_122139`, `2: 20260829_122409`, `3: 20260829_122700`, `4: 20260829_122939` |
+| 750 | `0: 20260829_123229`, `1: 20260829_123536`, `2: 20260829_123821`, `3: 20260829_124125`, `4: 20260829_124426` |
+| 1000 | `0: 20260829_124721`, `1: 20260829_125021`, `2: 20260829_125312`, `3: 20260829_125607`, `4: 20260829_125918` |
 
 ### PPO 4951 — best evaluation checkpoint
 
@@ -79,10 +94,11 @@ For every Box row below, `{s}` expands to exactly `0`, `10`, `15`, `4`, and `5`.
 |---|---|---|
 | Hand-Tuned, matched | `eval_box_lift_matched_20260924_105842/handtuned_batch{b}/` | `eval_handtuned_batch{b}_n20_seed{s}.npz` |
 | Bayesian, earlier sweep | `eval_sweep_100_box_lift_3/npz/bayesian_batch{b}/` | `eval_bayesian_batch{b}_n20_seed{s}.npz` |
+| PPO 5005, best train, matched | `eval_box_lift_matched_20260923_205507/npz/ppo5005best_batch{b}/` | `eval_ppo5005best_batch{b}_n20_seed{s}.npz` |
 | PPO 5005, best eval, matched | `eval_box_lift_matched_20260923_205507/npz/ppo5005besteval_batch{b}/` | `eval_ppo5005besteval_batch{b}_n20_seed{s}.npz` |
 | ARS 4218, matched | `eval_box_lift_matched_20260923_205507/npz/ars4218_batch{b}/` | `eval_ars4218_batch{b}_n20_seed{s}.npz` |
 
-The notebook does not use the old Box Hand-Tuned/ARS files in `eval_sweep_100_box_lift_3/npz/`, the PPO files in `ppo_results/Box_lift/`, or the matched `ppo5005best` training-checkpoint folders.
+The notebook does not use the old Box Hand-Tuned/ARS files in `eval_sweep_100_box_lift_3/npz/` or the PPO files in `ppo_results/Box_lift/`.
 
 ## Tray Push
 
@@ -92,19 +108,20 @@ For every Tray row below, `{s}` expands to exactly `114`, `27`, `6`, `77`, and `
 |---|---|---|
 | Hand-Tuned | `eval_sweep_100_tray_push_8/npz/handtuned_batch{b}/` | `eval_handtuned_batch{b}_n20_seed{s}.npz` |
 | Bayesian | `eval_sweep_100_tray_push_8/npz/bayesian_batch{b}/` | `eval_bayesian_batch{b}_n20_seed{s}.npz` |
+| PPO 5307, best train | `ppo_results/Tray_push/ppo5307_best_train_batch{b}/` | `eval_ppo5307_best_train_batch{b}_n20_seed{s}.npz` |
 | PPO 5307, best validation | `ppo_results/Tray_push/ppo5307_best_val_batch{b}/` | `eval_ppo5307_best_val_batch{b}_n20_seed{s}.npz` |
 | ARS | `eval_sweep_100_tray_push_8/npz/policy_batch{b}/` | `eval_policy_batch{b}_n20_seed{s}.npz` |
 
-The other `eval_sweep_100_tray_push_*` directories and PPO5306/PPO5307 training-checkpoint variants are not inputs to the current plots.
+The other `eval_sweep_100_tray_push_*` directories and PPO5306 variants are not inputs to the current plots.
 
 ## Coverage totals
 
-| Task | Hand-Tuned | Bayesian | PPO | ARS | Task total |
-|---|---:|---:|---:|---:|---:|
-| Ball Lift | 20 | 20 | 20 | 20 | 80 |
-| Box Lift | 20 | 20 | 20 | 20 | 80 |
-| Tray Push | 20 | 20 | 20 | 20 | 80 |
-| **Total** | **60** | **60** | **60** | **60** | **240** |
+| Task | Hand-Tuned | Bayesian | PPO (best train) | PPO (best val) | ARS | Task total |
+|---|---:|---:|---:|---:|---:|---:|
+| Ball Lift | 20 | 20 | 20 | 20 | 20 | 100 |
+| Box Lift | 20 | 20 | 20 | 20 | 20 | 100 |
+| Tray Push | 20 | 20 | 20 | 20 | 20 | 100 |
+| **Total** | **60** | **60** | **60** | **60** | **60** | **300** |
 
 ## Small batches: 50, 150, and 250
 

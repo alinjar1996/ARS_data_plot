@@ -1,8 +1,10 @@
 # NPZ files used by the benchmark
 
-Verified: 2026-09-24. This manifest is the exact expansion of the discovery patterns in [benchmark_stat_batch.ipynb](benchmark_stat_batch.ipynb). Paths are relative to the directory containing the notebook.
+This manifest covers [benchmark_stat_batch.ipynb](benchmark_stat_batch.ipynb) (batches 250, 500, 750, 1000) and [benchmark_stat_batch_sm.ipynb](benchmark_stat_batch_sm.ipynb) (batches 50, 150, 250). Paths are relative to the directory containing the notebooks.
 
-The notebook aggregates **240 NPZ files**: 12 task–method combinations × 4 batches × 5 files. Every listed file exists and contains 20 saved episodes. The method order is Hand-Tuned, Bayesian, PPO, ARS.
+The original large-batch inventory below was verified on 2026-09-24; its expansion notation and exclusions apply to `benchmark_stat_batch.ipynb`. The [small-batch inventory](#small-batches-50-150-and-250) was verified on 2026-09-29.
+
+The large-batch notebook aggregates **240 NPZ files**: 12 task–method combinations × 4 batches × 5 files. Every listed file exists and contains 20 saved episodes. The method order is Hand-Tuned, Bayesian, PPO, ARS.
 
 ## Expansion notation
 
@@ -103,5 +105,80 @@ The other `eval_sweep_100_tray_push_*` directories and PPO5306/PPO5307 training-
 | Box Lift | 20 | 20 | 20 | 20 | 80 |
 | Tray Push | 20 | 20 | 20 | 20 | 80 |
 | **Total** | **60** | **60** | **60** | **60** | **240** |
+
+## Small batches: 50, 150, and 250
+
+Verified: 2026-09-29 against the `SOURCE_PATTERNS` in [benchmark_stat_batch_sm.ipynb](benchmark_stat_batch_sm.ipynb). This notebook aggregates **180 NPZ files**: 3 tasks × 4 methods × 3 batches × 5 files. Every file exists and contains 20 saved episodes, giving 100 episodes per task/method/batch and 3,600 episode records overall.
+
+**Within this section only**, `{b}` expands to exactly `50`, `150`, and `250`, unless a row explicitly restricts the batches. These inputs are separate from the large-batch inventory above; a shared batch size does not imply the same input files.
+
+### Small-batch Ball Lift
+
+For batches **50 and 150**, the common root is:
+
+`eval_sweep_100_ball_lift_h15_20260924_140128/npz/`
+
+Append the folder and filename forms below to that root.
+
+| Method | Folder | Filename form |
+|---|---|---|
+| Hand-Tuned | `handtuned_batch{b}/` | `eval_handtuned_batch{b}_n20_{timestamp}.npz` |
+| Bayesian | `bayesian_batch{b}/` | `eval_bayesian_batch{b}_n20_{timestamp}.npz` |
+| PPO | `ppo_batch{b}/` | `eval_policy_batch{b}_n20_{timestamp}.npz` |
+| ARS | `policy_batch{b}/` | `eval_policy_batch{b}_n20_{timestamp}.npz` |
+
+| Method | Batch | Exact timestamp suffixes |
+|---|---:|---|
+| Hand-Tuned | 50 | `20260924_140614`, `20260924_141058`, `20260924_141544`, `20260924_142032`, `20260924_142516` |
+| Hand-Tuned | 150 | `20260924_143034`, `20260924_143554`, `20260924_144112`, `20260924_144630`, `20260924_145148` |
+| Bayesian | 50 | `20260924_145634`, `20260924_150107`, `20260924_150604`, `20260924_151105`, `20260924_151605` |
+| Bayesian | 150 | `20260924_152013`, `20260924_152404`, `20260924_152825`, `20260924_153235`, `20260924_153619` |
+| PPO | 50 | `20260924_161001`, `20260924_161300`, `20260924_161605`, `20260924_161906`, `20260924_162208` |
+| PPO | 150 | `20260924_162507`, `20260924_162801`, `20260924_163043`, `20260924_163333`, `20260924_163641` |
+| ARS | 50 | `20260924_153917`, `20260924_154226`, `20260924_154530`, `20260924_154826`, `20260924_155129` |
+| ARS | 150 | `20260924_155426`, `20260924_155728`, `20260924_160034`, `20260924_160343`, `20260924_160645` |
+
+For batch **250**, all four methods reuse the exact batch-250 files listed in the [Ball Lift inventory above](#ball-lift): Hand-Tuned, Bayesian, and ARS use `eval_sweep_100_ball_lift_h15_20260923_152226/`; PPO uses `ppo_results/Ball_lift/ppo4951_best_eval/batch250/block{block}/` and the five block/timestamp pairs listed above. The copied batch-250 files in the September 24 Ball run are excluded.
+
+For batches 50/150, both PPO and ARS filenames contain `policy`; their parent folders (`ppo_batch{b}` versus `policy_batch{b}`) distinguish the methods.
+
+### Small-batch Box Lift
+
+Here `{s}` expands to exactly `0`, `10`, `15`, `4`, and `5`. Each row identifies five files per batch, or 15 files across batches 50/150/250.
+
+| Method | Exact folder template | Exact filename template |
+|---|---|---|
+| Hand-Tuned | `eval_box_lift_all_methods_b50_150_250_20260924_190610/npz/handtuned_batch{b}/` | `eval_handtuned_batch{b}_n20_seed{s}.npz` |
+| Bayesian 5001 | `eval_box_lift_bayesian5001_b50_150_250_20260926_092000/npz/bayesian5001_batch{b}/` | `eval_bayesian5001_batch{b}_n20_seed{s}.npz` |
+| PPO 5005, best eval | `eval_box_lift_all_methods_b50_150_250_20260924_190610/npz/ppo5005besteval_batch{b}/` | `eval_ppo5005besteval_batch{b}_n20_seed{s}.npz` |
+| ARS 4218 | `eval_box_lift_all_methods_b50_150_250_20260924_190610/npz/ars4218_batch{b}/` | `eval_ars4218_batch{b}_n20_seed{s}.npz` |
+
+Bayesian uses the September 26 run for all three batches. The older `bayesian_batch{b}` directories in the September 24 all-methods run are excluded.
+
+### Small-batch Tray Push
+
+All methods use this exact nested root:
+
+`eval_sweep_100_tray_push_common_jit_randomized_xy001_yaw2_b50_150_250-20260925T081018Z-1-001/eval_sweep_100_tray_push_common_jit_randomized_xy001_yaw2_b50_150_250/npz/`
+
+Append the folder and filename forms below to that root. Here `{s}` expands to exactly `114`, `27`, `6`, `77`, and `99`. Each row identifies five files per batch, or 15 files across batches 50/150/250.
+
+| Method | Folder | Exact filename template |
+|---|---|---|
+| Hand-Tuned | `handtuned_batch{b}/` | `eval_handtuned_batch{b}_n20_seed{s}.npz` |
+| Bayesian | `bayesian_batch{b}/` | `eval_bayesian_batch{b}_n20_seed{s}.npz` |
+| PPO 5307, best validation | `ppo5307_best_val_batch{b}/` | `eval_ppo5307_best_val_batch{b}_n20_seed{s}.npz` |
+| ARS 4124 | `ars4124_batch{b}/` | `eval_ars4124_batch{b}_n20_seed{s}.npz` |
+
+### Small-batch coverage totals
+
+| Task | Hand-Tuned | Bayesian | PPO | ARS | Task total |
+|---|---:|---:|---:|---:|---:|
+| Ball Lift | 15 | 15 | 15 | 15 | 60 |
+| Box Lift | 15 | 15 | 15 | 15 | 60 |
+| Tray Push | 15 | 15 | 15 | 15 | 60 |
+| **Total** | **45** | **45** | **45** | **45** | **180** |
+
+These totals count files, not the subset of episodes eligible for each metric. Success rate uses all 100 episodes per group; task time uses successful episodes after excluding episode 0 in each file; computation time uses episodes with valid timings after excluding their first MPC step. Run `./check_benchmark_data.sh` or the final audit cell in the small-batch notebook to check coverage and metric inclusion counts.
 
 See [BENCHMARK_DISCREPANCIES.md](BENCHMARK_DISCREPANCIES.md) for metric definitions, resolved issues, and remaining comparability limitations.

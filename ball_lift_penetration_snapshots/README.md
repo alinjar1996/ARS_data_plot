@@ -1,5 +1,7 @@
 # Ball-lift successful worst-case snapshots
 
+**Historical dataset:** This penetration audit and its snapshots cover the September 23/24 inputs (plus the earlier PPO4951 best-evaluation batch-250 files), not the September 29 retrained-Bayesian sweep selected in the small-batch notebook on 2026-09-30. These findings have not been recomputed for the new runs.
+
 [Open combined nine-panel figure](successful_worst_cases_top3.jpg)
 
 [Full findings and video-coverage report](../BALL_LIFT_PENETRATION_FINDINGS.md)

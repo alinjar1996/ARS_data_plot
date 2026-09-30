@@ -1,5 +1,7 @@
 # Ball Lift: contact-penetration, video coverage, and successful worst cases
 
+**Historical dataset:** This penetration audit and its snapshots cover the September 23/24 inputs (plus the earlier PPO4951 best-evaluation batch-250 files), not the September 29 retrained-Bayesian sweep selected in the small-batch notebook on 2026-09-30. These findings have not been recomputed for the new runs.
+
 Date: 2026-09-29
 
 ## Summary
@@ -14,7 +16,7 @@ The largest robot–ball depth is 54.84 mm, in a successful ARS episode. Ball–
 
 ## Scope and measurement
 
-- Inputs: the Ball Lift `SOURCE_PATTERNS` in [benchmark_stat_batch_sm.ipynb](benchmark_stat_batch_sm.ipynb); four methods, batches 50/150/250, five seed blocks per method/batch, 20 episodes per file.
+- Inputs: the Ball Lift `SOURCE_PATTERNS` as selected on 2026-09-29 in [benchmark_stat_batch_sm.ipynb](benchmark_stat_batch_sm.ipynb); four methods, batches 50/150/250, five seed blocks per method/batch, 20 episodes per file.
 - Batches 50/150: `eval_sweep_100_ball_lift_h15_20260924_140128/npz/`.
 - Batch 250, Hand-Tuned/Bayesian/ARS: `eval_sweep_100_ball_lift_h15_20260923_152226/`.
 - Batch 250, PPO: `ppo_results/Ball_lift/ppo4951_best_eval/batch250/block*/`.

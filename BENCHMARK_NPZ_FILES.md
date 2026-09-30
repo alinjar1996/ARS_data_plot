@@ -2,7 +2,7 @@
 
 This manifest covers [benchmark_stat_batch.ipynb](benchmark_stat_batch.ipynb) (batches 250, 500, 750, 1000) and [benchmark_stat_batch_sm.ipynb](benchmark_stat_batch_sm.ipynb) (batches 50, 150, 250). Paths are relative to the directory containing the notebooks.
 
-The large-batch inventory below was verified on 2026-09-29; its expansion notation and exclusions apply to `benchmark_stat_batch.ipynb`. The [small-batch inventory](#small-batches-50-150-and-250) was verified on 2026-09-29.
+The large-batch inventory below was verified on 2026-09-29; its expansion notation and exclusions apply to `benchmark_stat_batch.ipynb`. The [small-batch inventory](#small-batches-50-150-and-250) was updated on 2026-09-30.
 
 The large-batch notebook aggregates **300 NPZ files**: 15 task–series combinations × 4 batches × 5 files. Every listed file exists and contains 20 saved episodes. The series order is Hand-Tuned, Bayesian, PPO (best train), PPO (best val), ARS. Both PPO series are evaluation rollouts; the labels identify how each checkpoint was selected.
 
@@ -125,39 +125,43 @@ The other `eval_sweep_100_tray_push_*` directories and PPO5306 variants are not 
 
 ## Small batches: 50, 150, and 250
 
-Verified: 2026-09-29 against the `SOURCE_PATTERNS` in [benchmark_stat_batch_sm.ipynb](benchmark_stat_batch_sm.ipynb). This notebook aggregates **180 NPZ files**: 3 tasks × 4 methods × 3 batches × 5 files. Every file exists and contains 20 saved episodes, giving 100 episodes per task/method/batch and 3,600 episode records overall.
+Verified: 2026-09-30 against the `SOURCE_PATTERNS` in [benchmark_stat_batch_sm.ipynb](benchmark_stat_batch_sm.ipynb). This notebook aggregates **180 NPZ files**: 3 tasks × 4 methods × 3 batches × 5 files. Every file exists and contains 20 saved episodes, giving 100 episodes per task/method/batch and 3,600 episode records overall.
 
 **Within this section only**, `{b}` expands to exactly `50`, `150`, and `250`, unless a row explicitly restricts the batches. These inputs are separate from the large-batch inventory above; a shared batch size does not imply the same input files.
 
 ### Small-batch Ball Lift
 
-For batches **50 and 150**, the common root is:
+Updated 2026-09-30. All four plotted methods at batches **50, 150, and 250** use this root:
 
-`eval_sweep_100_ball_lift_h15_20260924_140128/npz/`
+`eval_sweep_100_ball_lift_bayes_retrained_20260929_191418/npz/`
 
-Append the folder and filename forms below to that root.
+PPO uses **PPO4951 best-training**, not best-evaluation; ARS uses **ARS3950**. The checkpoint label refers to selection during training; these NPZs contain evaluation episodes. Each folder contains five complete 20-episode files, with evaluation seeds 0–4 (100 episodes per method/batch).
 
 | Method | Folder | Filename form |
 |---|---|---|
-| Hand-Tuned | `handtuned_batch{b}/` | `eval_handtuned_batch{b}_n20_{timestamp}.npz` |
-| Bayesian | `bayesian_batch{b}/` | `eval_bayesian_batch{b}_n20_{timestamp}.npz` |
-| PPO | `ppo_batch{b}/` | `eval_policy_batch{b}_n20_{timestamp}.npz` |
-| ARS | `policy_batch{b}/` | `eval_policy_batch{b}_n20_{timestamp}.npz` |
+| Hand-Tuned | `handtuned_batch{b}/` | `eval_handtuned_batch{b}_n20_{suffix}.npz` |
+| Bayesian, retrained | `bayesian_batch{b}/` | `eval_bayesian_batch{b}_n20_{suffix}.npz` |
+| PPO 4951, best train | `ppo_best_train_batch{b}/` | `eval_policy_batch{b}_n20_{suffix}.npz` |
+| ARS 3950 | `ars_batch{b}/` | `eval_policy_batch{b}_n20_{suffix}.npz` |
 
-| Method | Batch | Exact timestamp suffixes |
+The suffix includes the timestamp, evaluation seed, and run-ID token; exact values are listed below.
+
+| Method | Batch | Exact suffixes |
 |---|---:|---|
-| Hand-Tuned | 50 | `20260924_140614`, `20260924_141058`, `20260924_141544`, `20260924_142032`, `20260924_142516` |
-| Hand-Tuned | 150 | `20260924_143034`, `20260924_143554`, `20260924_144112`, `20260924_144630`, `20260924_145148` |
-| Bayesian | 50 | `20260924_145634`, `20260924_150107`, `20260924_150604`, `20260924_151105`, `20260924_151605` |
-| Bayesian | 150 | `20260924_152013`, `20260924_152404`, `20260924_152825`, `20260924_153235`, `20260924_153619` |
-| PPO | 50 | `20260924_161001`, `20260924_161300`, `20260924_161605`, `20260924_161906`, `20260924_162208` |
-| PPO | 150 | `20260924_162507`, `20260924_162801`, `20260924_163043`, `20260924_163333`, `20260924_163641` |
-| ARS | 50 | `20260924_153917`, `20260924_154226`, `20260924_154530`, `20260924_154826`, `20260924_155129` |
-| ARS | 150 | `20260924_155426`, `20260924_155728`, `20260924_160034`, `20260924_160343`, `20260924_160645` |
+| Hand-Tuned | 50 | `20260929_224013_412335_seed0_90a30b0a`, `20260929_224511_755624_seed1_1331d858`, `20260929_225010_508194_seed2_98a26bb7`, `20260929_225508_915066_seed3_a539ebc8`, `20260929_230006_477525_seed4_d86bb799` |
+| Hand-Tuned | 150 | `20260930_001141_253541_seed0_494e321f`, `20260930_001752_314444_seed1_c4558fca`, `20260930_002403_505661_seed2_af06806f`, `20260930_003000_205306_seed3_45bab5e8`, `20260930_003613_187679_seed4_423ea995` |
+| Hand-Tuned | 250 | `20260930_015308_673060_seed0_8eec0ac1`, `20260930_015958_978577_seed1_3f5b23a3`, `20260930_020612_186663_seed2_8ef0adfe`, `20260930_021157_839661_seed3_873cf105`, `20260930_021844_459956_seed4_c2118121` |
+| Bayesian | 50 | `20260929_230505_015635_seed0_d565dfb8`, `20260929_230926_631522_seed1_703958be`, `20260929_231408_167581_seed2_195f04cf`, `20260929_231848_595373_seed3_cca06b1b`, `20260929_232312_274243_seed4_7c77ce1a` |
+| Bayesian | 150 | `20260930_004224_739541_seed0_22fee135`, `20260930_004730_422818_seed1_471adb6f`, `20260930_005249_485300_seed2_7972d6c3`, `20260930_005807_884052_seed3_ba1147f5`, `20260930_010321_611214_seed4_0292d316` |
+| Bayesian | 250 | `20260930_022518_250416_seed0_09dea838`, `20260930_023104_563535_seed1_cbd507be`, `20260930_023639_007722_seed2_3b17d46f`, `20260930_024254_681897_seed3_aa22de3d`, `20260930_024834_621822_seed4_b5b14335` |
+| PPO | 50 | `20260929_232752_808912_seed0_dea5a62d`, `20260929_233052_253134_seed1_02044a88`, `20260929_233351_444645_seed2_2dec9043`, `20260929_233638_474139_seed3_7d3589cd`, `20260929_233945_708918_seed4_ea4c7423` |
+| PPO | 150 | `20260930_010813_934842_seed0_d26ba4ba`, `20260930_011130_186804_seed1_b2a0d17f`, `20260930_011432_894785_seed2_9ea1f11e`, `20260930_011725_312619_seed3_a61c7dfe`, `20260930_012033_796849_seed4_842fb754` |
+| PPO | 250 | `20260930_025351_515655_seed0_706739ef`, `20260930_025655_409036_seed1_24c1ea9e`, `20260930_025957_684992_seed2_a96a4bdc`, `20260930_030255_568467_seed3_d69e078b`, `20260930_030604_743893_seed4_8147efb2` |
+| ARS | 50 | `20260929_235740_817737_seed0_8bf80c26`, `20260930_000028_387205_seed1_87978dec`, `20260930_000312_374509_seed2_321d1cf3`, `20260930_000556_801099_seed3_6cbfbdc3`, `20260930_000842_435392_seed4_b4d69b59` |
+| ARS | 150 | `20260930_013815_682390_seed0_888ebc10`, `20260930_014115_594261_seed1_4dad6a72`, `20260930_014417_361709_seed2_dfae30b1`, `20260930_014716_517551_seed3_049301cc`, `20260930_015010_228176_seed4_528d320d` |
+| ARS | 250 | `20260930_032423_710943_seed0_b5030ffc`, `20260930_032746_122653_seed1_a239d777`, `20260930_033054_201306_seed2_a0d54d3e`, `20260930_033407_668705_seed3_9d42a3db`, `20260930_033717_903772_seed4_18d0d63b` |
 
-For batch **250**, all four methods reuse the exact batch-250 files listed in the [Ball Lift inventory above](#ball-lift): Hand-Tuned, Bayesian, and ARS use `eval_sweep_100_ball_lift_h15_20260923_152226/`; PPO uses `ppo_results/Ball_lift/ppo4951_best_eval/batch250/block{block}/` and the five block/timestamp pairs listed above. The copied batch-250 files in the September 24 Ball run are excluded.
-
-For batches 50/150, both PPO and ARS filenames contain `policy`; their parent folders (`ppo_batch{b}` versus `policy_batch{b}`) distinguish the methods.
+The earlier September 23/24 Ball sources and this run’s `ppo_best_eval_batch{b}` files are excluded from the small-batch plots. Large-batch sources are unchanged; batch 250 no longer shares Ball input files with the large-batch notebook. Task Time retains the notebook’s wall-clock `total_time` definition and filtering, not simulated `task_time` or the run’s CSV-summary aggregation.
 
 ### Small-batch Box Lift
 

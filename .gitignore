@@ -26,3 +26,10 @@ venv/
 
 # Local-only ball-lift audit and supplementary evidence
 /ball_lift_penetration_snapshots/archive/
+
+*.json
+*.csv
+*.txt
+*.sha256
+
+

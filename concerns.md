@@ -40,17 +40,15 @@ The expanded Tray audit found forearm–tray overlap in **13 of 266 successful e
 
 Evidence: [Tray findings](TRAY_PUSH_PENETRATION_FINDINGS.md), [arm–tray snapshots](tray_push_penetration_snapshots/arm_tray_successful_top3.jpg), [Ball findings](BALL_LIFT_PENETRATION_FINDINGS.md), and [Box findings](BOX_LIFT_PENETRATION_FINDINGS.md).
 
-## 3. Ball PPO checkpoint documentation disagrees with the selected data
+## 3. Ball PPO checkpoint reporting corrected
 
-**Classification: confirmed reporting error.**
+**Status: resolved on 2026-10-02; the selected checkpoint and data were not changed.**
 
-The notebook introduction, source comment, settings table, and [NPZ manifest](BENCHMARK_NPZ_FILES.md) describe Ball PPO as **best-training**. The actual source patterns select `ppo_best_eval_batch{batch}` from `eval_sweep_100_ball_lift_bayes_retrained_20260929_191418/npz/`.
+The notebook introduction, source comment, settings table, and [NPZ manifest](BENCHMARK_NPZ_FILES.md) previously said best-training while the source patterns selected `ppo_best_eval_batch{batch}`. They now consistently identify **PPO4951 best-evaluation**, and the Ball benchmark and cost-weight plot legends explicitly say `PPO (best eval)`. The manifest's exact PPO filenames now match the selected best-evaluation files.
 
-Recomputing the selected files gives success rates of **94%, 98%, and 99%** at batches 50, 150, and 250. These agree with the notebook's saved numerical output. The checkpoint description is wrong; the success-rate arithmetic is consistent with best-evaluation inputs.
+Success rates remain **94%, 98%, and 99%** at batches 50, 150, and 250. This was a reporting correction, not a change to checkpoint choice or success-rate arithmetic. The large-batch notebook's separate best-training and best-evaluation series are unchanged.
 
-**Recommended action:** make the prose, manifest, and labels match the intended checkpoint selection, then verify generated figures. Do not silently change the checkpoint merely to match stale text. The penetration audit already explicitly identifies best-evaluation PPO.
-
-Evidence: `SOURCE_PATTERNS` and the saved output in [the small-batch notebook](benchmark_stat_batch_sm.ipynb), compared with its introductory Markdown and the small-batch section of [the manifest](BENCHMARK_NPZ_FILES.md).
+Evidence: `SOURCE_PATTERNS`, the labels and saved output in [the small-batch notebook](benchmark_stat_batch_sm.ipynb), and the small-batch section of [the manifest](BENCHMARK_NPZ_FILES.md).
 
 ## 4. PPO and ARS have different permitted weight-output ranges
 
@@ -130,6 +128,6 @@ Evidence: selected Box/Tray `episode_seed` or `episode_seeds` arrays, notebook a
 - Recorded horizon, CEM iterations, and projection iterations match across methods within each task.
 - The inspected historical Ball/Box ARS and PPO baseline anchors match; concern 4 is about their different output constraints.
 
-Priority order: correct checkpoint documentation; keep task success distinct from contact validity; evaluate all methods under one corrected simulator revision; then strengthen timing and statistical reporting. Strong optimizer-only claims additionally require controlled training objectives, output mappings, and budgets.
+Checkpoint documentation is now corrected. Remaining priority order: keep task success distinct from contact validity; evaluate all methods under one corrected simulator revision; then strengthen timing and statistical reporting. Strong optimizer-only claims additionally require controlled training objectives, output mappings, and budgets.
 
 This document records concerns and proposed follow-up work. Creating it does not change checkpoints, notebooks, figures, simulator code, or evaluation data.

@@ -6,7 +6,7 @@ Date: 2026-09-30
 
 Audited **1,200 episodes** from 60 NPZ files, including **711 successes and 489 failures** (487 timeouts, 2 falls). Reconstructed contacts at **215,716 distinct saved states**: each initial state plus every post-step state, including the terminal state. Consecutive pre-step and preceding post-step qpos/qvel matched exactly.
 
-Run: `eval_sweep_100_ball_lift_bayes_retrained_20260929_191418`. Methods: Hand-Tuned, retrained Bayesian, **PPO4951 best-evaluation**, ARS3950; batches 50/150/250, five 20-episode blocks per method/batch. Best-training PPO is excluded from all statistics and snapshots below. Best-evaluation was explicitly confirmed by the user and matches current notebook source paths, despite stale best-train prose/legends. No notebook change was made.
+Run: `eval_sweep_100_ball_lift_bayes_retrained_20260929_191418`. Methods: Hand-Tuned, retrained Bayesian, **PPO4951 best-evaluation**, ARS3950; batches 50/150/250, five 20-episode blocks per method/batch. Best-training PPO is excluded from all statistics and snapshots below. Best-evaluation was explicitly confirmed by the user. Notebook prose/legends and the source manifest were corrected on 2026-10-02 to agree with the existing best-evaluation paths; no input selection or audit statistics changed.
 
 **The penetration-threshold statistics below describe failed episodes; all selected snapshots are from successful episodes.**
 
@@ -78,4 +78,4 @@ The successful robot–robot contacts shown above are **between the two differen
 - The transparent cube is the target marker. Render meshes and collision shapes can differ; the original camera can occlude contacts.
 - Detailed audit data and raw frames are in `ball_lift_penetration_snapshots/archive/new_runs_20260930/`. Prior-run reports and the old selected figure are preserved in the ignored parent archive. Only one combined evidence image remains selected for Git.
 
-No notebook, simulator code, source model, or benchmark NPZ was changed.
+The penetration audit did not change simulator code, source models, or benchmark NPZs. The subsequent notebook correction changed checkpoint reporting only, not the data selection or metric calculations.

@@ -131,17 +131,17 @@ Verified: 2026-09-30 against the `SOURCE_PATTERNS` in [benchmark_stat_batch_sm.i
 
 ### Small-batch Ball Lift
 
-Updated 2026-09-30. All four plotted methods at batches **50, 150, and 250** use this root:
+Checkpoint selection and filenames verified 2026-10-02. All four plotted methods at batches **50, 150, and 250** use this root:
 
 `eval_sweep_100_ball_lift_bayes_retrained_20260929_191418/npz/`
 
-PPO uses **PPO4951 best-training**, not best-evaluation; ARS uses **ARS3950**. The checkpoint label refers to selection during training; these NPZs contain evaluation episodes. Each folder contains five complete 20-episode files, with evaluation seeds 0–4 (100 episodes per method/batch).
+PPO uses **PPO4951 best-evaluation**, not best-training; ARS uses **ARS3950**. The checkpoint label refers to selection during training; these NPZs contain evaluation episodes. Each folder contains five complete 20-episode files, with evaluation seeds 0–4 (100 episodes per method/batch).
 
 | Method | Folder | Filename form |
 |---|---|---|
 | Hand-Tuned | `handtuned_batch{b}/` | `eval_handtuned_batch{b}_n20_{suffix}.npz` |
 | Bayesian, retrained | `bayesian_batch{b}/` | `eval_bayesian_batch{b}_n20_{suffix}.npz` |
-| PPO 4951, best train | `ppo_best_train_batch{b}/` | `eval_policy_batch{b}_n20_{suffix}.npz` |
+| PPO 4951, best eval | `ppo_best_eval_batch{b}/` | `eval_policy_batch{b}_n20_{suffix}.npz` |
 | ARS 3950 | `ars_batch{b}/` | `eval_policy_batch{b}_n20_{suffix}.npz` |
 
 The suffix includes the timestamp, evaluation seed, and run-ID token; exact values are listed below.
@@ -154,14 +154,14 @@ The suffix includes the timestamp, evaluation seed, and run-ID token; exact valu
 | Bayesian | 50 | `20260929_230505_015635_seed0_d565dfb8`, `20260929_230926_631522_seed1_703958be`, `20260929_231408_167581_seed2_195f04cf`, `20260929_231848_595373_seed3_cca06b1b`, `20260929_232312_274243_seed4_7c77ce1a` |
 | Bayesian | 150 | `20260930_004224_739541_seed0_22fee135`, `20260930_004730_422818_seed1_471adb6f`, `20260930_005249_485300_seed2_7972d6c3`, `20260930_005807_884052_seed3_ba1147f5`, `20260930_010321_611214_seed4_0292d316` |
 | Bayesian | 250 | `20260930_022518_250416_seed0_09dea838`, `20260930_023104_563535_seed1_cbd507be`, `20260930_023639_007722_seed2_3b17d46f`, `20260930_024254_681897_seed3_aa22de3d`, `20260930_024834_621822_seed4_b5b14335` |
-| PPO | 50 | `20260929_232752_808912_seed0_dea5a62d`, `20260929_233052_253134_seed1_02044a88`, `20260929_233351_444645_seed2_2dec9043`, `20260929_233638_474139_seed3_7d3589cd`, `20260929_233945_708918_seed4_ea4c7423` |
-| PPO | 150 | `20260930_010813_934842_seed0_d26ba4ba`, `20260930_011130_186804_seed1_b2a0d17f`, `20260930_011432_894785_seed2_9ea1f11e`, `20260930_011725_312619_seed3_a61c7dfe`, `20260930_012033_796849_seed4_842fb754` |
-| PPO | 250 | `20260930_025351_515655_seed0_706739ef`, `20260930_025655_409036_seed1_24c1ea9e`, `20260930_025957_684992_seed2_a96a4bdc`, `20260930_030255_568467_seed3_d69e078b`, `20260930_030604_743893_seed4_8147efb2` |
+| PPO | 50 | `20260929_234246_335191_seed0_4244b40c`, `20260929_234543_590106_seed1_d1a58a93`, `20260929_234843_363632_seed2_fbf10b60`, `20260929_235143_747242_seed3_35347958`, `20260929_235425_353375_seed4_2afaca2e` |
+| PPO | 150 | `20260930_012339_662020_seed0_7c2f75b7`, `20260930_012642_724376_seed1_74484f99`, `20260930_012931_337089_seed2_1f03599c`, `20260930_013222_613095_seed3_41968dd7`, `20260930_013514_059282_seed4_7395bd9c` |
+| PPO | 250 | `20260930_030913_622278_seed0_fc9c5a81`, `20260930_031215_042548_seed1_d378096c`, `20260930_031510_878003_seed2_2dbb482a`, `20260930_031808_450687_seed3_2161eb95`, `20260930_032110_888415_seed4_cc5fcfb1` |
 | ARS | 50 | `20260929_235740_817737_seed0_8bf80c26`, `20260930_000028_387205_seed1_87978dec`, `20260930_000312_374509_seed2_321d1cf3`, `20260930_000556_801099_seed3_6cbfbdc3`, `20260930_000842_435392_seed4_b4d69b59` |
 | ARS | 150 | `20260930_013815_682390_seed0_888ebc10`, `20260930_014115_594261_seed1_4dad6a72`, `20260930_014417_361709_seed2_dfae30b1`, `20260930_014716_517551_seed3_049301cc`, `20260930_015010_228176_seed4_528d320d` |
 | ARS | 250 | `20260930_032423_710943_seed0_b5030ffc`, `20260930_032746_122653_seed1_a239d777`, `20260930_033054_201306_seed2_a0d54d3e`, `20260930_033407_668705_seed3_9d42a3db`, `20260930_033717_903772_seed4_18d0d63b` |
 
-The earlier September 23/24 Ball sources and this run’s `ppo_best_eval_batch{b}` files are excluded from the small-batch plots. Large-batch sources are unchanged; batch 250 no longer shares Ball input files with the large-batch notebook. Task Time retains the notebook’s wall-clock `total_time` definition and filtering, not simulated `task_time` or the run’s CSV-summary aggregation.
+The earlier September 23/24 Ball sources and this run’s `ppo_best_train_batch{b}` files are excluded from the small-batch plots. Large-batch sources are unchanged; batch 250 no longer shares Ball input files with the large-batch notebook. Task Time retains the notebook’s wall-clock `total_time` definition and filtering, not simulated `task_time` or the run’s CSV-summary aggregation.
 
 ### Small-batch Box Lift
 

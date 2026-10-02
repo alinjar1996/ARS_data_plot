@@ -6,7 +6,7 @@
 
 Updated 2026-09-30. All panels are from **successful episodes only**. Rows: robot–ball, ball–table, robot–table, and robot–robot self-contact. Columns rank three distinct successful episodes per contact category, by the maximum anywhere in the saved episode, not necessarily at completion.
 
-Inputs: the September 29 retrained-Bayesian sweep, batches 50/150/250; Hand-Tuned, retrained Bayesian, **PPO4951 best-evaluation**, and ARS3950. There are 711 successes among 1,200 episodes. PPO best-training is excluded from this selected evidence. The notebook source paths select best-evaluation even though its prose/legends still say best-train; the user explicitly confirmed best-evaluation for this audit. The notebook was not modified.
+Inputs: the September 29 retrained-Bayesian sweep, batches 50/150/250; Hand-Tuned, retrained Bayesian, **PPO4951 best-evaluation**, and ARS3950. There are 711 successes among 1,200 episodes. PPO best-training is excluded from this selected evidence. The user explicitly confirmed best-evaluation for this audit. Notebook prose/legends and the source manifest were corrected on 2026-10-02 to match those existing paths; checkpoint selection and penetration evidence are unchanged.
 
 **These are original video frames**, not synthesized images or re-rendered substitutes. Their contact depths were independently recomputed from the exactly matching saved post-step states, with XML/evaluator hashes matching the recording metadata. An original-camera re-render of every selected state was also compared with its video frame as an alignment check. The combined figure adds labels outside the scene and JPEG compression.
 

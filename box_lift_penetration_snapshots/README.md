@@ -1,5 +1,7 @@
 # Box-lift selected penetration evidence
 
+> Historical audit: the small-batch notebook switched to the October 1 all-contacts Box run and separate Bayesian5001 rerun on 2026-10-02. The statistics and snapshots in this document still concern the September runs identified below; the new inputs have not yet been penetration-audited.
+
 Only two figures are selected for Git (approximately 1.27 MB combined). The complete original extraction is preserved in `archive/`, excluded by the repository `.gitignore`. No original files were deleted.
 
 See the [findings summary](../BOX_LIFT_PENETRATION_FINDINGS.md) for threshold counts, methodology, and physical interpretation.

@@ -1,5 +1,7 @@
 # Box Lift: contact-penetration findings
 
+> Historical audit: the small-batch notebook switched to the October 1 all-contacts Box run and separate Bayesian5001 rerun on 2026-10-02. The statistics and snapshots in this document still concern the September runs identified below; the new inputs have not yet been penetration-audited.
+
 Date: 2026-09-29; successful-episode same-arm check updated 2026-09-30
 
 ## Summary

@@ -1,6 +1,8 @@
 # Concerns about the current benchmark results
 
-Reviewed: 2026-10-02.
+Reviewed: 2026-10-02, before the Box input switch.
+
+> Scope update: the notebook subsequently switched Box inputs to the October 1 all-contacts run and separate Bayesian5001 rerun. Box numerical examples and historical simulator findings below describe the previous selection, not a fresh audit of the new Box data. Ball/Tray inputs were unchanged.
 
 ## Scope
 

@@ -2,7 +2,7 @@
 
 This manifest covers [benchmark_stat_batch.ipynb](benchmark_stat_batch.ipynb) (batches 250, 500, 750, 1000) and [benchmark_stat_batch_sm.ipynb](benchmark_stat_batch_sm.ipynb) (batches 50, 150, 250). Paths are relative to the directory containing the notebooks.
 
-The large-batch inventory below was verified on 2026-09-29; its expansion notation and exclusions apply to `benchmark_stat_batch.ipynb`. The [small-batch inventory](#small-batches-50-150-and-250) was updated on 2026-09-30.
+The large-batch inventory below was verified on 2026-09-29; its expansion notation and exclusions apply to `benchmark_stat_batch.ipynb`. The [small-batch inventory](#small-batches-50-150-and-250) was updated on 2026-09-30 for Ball and 2026-10-02 for Box.
 
 The large-batch notebook aggregates **300 NPZ files**: 15 task–series combinations × 4 batches × 5 files. Every listed file exists and contains 20 saved episodes. The series order is Hand-Tuned, Bayesian, PPO (best train), PPO (best val), ARS. Both PPO series are evaluation rollouts; the labels identify how each checkpoint was selected.
 
@@ -169,12 +169,12 @@ Here `{s}` expands to exactly `0`, `10`, `15`, `4`, and `5`. Each row identifies
 
 | Method | Exact folder template | Exact filename template |
 |---|---|---|
-| Hand-Tuned | `eval_box_lift_all_methods_b50_150_250_20260924_190610/npz/handtuned_batch{b}/` | `eval_handtuned_batch{b}_n20_seed{s}.npz` |
-| Bayesian 5001 | `eval_box_lift_bayesian5001_b50_150_250_20260926_092000/npz/bayesian5001_batch{b}/` | `eval_bayesian5001_batch{b}_n20_seed{s}.npz` |
-| PPO 5005, best eval | `eval_box_lift_all_methods_b50_150_250_20260924_190610/npz/ppo5005besteval_batch{b}/` | `eval_ppo5005besteval_batch{b}_n20_seed{s}.npz` |
-| ARS 4218 | `eval_box_lift_all_methods_b50_150_250_20260924_190610/npz/ars4218_batch{b}/` | `eval_ars4218_batch{b}_n20_seed{s}.npz` |
+| Hand-Tuned | `eval_box_lift_all_contacts_b50_150_250_20261001_154416_3370028/npz/handtuned_batch{b}/` | `eval_handtuned_batch{b}_n20_seed{s}.npz` |
+| Bayesian 5001 | `eval_box_lift_bayesian5001_b50_150_250_after_20261001_154416/npz/bayesian5001_batch{b}/` | `eval_bayesian5001_batch{b}_n20_seed{s}.npz` |
+| PPO 5005, best eval | `eval_box_lift_all_contacts_b50_150_250_20261001_154416_3370028/npz/ppo5005besteval_batch{b}/` | `eval_ppo5005besteval_batch{b}_n20_seed{s}.npz` |
+| ARS 4218 | `eval_box_lift_all_contacts_b50_150_250_20261001_154416_3370028/npz/ars4218_batch{b}/` | `eval_ars4218_batch{b}_n20_seed{s}.npz` |
 
-Bayesian uses the September 26 run for all three batches. The older `bayesian_batch{b}` directories in the September 24 all-methods run are excluded.
+Updated 2026-10-02. Hand-Tuned, PPO5005 best-evaluation, and ARS4218 use the October 1 all-contacts run. Bayesian uses the separate Bayesian5001 rerun for all three batches. The all-contacts run's `bayesian5002_batch{b}` and `ppo5005best_batch{b}` directories are excluded, as are the previous September Box inputs. Only the aggregate `npz/` files are selected; individual `episodes/` files are not pooled in. All 60 selected Box files contain 20 episodes each. Existing Box penetration findings/snapshots refer to the previous runs, not these newly selected inputs.
 
 ### Small-batch Tray Push
 

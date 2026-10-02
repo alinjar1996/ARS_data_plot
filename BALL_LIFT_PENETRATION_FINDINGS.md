@@ -8,7 +8,7 @@ Audited **1,200 episodes** from 60 NPZ files, including **711 successes and 489 
 
 Run: `eval_sweep_100_ball_lift_bayes_retrained_20260929_191418`. Methods: Hand-Tuned, retrained Bayesian, **PPO4951 best-evaluation**, ARS3950; batches 50/150/250, five 20-episode blocks per method/batch. Best-training PPO is excluded from all statistics and snapshots below. Best-evaluation was explicitly confirmed by the user and matches current notebook source paths, despite stale best-train prose/legends. No notebook change was made.
 
-**Statistics below describe failed episodes; all selected snapshots are from successful episodes.**
+**The penetration-threshold statistics below describe failed episodes; all selected snapshots are from successful episodes.**
 
 [Open the twelve-panel successful-only snapshots](ball_lift_penetration_snapshots/successful_worst_cases_top3.jpg) · [Panel identities and original-video links](ball_lift_penetration_snapshots/README.md)
 
@@ -62,12 +62,18 @@ No threshold memberships change for the listed thresholds/contact categories. Th
 
 All 12 panels are original video frames from distinct successful episodes within each row. They show episode extrema, not typical successes. The successful ball–table extrema occur at video times 3.2, 4.4, and 3.9 s, rather than at initial loading.
 
+## Same-arm collision check in successful episodes
+
+**No same-arm collision was detected in any of the 711 successful episodes (0/711)** in the audited saved states, including the terminal robot pose. Both the enabled MuJoCo contact check and a separate nonadjacent-link capsule-overlap check (including disabled collision pairs) found zero positive same-arm penetration in these successful episodes. Contacts within one rigid link and between directly adjacent joint links are excluded.
+
+The successful robot–robot contacts shown above are **between the two different arms**, not between links of the same arm. This result applies to the recorded states and modeled collision geometry; it cannot rule out contact during unsaved intermediate motion or between unmodeled surfaces.
+
 ## Measurement and provenance
 
 - Native MuJoCo 3.3.1 reconstructed enabled collision contacts from saved states; no dynamics rollout was rerun. Depth is the magnitude of negative contact distance in millimeters, not measured physical deformation or necessarily the minimum separation translation for complete bodies.
 - The model XML files and evaluator/planner source hashes match the recording manifest and per-file XML metadata. The scene sphere radius is 0.11 m; timestep 0.1 s; recorded solver iterations 1 and line-search iterations 5.
 - Per-episode randomized table-1 position and target position were restored, together with full qpos/qvel. No nominal-table substitution was used.
-- The `other` category has no negative contact distances in any selected saved state. Robot self-contact is included. Disabled/unmodeled pairs and unsaved substeps are not audited.
+- The `other` category has no negative contact distances in any selected saved state. The main penetration audit includes enabled robot–robot contacts. The separate same-arm check above additionally tests disabled nonadjacent-link capsule pairs; unmodeled surfaces and unsaved substeps remain outside the audit.
 - All 1,200 selected episodes have distinct existing recorded video paths. For the 12 selected panels, video frame counts match episode MPC-step counts and every depth was recomputed independently. Original-camera render/video mean absolute pixel differences range from 1.53 to 1.62 on a 0–255 scale. This is a selected-panel alignment check, not exhaustive video validation.
 - The transparent cube is the target marker. Render meshes and collision shapes can differ; the original camera can occlude contacts.
 - Detailed audit data and raw frames are in `ball_lift_penetration_snapshots/archive/new_runs_20260930/`. Prior-run reports and the old selected figure are preserved in the ignored parent archive. Only one combined evidence image remains selected for Git.

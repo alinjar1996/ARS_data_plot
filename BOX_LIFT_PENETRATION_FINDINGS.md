@@ -1,6 +1,6 @@
 # Box Lift: contact-penetration findings
 
-Date: 2026-09-29
+Date: 2026-09-29; successful-episode same-arm check updated 2026-09-30
 
 ## Summary
 
@@ -61,11 +61,15 @@ Not all box–table overlap is initialization: the top three all-episode maxima 
 
 Robot–table depth exceeds 5 mm in 18/1,200 episodes (1.5%), including 2/305 successful episodes (0.7%). Maximum depth is 17.60 mm overall and 8.83 mm among successful episodes. These values are smaller than robot–box maxima, but smaller overlap does not establish physical acceptability against a rigid table.
 
-## Robot self-contact and remaining categories
+## Robot–robot contact and remaining categories
 
 The reconstructed audit also contains robot–robot penetration: 354/1,200 episodes have a positive depth, including 5/305 successful episodes. The three worst successful episodes reach **3.984, 3.290, and 3.102 mm**, all Bayesian batch 250, seed 15, episodes 16, 18, and 13 respectively. Their worst contact pair is `robot_01 / robot_103`, at playback times 4.0, 4.1, and 4.8 s. These are contact distances between robot collision geoms, not robot–box contacts.
 
-The audit's `other` category contains no negative contact distances in any saved state. Thus the combined successful-case figure covers all four categories with positive reconstructed depths. This does not establish absence of intersection for disabled or unmodeled collision pairs.
+**No same-arm collision was detected in any of the 305 successful episodes (0/305)** in the separate same-arm audit. Both the enabled MuJoCo contact check and a nonadjacent-link capsule-overlap check (including disabled collision pairs) found zero positive same-arm penetration in successful episodes. Contacts within one rigid link and between directly adjacent joint links are excluded. The successful robot–robot contacts described above and shown in the figure are **between the two different arms**, not between links of the same arm.
+
+This additional check includes each initial robot pose and every saved post-step robot pose, including the terminal pose (237,749 states across all 1,200 episodes); it does not change the original pre-step-only penetration statistics. Absence of detected same-arm collision is limited to saved states and modeled geometry, not a guarantee about unsaved intermediate motion or unmodeled surfaces. Failed Box Lift episodes do contain same-arm overlap, so the zero finding applies specifically to successful episodes.
+
+The audit's `other` category contains no negative contact distances in any saved state. Thus the combined successful-case figure covers all four categories with positive reconstructed depths. This does not establish absence of intersection for all disabled or unmodeled collision pairs.
 
 ## Selected visual evidence
 
@@ -81,7 +85,7 @@ The top-three numerical results are summarized below without separate per-catego
 | Robot–box | 75.97, 73.91, 73.29 | 55.60, 52.88, 51.65 |
 | Box–table | 86.21, 58.49, 54.46 | 24.69, 24.69, 24.69 |
 | Robot–table | 17.60, 12.01, 9.48 | 8.83, 5.97, 3.43 |
-| Robot–robot (self-contact) | 36.91, 34.50, 32.54 | 3.98, 3.29, 3.10 |
+| Robot–robot (same-arm or between-arm contacts) | 36.91, 34.50, 32.54 | 3.98, 3.29, 3.10 |
 
 The successful box–table examples are tied initialization cases; three representative episodes were selected using a deterministic tie-break, not three uniquely larger events.
 

@@ -1,20 +1,36 @@
 # Tray-push selected evidence
 
-Two figures are retained for Git. Detailed reports, individual raw/labeled snapshots, and audit scripts are in `archive/`, which is ignored by Git. No benchmark or simulator files were changed.
+Three conclusive figures are retained for Git. Detailed reports, individual raw/labeled snapshots, and audit scripts are in `archive/`, which is ignored by Git. No benchmark or simulator files were changed.
 
 [Full findings and threshold counts](../TRAY_PUSH_PENETRATION_FINDINGS.md)
 
 ## Top three worst successful episodes per contact type
 
-[Open combined nine-panel figure](successful_worst_cases_top3.jpg)
+[Open combined twelve-panel figure](successful_worst_cases_top3.jpg)
 
-Rows: robot–tray, tray–fixed-table reference, robot–fixed-table reference. Columns: worst, second-worst, third-worst among the 266 episodes marked successful. Each row uses three distinct successful episodes, ranked by their maximum depth anywhere in the episode, not necessarily at the instant success is declared. Table rows are reference overlaps against the fixed visible tables, NOT recovered contacts with the movable simulation table colliders.
+Rows: robot–tray, tray–fixed-table reference, robot–fixed-table reference, and same-arm robot–robot contact. Columns: worst, second-worst, third-worst among the 266 episodes marked successful. Each row uses three distinct successful episodes, ranked by their maximum depth anywhere in the episode, not necessarily at the instant success is declared. Table rows are reference overlaps against the fixed visible tables, NOT recovered contacts with the movable simulation table colliders.
+
+The fourth row contains all three successful episodes with detected same-arm contact: 7.511, 6.628, and 1.051 mm. The first two involve arm 2’s forearm and its own gripper driver; the third involves arm 1’s upper arm and wrist. These are enabled collision pairs, not contacts between the two arms. The original nine panels are unchanged. The previous figure is retained in the ignored archive.
 
 ## Top three successful robot–tray episodes
 
 [Open successful-episode comparison](robot_tray_successful_top3.jpg)
 
 Three distinct successful episodes, ordered left to right by maximum robot–tray depth. These illustrate extremes, not typical outcomes.
+
+## Top three successful upper-arm / forearm–tray overlaps
+
+[Open the three-panel arm–tray comparison](arm_tray_successful_top3.jpg)
+
+Ranks three distinct successful episodes by maximum overlap between the tray and either arm's upper arm or forearm, excluding wrists and grippers. The geometric check includes collision-disabled pairs. All three selected maxima involve **arm 2's forearm / tray front**, a **collision-disabled pair**; these are therefore absent from the earlier enabled-contact robot–tray ranking. No upper-arm–tray overlap was found in successful episodes. The first two maxima occur during approach/pick; the third occurs during move/push. Depths are geometric overlap, not measured material deformation. Existing figures are unchanged.
+
+| Rank | Depth (mm) | Method / batch / seed / episode | Playback time | Original video |
+|---|---:|---|---:|---|
+| 1 | 41.729 | Bayesian / 150 / 77 / 0009 | 10.4 s | [MP4](../eval_sweep_100_tray_push_common_jit_randomized_xy001_yaw2_b50_150_250-20260925T081018Z-1-001/eval_sweep_100_tray_push_common_jit_randomized_xy001_yaw2_b50_150_250/videos/bayesian_batch150/20260924_202733_218612/ep_0009_seed77.mp4) |
+| 2 | 34.807 | Bayesian / 250 / 77 / 0008 | 4.6 s | [MP4](../eval_sweep_100_tray_push_common_jit_randomized_xy001_yaw2_b50_150_250-20260925T081018Z-1-001/eval_sweep_100_tray_push_common_jit_randomized_xy001_yaw2_b50_150_250/videos/bayesian_batch250/20260924_204807_653183/ep_0008_seed77.mp4) |
+| 3 | 28.909 | Bayesian / 250 / 77 / 0007 | 24.2 s | [MP4](../eval_sweep_100_tray_push_common_jit_randomized_xy001_yaw2_b50_150_250-20260925T081018Z-1-001/eval_sweep_100_tray_push_common_jit_randomized_xy001_yaw2_b50_150_250/videos/bayesian_batch250/20260924_204807_653183/ep_0007_seed77.mp4) |
+
+The scan covers 610,938 saved pre-step states across all 1,200 episodes (266 successful). Unrecorded intermediate motion and the terminal tray pose are not covered. Missing table-slider coordinates do not affect arm–tray geometry. Raw frames, metadata, the all-episode report, and scripts are in the ignored archive.
 
 ## Panel provenance
 
@@ -33,6 +49,9 @@ Episode/frame indices are zero-based. Observations are pre-step, videos post-ste
 | Successful worst cases: robot_table_reference, rank 1 | 30.807 | Bayesian / 250 / 77 / 0007 | 2.6 s | [MP4](../eval_sweep_100_tray_push_common_jit_randomized_xy001_yaw2_b50_150_250-20260925T081018Z-1-001/eval_sweep_100_tray_push_common_jit_randomized_xy001_yaw2_b50_150_250/videos/bayesian_batch250/20260924_204807_653183/ep_0007_seed77.mp4) |
 | Successful worst cases: robot_table_reference, rank 2 | 19.824 | Bayesian / 250 / 99 / 0001 | 2.1 s | [MP4](../eval_sweep_100_tray_push_common_jit_randomized_xy001_yaw2_b50_150_250-20260925T081018Z-1-001/eval_sweep_100_tray_push_common_jit_randomized_xy001_yaw2_b50_150_250/videos/bayesian_batch250/20260924_203958_664978/ep_0001_seed99.mp4) |
 | Successful worst cases: robot_table_reference, rank 3 | 16.392 | Bayesian / 150 / 77 / 0019 | 2.6 s | [MP4](../eval_sweep_100_tray_push_common_jit_randomized_xy001_yaw2_b50_150_250-20260925T081018Z-1-001/eval_sweep_100_tray_push_common_jit_randomized_xy001_yaw2_b50_150_250/videos/bayesian_batch150/20260924_202733_218612/ep_0019_seed77.mp4) |
+| Successful worst cases: same_arm_robot_robot, rank 1 | 7.511 | Bayesian / 150 / 77 / 0007 | 4.6 s | [MP4](../eval_sweep_100_tray_push_common_jit_randomized_xy001_yaw2_b50_150_250-20260925T081018Z-1-001/eval_sweep_100_tray_push_common_jit_randomized_xy001_yaw2_b50_150_250/videos/bayesian_batch150/20260924_202733_218612/ep_0007_seed77.mp4) |
+| Successful worst cases: same_arm_robot_robot, rank 2 | 6.628 | Bayesian / 250 / 77 / 0007 | 3.6 s | [MP4](../eval_sweep_100_tray_push_common_jit_randomized_xy001_yaw2_b50_150_250-20260925T081018Z-1-001/eval_sweep_100_tray_push_common_jit_randomized_xy001_yaw2_b50_150_250/videos/bayesian_batch250/20260924_204807_653183/ep_0007_seed77.mp4) |
+| Successful worst cases: same_arm_robot_robot, rank 3 | 1.051 | Bayesian / 150 / 77 / 0019 | 11.0 s | [MP4](../eval_sweep_100_tray_push_common_jit_randomized_xy001_yaw2_b50_150_250-20260925T081018Z-1-001/eval_sweep_100_tray_push_common_jit_randomized_xy001_yaw2_b50_150_250/videos/bayesian_batch150/20260924_202733_218612/ep_0019_seed77.mp4) |
 | Successful comparison: 1 | 32.121 | ARS / 250 / 27 / 0015 | 22.1 s | [MP4](../eval_sweep_100_tray_push_common_jit_randomized_xy001_yaw2_b50_150_250-20260925T081018Z-1-001/eval_sweep_100_tray_push_common_jit_randomized_xy001_yaw2_b50_150_250/videos/ars4124_batch250/20260924_214610_914234/ep_0015_seed27.mp4) |
 | Successful comparison: 2 | 31.756 | PPO / 250 / 6 / 0008 | 8.5 s | [MP4](../eval_sweep_100_tray_push_common_jit_randomized_xy001_yaw2_b50_150_250-20260925T081018Z-1-001/eval_sweep_100_tray_push_common_jit_randomized_xy001_yaw2_b50_150_250/videos/ppo5307_best_val_batch250/20260924_223440_574286/ep_0008_seed6.mp4) |
 | Successful comparison: 3 | 31.365 | ARS / 50 / 27 / 0003 | 23.2 s | [MP4](../eval_sweep_100_tray_push_common_jit_randomized_xy001_yaw2_b50_150_250-20260925T081018Z-1-001/eval_sweep_100_tray_push_common_jit_randomized_xy001_yaw2_b50_150_250/videos/ars4124_batch50/20260924_211204_541923/ep_0003_seed27.mp4) |

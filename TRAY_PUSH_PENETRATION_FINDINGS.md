@@ -1,6 +1,6 @@
 # Tray Push: contact-penetration and video findings
 
-Date: 2026-09-29
+Date: 2026-09-29; same-arm successful-case evidence updated 2026-09-30
 
 ## Summary
 
@@ -71,14 +71,36 @@ These are not solely initial-loading events. Excluding the first ten saved state
 
 Separately, robot–robot penetration exceeds 5 mm in 75 episodes, including 3 successes. Maximum robot–robot depth is 49.19 mm overall and 8.48 mm among successes. This category includes both self-contact and contact between arms.
 
+## Same-arm contacts in successful episodes
+
+The separate same-arm audit found enabled self-contact in **3 of 266 successful episodes (1.1%)**. All three are Bayesian runs. Same-arm classification excludes contacts between the two arms, contacts within a rigid link, and directly adjacent joint-link pairs.
+
+| Rank | Batch / seed / episode | Arm and contacting bodies | Maximum depth | Video time |
+|---|---|---|---:|---:|
+| 1 | 150 / 77 / 0007 | Arm 2: `forearm_link_2` / own gripper `left_driver` | 7.511 mm | 4.6 s |
+| 2 | 250 / 77 / 0007 | Arm 2: `forearm_link_2` / own gripper `left_driver` | 6.628 mm | 3.6 s |
+| 3 | 150 / 77 / 0019 | Arm 1: `upper_arm_link_1` / `wrist_2_link_1` | 1.051 mm | 11.0 s |
+
+All three maxima occur during phase 0 (approach/pick), before eventual task success. Their enabled collision-pair depths were rechecked from the saved joint positions, and the corresponding original video frames form the fourth row of the combined figure. The depth is a collision-geometry measurement; the rendered camera view can obscure the touching surfaces.
+
+This same-arm audit also includes the final saved post-step robot pose; the original robot–tray/table-reference statistics and first nine panels remain unchanged. Missing table-slider coordinates do not affect same-arm geometry. Raw frames, panel metadata, the same-arm report, and the previous nine-panel figure are retained in the ignored archive.
+
+## Upper-arm / forearm–tray overlap, including disabled pairs
+
+An additional 2026-10-01 geometric scan checked both upper arms and both forearms against all five tray geoms at all 610,938 saved pre-step states. Forearm–tray overlap occurs in 227 distinct episodes, including **13/266 successes** (2 involving arm 1 and 11 involving arm 2). Upper-arm–tray overlap occurs in 33 episodes, all failures; no successful episode has detected upper-arm overlap.
+
+Tray collision pairs are enabled for arm 1's forearm but disabled for arm 2's forearm and both upper arms. Accordingly, this extended geometric scan is distinct from the enabled-contact statistics above. The largest successful forearm overlap is **41.73 mm**, not the earlier enabled-contact-only maximum of 32.12 mm. The previous statistics remain valid for their stated enabled-pair scope. The selected original video frames and geometric depths were independently checked; disabled pairs were enabled only in a temporary in-memory model for verification, without rerunning dynamics or changing simulator files.
+
 ## Video evidence
 
 All 1,200 videos were fully decoded and uniquely matched by method/batch, block seed, and episode index; frame counts agree with the saved episode lengths. This is an automated integrity/matching check plus state-based analysis, not a claim that every video was watched manually. The selected extreme frames were visually inspected.
 
-Only two figures are included for Git:
+Three conclusive figures are included for Git:
 
-1. [Combined top-three worst successful-episode snapshots](tray_push_penetration_snapshots/successful_worst_cases_top3.jpg): nine panels, with one row per contact category (robot–tray and the two fixed-table reference categories) and columns ranked first through third among the 266 episodes marked successful. Each row shows three distinct successful episodes. Maxima are taken anywhere in those episodes, not necessarily at the instant success is declared. Table panels explicitly identify the reference limitation. Earlier all-episode and six-panel overviews are preserved in the ignored archive.
+1. [Combined top-three worst successful-episode snapshots](tray_push_penetration_snapshots/successful_worst_cases_top3.jpg): twelve panels, with one row per contact category (robot–tray, the two fixed-table reference categories, and same-arm robot–robot contact) and columns ranked first through third among the 266 episodes marked successful. Each row shows three distinct successful episodes. Maxima are taken anywhere in those episodes, not necessarily at the instant success is declared. Table panels explicitly identify the reference limitation. Earlier all-episode and six-panel overviews are preserved in the ignored archive.
 2. [Top three successful robot–tray episodes](tray_push_penetration_snapshots/robot_tray_successful_top3.jpg): 32.12, 31.76, and 31.37 mm, from ARS b250/seed27/ep0015, PPO b250/seed6/ep0008, and ARS b50/seed27/ep0003, respectively.
+
+3. [Top three successful upper-arm / forearm–tray overlaps](tray_push_penetration_snapshots/arm_tray_successful_top3.jpg): 41.73, 34.81, and 28.91 mm, all arm 2 forearm against the tray front. These collision-disabled pairs were checked geometrically; they are not included in the enabled-contact robot–tray ranking. The three distinct Bayesian episodes are b150/seed77/ep0009, b250/seed77/ep0008, and b250/seed77/ep0007, at 10.4, 4.6, and 24.2 s respectively. Selection considers both arms and excludes wrists/grippers.
 
 See the [evidence index](tray_push_penetration_snapshots/README.md) for all panel identities, timestamps, and original local-video links. All frames come from the original videos; only headers and JPEG compression were added. Observations are pre-step and videos post-step, so observation index `s` corresponds to video frame `s−1`. Episode/frame indices are zero-based; timestamps are playback times.
 

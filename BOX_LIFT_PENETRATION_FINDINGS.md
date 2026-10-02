@@ -1,106 +1,86 @@
-# Box Lift: contact-penetration findings
+# Box Lift current contact penetration findings
 
-> Historical audit: the small-batch notebook switched to the October 1 all-contacts Box run and separate Bayesian5001 rerun on 2026-10-02. The statistics and snapshots in this document still concern the September runs identified below; the new inputs have not yet been penetration-audited.
-
-Date: 2026-09-29; successful-episode same-arm check updated 2026-09-30
+Date: 2026-10-02. Replaces the September-run report; the old report is preserved in the ignored evidence archive.
 
 ## Summary
 
-Substantial robot–box overlap occurs in the saved simulations, including episodes marked successful. Of 305 successful episodes, 292 (95.7%) exceed 20 mm, 239 (78.4%) exceed 30 mm, and 116 (38.0%) exceed 40 mm of robot–box contact-depth magnitude. Eight successful episodes reach at least 50 mm.
+Audited all **1,200 episodes**, including **300 successes and 900 failures**, at **252,200 distinct recorded states**, including every terminal post-step pose. Questionable robot–box overlap remains in successful episodes. The three largest successful depths are **57.85, 52.49, and 52.03 mm**.
 
-These results establish a simulation-to-reality limitation, not a material specification: a softer box might accommodate some deformation, but these measurements do not demonstrate that changing the box material would reproduce the simulated motions or grasp success.
+No successful episode has detected same-arm contact or upper-arm/forearm–box overlap. Five successful episodes do contain contact between the two different arms. Failure statistics below are numerical only; all refreshed snapshots show successful episodes.
 
-## Data and measurement scope
+[Top three successful cases](box_lift_penetration_snapshots/successful_worst_cases_top3.jpg) · [Successful initial-versus-later overview](box_lift_penetration_snapshots/maximum_penetrations_overview.jpg) · [Video links and panel index](box_lift_penetration_snapshots/README.md)
 
-- Task/model: Box Lift, `issue_50_box_lift_ppo`, model snapshot commit `71f381f`.
-- Inputs: 60 NPZ files selected for Box Lift in [benchmark_stat_batch_sm.ipynb](benchmark_stat_batch_sm.ipynb), covering 1,200 episodes and 236,549 saved configurations.
-- Methods: Hand-Tuned, Bayesian, PPO, and ARS; 300 episodes per method across batches 50, 150, and 250.
-- Recorded successes: 305/1,200 (25.4%). “Successful” refers to the recorded task outcome, not a contact-validity assessment.
-- Hand-Tuned/PPO/ARS run: `eval_box_lift_all_methods_b50_150_250_20260924_190610`.
-- Bayesian run: `eval_box_lift_bayesian5001_b50_150_250_20260926_092000`; older Bayesian results are not included.
-- Contacts were reconstructed from saved pre-step configurations using native MuJoCo 3.3.1 and the task-specific model. This is a geometric audit, not a rerun of the original MJX dynamics.
+## Input and model scope
 
-Here, **depth** means the magnitude of a negative MuJoCo collision-contact distance, expressed in millimeters. It is not a pixel-based estimate, measured hardware deformation, or necessarily the minimum translation needed to separate the complete objects. Collision geometry and rendered surfaces can differ.
+- Hand-Tuned, PPO5005 best-evaluation and ARS4218: `eval_box_lift_all_contacts_b50_150_250_20261001_154416_3370028/`.
+- Bayesian5001: `eval_box_lift_bayesian5001_b50_150_250_after_20261001_154416/`. Bayesian5002 and PPO best-training are excluded.
+- Each method has 300 episodes: batches 50/150/250, five files per batch, 20 episodes per file. The 60 aggregate NPZs are selected directly from the notebook; individual episode exports are not counted again.
+- All recorded model XML, evaluator, runner and planner hashes inspected agree between the two run sources and the frozen audit copy. The all-contacts run records launch commit `00898abec9be43509d97c03e021673ef354e78ea`; recorded content hashes, not the current checkout alone, establish reconstruction provenance.
+- MuJoCo 3.3.1; timestep 0.1 s. Reconstructed native contacts from recorded full qpos; no physical rollout was rerun. Consecutive pre-step qpos exactly match preceding post-step qpos. The final post-step state is added once per episode.
+- All 336 checked relevant nonadjacent robot–robot, robot–box and robot–table pairs are collision-enabled, and the model has no explicit body-pair exclusions. Same-rigid-body and directly adjacent same-arm link pairs are not an independent self-intersection audit. Unmodeled surfaces remain outside scope.
+- The manipulated box collision geom is named `ball`. The tables are fixed; the Tray task's missing table-slider-state limitation does not apply here.
+- Successful NPZ episodes have `success=1` but `reason="na"`; classification uses the success flag, and the matched video filename says `success`. Failed reason fields agree with video outcomes.
 
-Counts below use each episode’s maximum depth over saved states. Each episode is counted once per threshold; thresholds are cumulative, not disjoint bands. Unsaved intermediate and final post-step states may contain additional overlap. Counts do not measure penetration duration or contact force. No initialization window has been excluded from these statistics.
+## Episode penetration counts
 
-## Robot–box penetration
+Counts use each episode's maximum across saved states. Thresholds are strictly greater than the stated depth and are cumulative. No initial time window is excluded in this table.
 
-| Episode maximum | All episodes (n=1,200) | Successful episodes (n=305) |
+| Contact | Threshold mm | All 1200 | Successful 300 | Failed 900 |
+|---|---:|---:|---:|---:|
+| Robot–box | >5 | 954 | 300 | 654 |
+| Robot–box | >10 | 899 | 300 | 599 |
+| Robot–box | >20 | 865 | 294 | 571 |
+| Robot–box | >30 | 786 | 243 | 543 |
+| Robot–box | >40 | 620 | 120 | 500 |
+| Robot–box | >50 | 444 | 7 | 437 |
+| Box–table | >0 | 1200 | 300 | 900 |
+| Box–table | >5 | 1200 | 300 | 900 |
+| Box–table | >20 | 1200 | 300 | 900 |
+| Robot–table | >0 | 167 | 7 | 160 |
+| Robot–table | >5 | 28 | 1 | 27 |
+| Robot–table | >20 | 1 | 0 | 1 |
+| Between arms | >0 | 398 | 5 | 393 |
+| Between arms | >5 | 216 | 0 | 216 |
+| Between arms | >20 | 18 | 0 | 18 |
+| Same arm | >0 | 12 | 0 | 12 |
+| Same arm | >5 | 4 | 0 | 4 |
+| Same arm | >20 | 0 | 0 | 0 |
+| Upper arm or forearm–box | >0 | 121 | 0 | 121 |
+| Upper arm or forearm–box | >5 | 110 | 0 | 110 |
+| Upper arm or forearm–box | >20 | 55 | 0 | 55 |
+
+| Contact | Largest successful depth mm | Largest failed depth mm |
 |---|---:|---:|
-| >20 mm | 864 (72.0%) | 292 (95.7%) |
-| >30 mm | 781 (65.1%) | 239 (78.4%) |
-| >40 mm | 620 (51.7%) | 116 (38.0%) |
-| ≥50 mm | 423 (35.3%) | 8 (2.6%) |
-| ≥52 mm | 368 (30.7%) | 2 (0.7%) |
-| ≥55 mm | 289 (24.1%) | 1 (0.3%) |
-| ≥56 mm | 258 (21.5%) | 0 (0.0%) |
+| Robot–box | 57.850 | 83.753 |
+| Box–table | 24.689 | 91.882 |
+| Robot–table | 5.214 | 33.925 |
+| Between arms | 4.645 | 43.273 |
+| Same arm | 0.000 | 15.796 |
+| Upper arm or forearm–box | 0.000 | 76.472 |
 
-The distinction between strict `>` and inclusive `≥` matches the thresholds used in the discussion.
+## Initialization and later table overlap
 
-### Successful episodes by method
+All 1,200 episodes exceed 20 mm of box–table overlap during initial loading. The successful whole-episode maximum is 24.689 mm at video 0.2 s (recorded state time 0.3 s). These tied initial-drop events are labeled separately in the overview.
 
-| Method | Successful episodes | >20 mm | >30 mm | >40 mm | ≥50 mm |
-|---|---:|---:|---:|---:|---:|
-| Hand-Tuned | 21 | 20 | 20 | 13 | 0 |
-| Bayesian | 41 | 40 | 26 | 9 | 0 |
-| PPO | 57 | 57 | 47 | 17 | 1 |
-| ARS | 186 | 175 | 146 | 77 | 7 |
+The main top-three figure instead ranks successful box–table overlap after recorded state time 1.0 s. The top depths are 12.120, 12.061, and 10.884 mm, at playback times 3.7, 3.2, and 5.9 s respectively. The cutoff is a sensitivity choice, not a physical settling detector. Robot–box and robot–table rows retain whole-episode maxima.
 
-These are counts within each method’s successful subset, whose sizes differ; they are not normalized method comparisons. The observed association between penetration and success does not establish that penetration caused success.
+## Method counts
 
-## Table contacts and initialization
+| Method | Successes / 300 | Successful robot–box >20 mm | >30 mm | >40 mm |
+|---|---:|---:|---:|---:|
+| Hand-Tuned | 22 | 22 | 22 | 13 |
+| Bayesian | 42 | 41 | 33 | 6 |
+| PPO | 55 | 54 | 47 | 21 |
+| ARS | 181 | 177 | 141 | 80 |
 
-### Box–table
+## Interpretation and evidence limits
 
-All 1,200 episodes, including all 305 successes, exceed 20 mm at some saved state. The largest successful-episode depth is 24.69 mm during initial drop/settling, at approximately 0.2 s of video playback.
+A success flag is the task outcome, not a contact-validity judgment. Depths are magnitudes of negative collision-contact distances, not force, calibrated material deformation, or necessarily the translation needed to separate complete bodies. The new contact masks do not by themselves establish physically admissible grasps. Softer material is not demonstrated as a remedy.
 
-For interpreting manipulation performance, initialization overlap should be reported separately under a consistent, explicitly defined settling cutoff. Such a cutoff has **not** been applied here, and post-settling threshold counts have not been calculated.
+Same-arm overlap occurs in failed episodes but not in the 300 successful episodes. All successful robot–robot examples are between different arms. Likewise, upper-arm/forearm–box overlap occurs only in failures; successful robot–box extrema shown here involve the grippers.
 
-Not all box–table overlap is initialization: the top three all-episode maxima are 86.21, 58.49, and 54.46 mm at playback times 12.6, 19.2, and 18.7 s, respectively. Those later events cannot be dismissed as initial loading.
+These results cover recorded states, including terminal poses, but not unsaved intermediate integration states. Box/Tray-style repeated block seeds should not be described as 100 independent randomized starts. Differences from the historical audit reflect both new runs/model contacts and expanded terminal-state coverage.
 
-### Robot–table
+All selected snapshot videos were fully decoded and matched to NPZ step counts; all 1,200 episode video paths are unique and present. Selected depths and camera alignment were independently checked. This is not a claim that every video was manually watched or fully decoded. Only two conclusive combined images remain selected for Git; all detailed evidence is in `box_lift_penetration_snapshots/archive/current_runs_20261002/`.
 
-Robot–table depth exceeds 5 mm in 18/1,200 episodes (1.5%), including 2/305 successful episodes (0.7%). Maximum depth is 17.60 mm overall and 8.83 mm among successful episodes. These values are smaller than robot–box maxima, but smaller overlap does not establish physical acceptability against a rigid table.
-
-## Robot–robot contact and remaining categories
-
-The reconstructed audit also contains robot–robot penetration: 354/1,200 episodes have a positive depth, including 5/305 successful episodes. The three worst successful episodes reach **3.984, 3.290, and 3.102 mm**, all Bayesian batch 250, seed 15, episodes 16, 18, and 13 respectively. Their worst contact pair is `robot_01 / robot_103`, at playback times 4.0, 4.1, and 4.8 s. These are contact distances between robot collision geoms, not robot–box contacts.
-
-**No same-arm collision was detected in any of the 305 successful episodes (0/305)** in the separate same-arm audit. Both the enabled MuJoCo contact check and a nonadjacent-link capsule-overlap check (including disabled collision pairs) found zero positive same-arm penetration in successful episodes. Contacts within one rigid link and between directly adjacent joint links are excluded. The successful robot–robot contacts described above and shown in the figure are **between the two different arms**, not between links of the same arm.
-
-This additional check includes each initial robot pose and every saved post-step robot pose, including the terminal pose (237,749 states across all 1,200 episodes); it does not change the original pre-step-only penetration statistics. Absence of detected same-arm collision is limited to saved states and modeled geometry, not a guarantee about unsaved intermediate motion or unmodeled surfaces. Failed Box Lift episodes do contain same-arm overlap, so the zero finding applies specifically to successful episodes.
-
-The audit's `other` category contains no negative contact distances in any saved state. Thus the combined successful-case figure covers all four categories with positive reconstructed depths. This does not establish absence of intersection for all disabled or unmodeled collision pairs.
-
-## Selected visual evidence
-
-Only two figures are retained for Git (approximately 1.27 MB combined):
-
-1. [Maximum-penetration overview](box_lift_penetration_snapshots/maximum_penetrations_overview.jpg): six labeled panels comparing all-episode and successful-episode maxima for robot–box, box–table, and robot–table contacts. It includes late box–table overlap and distinguishes it from initial settling.
-2. [Top three successful episodes per contact category](box_lift_penetration_snapshots/successful_worst_cases_top3.jpg): twelve panels covering robot–box, box–table, robot–table, and robot–robot. Each row ranks three distinct successful episodes by episode-maximum depth. The box–table row is explicitly labeled initial settling. These are extreme examples, not typical successful episodes; maxima need not occur at task completion.
-
-The top-three numerical results are summarized below without separate per-category figures. Each set contains distinct episodes, ranked by episode maximum; successful-only and all-episode sets may overlap.
-
-| Contact | All episodes: top three depths (mm) | Successful episodes: top three depths (mm) |
-|---|---|---|
-| Robot–box | 75.97, 73.91, 73.29 | 55.60, 52.88, 51.65 |
-| Box–table | 86.21, 58.49, 54.46 | 24.69, 24.69, 24.69 |
-| Robot–table | 17.60, 12.01, 9.48 | 8.83, 5.97, 3.43 |
-| Robot–robot (same-arm or between-arm contacts) | 36.91, 34.50, 32.54 | 3.98, 3.29, 3.10 |
-
-The successful box–table examples are tied initialization cases; three representative episodes were selected using a deterministic tie-break, not three uniquely larger events.
-
-See the [selected-evidence index](box_lift_penetration_snapshots/README.md) for panel identities, timestamps, and local video references. Images are extracted from the original videos, not synthesized; labels were added outside the source frames, with JPEG compression. All twelve selected depths were rechecked against the saved configurations. Contact regions may be occluded by the camera. The complete original extraction, including raw frames, full top-three sets, and JSON metadata, is preserved in `box_lift_penetration_snapshots/archive/`, which is excluded from Git. Videos are also local data, not included in Git.
-
-Video timestamps are playback times; episode and frame indices are zero-based. Saved pre-step state `s` corresponds to video frame `s−1`, because frames were recorded after simulation steps.
-
-## Physical interpretation
-
-MuJoCo permits overlap through its soft-contact formulation; contact response depends on solver parameters such as `solref` and `solimp`. That does not automatically make geometric overlap a calibrated model of real material deformation. See [MuJoCo’s contact/solver documentation](https://mujoco.readthedocs.io/en/latest/modeling.html#solver-parameters).
-
-The current results should therefore be described as successful task outcomes **under the existing simulation contact/execution setup**, not demonstrated physically admissible grasps. This audit does not prove that the observed overlap is unavoidable in other configurations.
-
-A softer box or compliant contact surface is a hypothesis to validate, not an established fix. In particular, the approximately 52–56 mm contact depths in the most extreme successful robot–box episodes cannot be translated directly into a required foam thickness or material stiffness. Physical validation would require force–deformation behavior, contact geometry, and grasp stability to be checked with a matching model or measurements.
-
-This update changes documentation and selected evidence figures only; it does not change the notebook, simulation code, models, or benchmark data.
+No notebook calculations or data selections, simulator source, source model, checkpoint, or benchmark NPZ was changed by this audit. Only evidence outputs, documentation, and the notebook audit-status note were updated.

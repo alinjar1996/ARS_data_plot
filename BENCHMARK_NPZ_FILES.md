@@ -174,7 +174,7 @@ Here `{s}` expands to exactly `0`, `10`, `15`, `4`, and `5`. Each row identifies
 | PPO 5005, best eval | `eval_box_lift_all_contacts_b50_150_250_20261001_154416_3370028/npz/ppo5005besteval_batch{b}/` | `eval_ppo5005besteval_batch{b}_n20_seed{s}.npz` |
 | ARS 4218 | `eval_box_lift_all_contacts_b50_150_250_20261001_154416_3370028/npz/ars4218_batch{b}/` | `eval_ars4218_batch{b}_n20_seed{s}.npz` |
 
-Updated 2026-10-02. Hand-Tuned, PPO5005 best-evaluation, and ARS4218 use the October 1 all-contacts run. Bayesian uses the separate Bayesian5001 rerun for all three batches. The all-contacts run's `bayesian5002_batch{b}` and `ppo5005best_batch{b}` directories are excluded, as are the previous September Box inputs. Only the aggregate `npz/` files are selected; individual `episodes/` files are not pooled in. All 60 selected Box files contain 20 episodes each. Existing Box penetration findings/snapshots refer to the previous runs, not these newly selected inputs.
+Updated 2026-10-02. Hand-Tuned, PPO5005 best-evaluation, and ARS4218 use the October 1 all-contacts run. Bayesian uses the separate Bayesian5001 rerun for all three batches. The all-contacts run's `bayesian5002_batch{b}` and `ppo5005best_batch{b}` directories are excluded, as are the previous September Box inputs. Only the aggregate `npz/` files are selected; individual `episodes/` files are not pooled in. All 60 selected Box files contain 20 episodes each. Box penetration findings/snapshots were refreshed for these inputs on 2026-10-02, including terminal states. Previous evidence is preserved in the ignored archive.
 
 ### Small-batch Tray Push
 

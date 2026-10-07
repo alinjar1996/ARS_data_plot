@@ -2,6 +2,8 @@
 
 This manifest covers [benchmark_stat_batch.ipynb](benchmark_stat_batch.ipynb) (batches 250, 500, 750, 1000) and [benchmark_stat_batch_sm.ipynb](benchmark_stat_batch_sm.ipynb) (batches 50, 150, 250). Paths are relative to the directory containing the notebooks.
 
+For the verified method identities, exact checkpoint files, hashes, and generation-time Git references, see the [checkpoint identity audit](#checkpoint-identity-audit-2026-10-06). That audit covers all 480 currently selected files, not unused/archived sweeps.
+
 The large-batch inventory below was verified on 2026-09-29; its expansion notation and exclusions apply to `benchmark_stat_batch.ipynb`. The [small-batch inventory](#small-batches-50-150-and-250) was updated on 2026-09-30 for Ball and 2026-10-02 for Box.
 
 The large-batch notebook aggregates **300 NPZ files**: 15 task–series combinations × 4 batches × 5 files. Every listed file exists and contains 20 saved episodes. The series order is Hand-Tuned, Bayesian, PPO (best train), PPO (best val), ARS. Both PPO series are evaluation rollouts; the labels identify how each checkpoint was selected.
@@ -203,3 +205,135 @@ Append the folder and filename forms below to that root. Here `{s}` expands to e
 These totals count files, not the subset of episodes eligible for each metric. Success rate uses all 100 episodes per group; task time uses successful episodes after excluding episode 0 in each file; computation time uses episodes with valid timings after excluding their first MPC step. Run `./check_benchmark_data.sh` or the final audit cell in the small-batch notebook to check coverage and metric inclusion counts.
 
 See [BENCHMARK_DISCREPANCIES.md](BENCHMARK_DISCREPANCIES.md) for metric definitions, resolved issues, and remaining comparability limitations.
+
+## Checkpoint identity audit 2026-10-06
+
+### Scope and conclusion
+
+Read-only data/code audit of the actual candidate lists in both notebooks: **300 large-batch + 180 small-batch = 480 distinct NPZ files, 9,600 recorded episodes, 27 task/method series**. Every selected file has 20 episodes. All candidates were checked, not just the representative highest-SR file that the notebooks retain for diagnostics. Unselected historical runs, individual-episode files, and newer simulator evaluations are outside this inventory.
+
+**No ARS/PPO/Hand-Tuned/Bayesian method swap or PPO best-training/best-evaluation swap was found in the current selections.** Evidence includes metadata from every selected NPZ, original/frozen checkpoints, generation logs, source/checkpoint SHA256 values where available, Git training and evaluation history, fixed-weight traces, and independent actor-output checks. Older files have weaker provenance, identified below; this is not a claim that every run has an immutable launch manifest.
+
+Only this documentation was updated. No result, checkpoint, notebook selector, figure, or simulator code was changed. Correct identity does not resolve the separate physical-validity and comparison concerns in [concerns.md](concerns.md).
+
+### Checkpoints actually used
+
+The source IDs link to the exact retrievable artifact list below. “Large” means batches 250/500/750/1000; “small” means 50/150/250. Each large row covers 20 files and each small row 15 files.
+
+| Task | Plotted method | Large-batch checkpoint / weight source | Small-batch checkpoint / weight source |
+|---|---|---|---|
+| Ball Lift | Hand-Tuned | Fixed hand-tuned constants; no learned checkpoint | Same fixed hand-tuned constants; no learned checkpoint |
+| Ball Lift | Bayesian | **2100-derived hardcoded constants**, not a JSON loaded at runtime; see transcription caveat below (B0) | Retrained `bayesian_ball_lift_best.json`, frozen as `checkpoints/bayesian_weights.json` (B1) |
+| Ball Lift | ARS | **ARS3950**, `ars_v2_linear_policy_3950.json` (B2) | Same exact actor bytes, frozen as `checkpoints/ars3950.json` (B2) |
+| Ball Lift | PPO best train | **PPO4951**, `ppo4951_best_training.json`; `checkpoint_type=best`, `updates_completed=1325` (B3) | Not selected; a best-training copy exists but is excluded |
+| Ball Lift | PPO best eval/val | **PPO4951**, `ppo4951_best_eval.json`; `checkpoint_type=best_eval`, update **1410** (B4) | Same exact actor bytes, `checkpoints/ppo4951_best_eval.json` (B4) |
+| Box Lift | Hand-Tuned | Fixed hand-tuned constants; no learned checkpoint | Same fixed hand-tuned constants; no learned checkpoint |
+| Box Lift | Bayesian | **Bayesian3601** constants, plus fixed smoothness 0.01; no runtime JSON path recorded (X0) | **Bayesian5001**, `bayesian_5001.json`, fixed smoothness 0.01 (X1); **not 5002** |
+| Box Lift | ARS | **ARS4218**, `ars_v2_linear_policy_4218.json` (X2) | Same exact actor bytes (X2) |
+| Box Lift | PPO best train | **PPO5005**, `real_demo/real_demo/ppo_linear_policy_5005.json`; `checkpoint_type=best`, `updates_completed=2920` (X3) | Not selected; the run's `ppo5005best_batch*` files are excluded |
+| Box Lift | PPO best eval/val | **PPO5005**, `real_demo/real_demo/ppo_linear_policy_5005_best_eval.json`; update **2900** (X4) | Same exact actor bytes (X4) |
+| Tray Push | Hand-Tuned | Fixed hand-tuned constants; no learned checkpoint | Zero-output `handtuned_common_jit.json` adapter implementing the same constants (T0) |
+| Tray Push | Bayesian | **Bayesian4104** constants from `cost_weights_optim_4104.json` (T1) | Same weights in zero-output `bayesian4104_common_jit.json` adapter (T1) |
+| Tray Push | ARS | **ARS4124**, nested `real_demo/real_demo/ars_v2_mlp_policy_4124.json`, iteration **806** (T2) | Same parameters and normalization copied into `ars4124_common_jit.json` (T2) |
+| Tray Push | PPO best train | **PPO5307**, `ppo_mlp_policy_5307.json`; selected training rollout **2323** (T3) | Not selected |
+| Tray Push | PPO best eval/val | **PPO5307**, `ppo_mlp_policy_5307_best_eval.json`; update **2180** (T4) | Same actor, verified against recorded outputs (T4) |
+
+PPO “best train” and “best eval” identify checkpoint selection, not whether the plotted episodes are training or evaluation rollouts: all plotted files are evaluations. Do not infer checkpoint type from a `best_eval_update` field alone, because a best-training checkpoint can also retain that historical statistic. Tray's best-training file records `updates_completed=2322` alongside selected rollout/update 2323; those counters have different save-time semantics and do not make it the best-evaluation actor.
+
+### Exact artifact locations and Git recovery
+
+Git references below belong to `/home/aks-lab/colcon_ws/src/manipulator_mujoco`, not this results repository. They are historical blob references and do not require checking out or changing the active branch. For example, inspect B2 with:
+
+```bash
+git -C /home/aks-lab/colcon_ws/src/manipulator_mujoco show 255a412:ars_v2_linear_policy_3950.json
+```
+
+| ID | Exact artifact / historical reference |
+|---|---|
+| B0 | `119d1d0:real_demo/real_demo/ARS.py`, `DEFAULT_LOG_WEIGHTS`; derived from `119d1d0:real_demo/sampling_based_planner/cost_weights_optimized/cost_weights_optim_2100.json`, with the collision-value difference below |
+| B1 | `f4202cc:real_demo/real_demo/bayesian_ball_lift_matched_20260929_191418_252222/bayesian_ball_lift_best.json`; identical local [frozen Bayesian weights](eval_sweep_100_ball_lift_bayes_retrained_20260929_191418/checkpoints/bayesian_weights.json) |
+| B2 | `255a412:ars_v2_linear_policy_3950.json`; identical local [frozen ARS3950](eval_sweep_100_ball_lift_bayes_retrained_20260929_191418/checkpoints/ars3950.json) |
+| B3 | `d260301:real_demo/real_demo/eval_ars3950_3982_vs_ppo4951_ball_lift_100_20260829_101625/checkpoints/ppo4951_best_training.json`; identical local [best-training copy](eval_sweep_100_ball_lift_bayes_retrained_20260929_191418/checkpoints/ppo4951_best_train.json) |
+| B4 | `d260301:real_demo/real_demo/eval_ars3950_3982_vs_ppo4951_ball_lift_100_20260829_101625/checkpoints/ppo4951_best_eval.json`; identical local [best-evaluation copy](eval_sweep_100_ball_lift_bayes_retrained_20260929_191418/checkpoints/ppo4951_best_eval.json) |
+| X0 | `79fa0aa:real_demo/sampling_based_planner/cost_weights_optimized/cost_weights_optim_3601.json`; evaluator constants add smoothness 0.01 |
+| X1 | `504aa80:real_demo/real_demo/bayesian_box_lift_matched_20260925_183328_398207/bayesian_5001.json`; a byte-identical local [saved copy](eval_box_lift_bayesian5001_b50_150_250_20260926_092000/bayesian_5001.json) exists in the older run, but the selected episode data are the October rerun |
+| X2 | `2d9ee336:ars_v2_linear_policy_4218.json`; unchanged in `79fa0aa` and `00898ab` |
+| X3 | `79fa0aa:real_demo/real_demo/ppo_linear_policy_5005.json` |
+| X4 | `79fa0aa:real_demo/real_demo/ppo_linear_policy_5005_best_eval.json` |
+| T0 | `<TRAY_ROOT>/checkpoints/handtuned_common_jit.json` |
+| T1 | `e709694:real_demo/sampling_based_planner/cost_weights_optimized/cost_weights_optim_4104.json`; small-run adapter `<TRAY_ROOT>/checkpoints/bayesian4104_common_jit.json` |
+| T2 | `587a453:real_demo/real_demo/ars_v2_mlp_policy_4124.json`; small-run adapter `<TRAY_ROOT>/checkpoints/ars4124_common_jit.json` |
+| T3 | `6117e21:ppo_mlp_policy_5307.json` |
+| T4 | `6117e21:ppo_mlp_policy_5307_best_eval.json` |
+
+Here `<TRAY_ROOT>` is the existing local directory:
+
+`eval_sweep_100_tray_push_common_jit_randomized_xy001_yaw2_b50_150_250-20260925T081018Z-1-001/eval_sweep_100_tray_push_common_jit_randomized_xy001_yaw2_b50_150_250`
+
+Hand-tuned vectors, in each task's saved `cost_weight_keys` / `cost_weights_keys` order:
+
+- Ball: `[200, 0.2, 0.04, 1.5, 5, 0.01, 0.5, 5, 5]`.
+- Box: `[500, 0.3, 10, 0.1, 5, 4, 7, 3, 6, 0.01]`.
+- Tray: `[750, 5, 1, 0.5, 1, 12, 10, 10, 15, 20, 50, 50]`.
+
+### Checkpoint hashes
+
+For B1–B4 and X1–X4, the SHA256 values below match the corresponding recorded NPZ checkpoint/weight hashes in every selected file that uses them. T0–T4 hashes are computed from the local adapters or historical Git blobs during this audit: **the Tray NPZs do not themselves record those hashes**. For Tray, tensor equality, metadata, run logs, and actor-output recomputation supply the additional evidence.
+
+| Artifact | SHA256 |
+|---|---|
+| B1, retrained Ball Bayesian | `c58bf0eb06a79ce269576237b8c0e3c83bc8692971b42c005646ae72605bc2a6` |
+| B2, Ball ARS3950 | `0d652353afc7855a7236a64b56c302c16bd5582e2b80a232302c3d93ed0779fd` |
+| B3, Ball PPO4951 best train | `18d5d12a575b2d6e3f2cd6bc7d120a5544e8cb294981ec1df67e1579b13e3be8` |
+| B4, Ball PPO4951 best eval | `197268ee929868a07a367b1e51ffdee896ea2f5f41dccc21a266b3811c997684` |
+| X1, Box Bayesian5001 | `73d3804f0d9ff9e1d2595a73995f713a80ea249d1511a9aa7e787f622aaa022b` |
+| X2, Box ARS4218 | `65a9291e5ff106d5e1e9413c90241926f70e001b869b0d921f6c011a3b9ea09c` |
+| X3, Box PPO5005 best train | `0c60f8b1a6dd6db3bcf049597e8cfca9d31dfc5e7ccae0f8e12b62352b81e06e` |
+| X4, Box PPO5005 best eval | `52ff85446069951289625108334377f08af49b5128d1d09dc8ac3a68326e190d` |
+| T0, Tray Hand-Tuned adapter | `9a2f2025a0c833ead4a3ac3cd0f6048bf92e6a485e520fa2fdbc5f62f90f3c67` |
+| T1, Tray Bayesian4104 adapter | `047ffccb93d9922face2f4e3451914fca4932c1ebe2c14ca2a32759e424e9036` |
+| T2, original Tray ARS4124 iteration 806 | `9166d54ee3cc8ef97605a3ba442e2b968895627fc46aa5bde2a08db855b4d8b7` |
+| T2, Tray ARS4124 adapter | `b8577e0bae8e05082ec54f0cc3f83f0f6a725c2c6874a65ceee2df07cf9aa075` |
+| T3, Tray PPO5307 best train | `5e75b54f30dc7e91aa8ab9a16f350b60dac6ba9823fac2362992408f95e8b121` |
+| T4, Tray PPO5307 best eval | `28535c318a394ddd47bf08a8ba3636eaa4e4d0c1c56b052b1eb02c052c16a2eb` |
+
+The ARS4124 adapter and original JSON have different file hashes because the schema changed. Their `params`, `mu`, and `var` arrays match exactly. The adapter's hand-tuned baseline and clipping match the historical ARS implementation.
+
+### Generation and training history checked
+
+| Dataset / actor | Git and saved evidence |
+|---|---|
+| Ball ARS3950 training | `255a412` (2026-07-30), original checkpoint and ARS training history; exact hash remains unchanged in both selected sweeps |
+| Ball PPO4951 training / large evaluation | `42fcbfb` and `d260301` (2026-08-29), PPO training artifacts, frozen best-training/best-evaluation actors, and evaluation manifest |
+| Ball large fixed weights / ARS evaluation | `119d1d0` (2026-09-23), `run_eval_ht_bayes_ball_lift_100.sh`, evaluator `PolicyWrapper`, and ARS constants |
+| Ball retrained Bayesian / small evaluation | `f4202cc` (2026-09-30), September 29 training artifacts, `run_manifest.txt`, `artifact_hashes.sha256`, and each selected NPZ's evaluator/checkpoint hashes; all 12 manifest entries match their Git blobs |
+| Box ARS4218 training | `2d9ee336` (2026-06-22), ARS training source and saved 4218 checkpoint; exact hash matches both selected sweeps |
+| Box PPO5005 training | `1a070555` (2026-09-04), PPO training source and best/best-evaluation actors |
+| Box large evaluation | `79fa0aa` and `e08cb00` (2026-09-24), matched evaluator/runner/launcher snapshots; older Bayesian vectors match 3601 constants plus smoothness |
+| Box small evaluation | Run records HEAD `00898ab` (2026-10-01). All 13 entries in each selected run's `input_sha256.txt` match historical blobs. Bayesian5001's dedicated hash and all 15 run logs/NPZs additionally confirm X1; see shared-list caveat below |
+| Tray ARS4124 training / large baseline sweep | `587a453` (2026-06-23), nested iteration-806 actor; `e709694` (2026-06-26), sweep8 launcher and evaluator. All 20 selected large ARS logs explicitly load the nested actor with `start_it=806` |
+| Tray PPO5307 / common-JIT evaluation | `a393e46` (2026-09-20), training artifacts; `49b06eda` and `6117e21` (September 24–25), adapters, shared evaluator, fixed-pose versus randomized launchers, and inference settings |
+
+Training-code inspection distinguished actual algorithms rather than trusting filenames alone: ARS perturbs actor parameters in positive/negative directions and updates from their reward differences; PPO uses policy likelihood ratios and a clipped surrogate. Legacy ARS JSONs often omit `algorithm`; the historical loaders default these to ARS. Their hashes match the original ARS training artifacts, and their outputs match the deployed weight traces in the checks below.
+
+### Numerical identity checks and evidence limits
+
+| Check | Coverage | Result |
+|---|---|---|
+| Notebook selection and metadata | All 480 files / 9,600 episodes | No conflicting method identity or PPO checkpoint type within a selected series |
+| Fixed-weight behavior | All 210 Hand-Tuned/Bayesian files; **1,314,339 saved steps** | Every recorded weight vector matches its selected fixed source within floating-point rounding; maximum absolute log-weight error below `1.4e-7` |
+| Tray actor recomputation from saved 68-D observations | All 40 large PPO files plus 15 small PPO and 15 small ARS files; **553,548 steps** | Historical actor parameters/normalization/mapping reproduce logged weights; maximum absolute log-weight error below `8.4e-7` |
+| Ball/Box actor spot checks | All 180 selected policy files; first/middle/last step of each of 3,600 episodes = **10,800 samples** | Reconstructed pre-step observations reproduce checkpoint outputs; maximum absolute log-weight error below `3.4e-6`. This is a kinematic/actor check, not dynamic replay or an every-step check |
+| Large Tray ARS identity | All 20 logs explicitly name nested ARS4124 iteration 806; corresponding saved trajectories have adaptive weights | Supported by logs/source history, **not** a recorded NPZ hash or full actor replay: these older NPZs omit full observations/object state |
+
+The actor checks used the historical input ordering, baselines, normalization, and output transforms. They did not load today's branch's arbitrary defaults or run new simulation episodes. Ball/Box reconstruction used existing frozen kinematic models; it does not certify every original physics/XML setting. Matching outputs provides stronger actor-identity evidence than checking the `policy` filename token alone.
+
+### Naming and provenance caveats
+
+1. **`policy` is not an algorithm name.** Ball ARS and PPO can both have `eval_policy_*.npz` filenames. The source directory, checkpoint hash, loader metadata, and output checks disambiguate them. Conversely, a `default_weight_set=bayesian` field on Box ARS/PPO identifies the residual baseline, not the plotted algorithm.
+2. **Tray adapters say `algorithm="ppo"` to use a common loader.** Their `source_algorithm` is `handtuned`, `bayesian4104`, or `ars4124`. The first two have zero-output actors; the third preserves the trained ARS tensors. The selected NPZs correctly record the source identities. This is not evidence that these three methods were trained with PPO.
+3. **Ball's historical Bayesian2100 vector is not an exact JSON copy.** `cost_weights_optim_2100.json` has collision weight `65.32040405273438`; historical `ARS.py` hardcodes `65.320040405273438`, which is what the large-batch Bayesian traces use. Difference: `0.00036364746`, or approximately **0.000557%**. Other entries match. This is a tiny transcription discrepancy, not an ARS/Bayesian swap; call this source **2100-derived constants**. The same historical constants anchor the selected Ball ARS/PPO policies. The retrained small-batch Bayesian JSON is separately hash-verified.
+4. **Box's Bayesian5001 rerun carries a shared input list mentioning Bayesian5002.** Its `input_sha256.txt` describes the broader all-method launcher and includes `bayesian_5002.json`. The dedicated `bayesian_5001.sha256`, all 15 evaluation logs, all 15 NPZ checkpoint hashes, and every saved fixed-weight vector instead agree on **5001**. Do not use the general input list alone to identify the selected Bayesian method. The main all-contacts run's actual 5002 files are excluded from the notebook.
+5. **Training identifiers and evaluation seeds are different.** `3950`, `4218`, `4124`, `4951`, `5005`, and `5307` identify trained artifacts, not episode seeds or batch sizes. A file renamed to an algorithm-like name would not establish provenance; the cross-checks above are why these selected labels are supported.
+6. **Some old paths are historical, not currently accessible paths.** `/home/aks-lab/manipulator_mujoco/...` and the current `colcon_ws/src/...` prefix can refer to byte-identical actors. Use the recorded hash and historical Git artifact, not path existence or today's same-named file alone. The checkpoint hash table distinguishes values saved at generation from hashes computed during this audit.
+7. **Identity is not fairness or physical validity.** In particular, the old Tray launcher at `e709694` explicitly comments on choosing the five seeds for low joint noise/small target angles. They should not be described as an independently randomized test set. This does not change which actor produced the results or the matched-start checks, but it limits generalization claims. The simulator/contact concerns remain separate.

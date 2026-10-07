@@ -27,9 +27,11 @@ venv/
 # Local-only ball-lift audit and supplementary evidence
 /ball_lift_penetration_snapshots/archive/
 
+# Generated ARS video montages (script and tests remain tracked)
+/ars_video_snapshots/
+
 *.json
 *.csv
 *.txt
 *.sha256
-
 

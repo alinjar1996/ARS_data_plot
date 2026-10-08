@@ -4,6 +4,7 @@
 Run in the project environment (numpy, matplotlib, opencv-python, Pillow):
     python make_ars_weights_snapshots.py --dry-run
     python make_ars_weights_snapshots.py
+    python make_ars_weights_snapshots.py --presentation
     python make_ars_weights_snapshots.py --rank
     python make_ars_weights_snapshots.py --tasks box --select box:50:0:4
 
@@ -36,6 +37,11 @@ penetration-free demonstrations. All selected episodes have known penetration;
 available audit values and selection criteria are retained in sources.json.
 No physics reruns, model imports, Git checkouts, or input/notebook edits occur.
 Only trusted local NPZs should be used (their ragged arrays require pickle).
+
+--presentation writes separate *_presentation files with larger labels/ticks,
+task-only headings and untimed snapshot captions. Episode/method identities and
+exact times remain in the separate provenance, not on these figures. Existing
+figures, CSVs and sources.json are untouched by this option.
 """
 
 from __future__ import annotations
@@ -131,6 +137,40 @@ LIMITATIONS = (
     "Tray table overlaps in the older audit are fixed-table reference overlaps, not confirmed dynamic table contacts.",
     "Linear panels have independent zero-based y scales; apparent line heights across panels are not comparable.",
 )
+
+# Label-to-code mapping reviewed against compute_cost_single at SOURCE_REVISIONS
+# and the uploaded cost appendix (shared, ball, box and tray cost sections).
+# This validates names/weight symbols, not equivalence of every paper formula.
+PAPER_NOTATION_REFERENCE = {
+    "sources": [
+        {"file": "supp(1).tex", "sections": "Shared Cost Components; Ball Lifting; Box Lifting; Tray Pushing",
+         "sha256": "e845fb160aee5f727959a88294a4d345cb9d6202015818c7036456d63e62a636"},
+        {"file": "Bimanual_AAMAS_2027-5.pdf", "sections": "1.2-1.5",
+         "sha256": "da3558942e80ad8d90860e2e8963584f66b06585e92527e99657b3524eccb02c"},
+    ],
+    "scope": "Cost-component names and weight-symbol mapping to the recorded policy keys and pinned planner revisions.",
+    "exceptions": [
+        "Smoothness is absent from the paper cost equations: use its name without inventing a weight symbol.",
+        "Box orientation is described without a paper symbol: retain the name without assigning one.",
+        "Box z-axis is yz planar alignment (w_yz), not height alone.",
+        "Box obj_to_targ also weights contact maintenance; the paper's Object-to-target label is retained.",
+        "Ball/Box fixed lift spacing gains are excluded from these policy-weight plots, not removed from the planner.",
+    ],
+}
+
+
+def figure_stem(task, *, presentation=False):
+    """Keep presentation artifacts distinct from the original figure and CSV."""
+    return f"{task}_weights_snapshots_presentation" if presentation else f"ars_{task}_weights_snapshots"
+
+
+def display_cost_label(label, *, presentation=False):
+    label = label.replace(" (not in paper)", "").replace(" (symbol unspecified)", "")
+    if presentation:
+        # The paper uses text subscripts/superscripts. In particular, eef-obj
+        # and obj-targ contain text hyphens, not mathematical minus operators.
+        label = label.replace(r"\mathrm{", r"\text{")
+    return label
 
 
 def read_weight_config(notebook):
@@ -414,7 +454,7 @@ def rank_candidates(episodes, base, task, labels, rules):
                           robot_object_lower_quartile_mm=quartile, shortlist_count=len(shortlist))
 
 
-def render_figure(episode, trace, frames, labels):
+def render_figure(episode, trace, frames, labels, *, presentation=False):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -436,19 +476,21 @@ def render_figure(episode, trace, frames, labels):
     start = trace["plot_start_s"]
     transition = float(trace["times"][2])
     transport = "Push" if episode.task == "tray" else "Lift"
-    fig.suptitle(f"{title} | ARS | batch {episode.batch} | seed {episode.seed} | episode {episode.index + 1}",
+    heading = title if presentation else f"{title} | ARS | batch {episode.batch} | seed {episode.seed} | episode {episode.index + 1}"
+    fig.suptitle(heading,
                  fontsize=17, y=.972, weight="bold")
     stages = ["Start (settled)" if episode.task == "box" else "Start", "Approach", "Transition", transport]
     for ax, frame, tag, stage, time_s in zip(image_axes, frames, "ABCD", stages, trace["times"]):
         ax.imshow(frame)
-        ax.set_title(f"{tag}   {stage} · {time_s:.1f} s", fontsize=12, loc="left", pad=7)
+        caption = f"{tag}   {stage}" if presentation else f"{tag}   {stage} · {time_s:.1f} s"
+        ax.set_title(caption, fontsize=14 if presentation else 12, loc="left", pad=7)
         ax.set_axis_off()
 
     colors = plt.get_cmap("tab20")
     color_order = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 1, 5]
     for column, name in enumerate(trace["names"]):
         ax = fig.add_subplot(weight_grid[column // ncols, column % ncols])
-        label = labels[title][name].replace(" (not in paper)", "").replace(" (symbol unspecified)", "")
+        label = display_cost_label(labels[title][name], presentation=presentation)
         description, _, symbol = label.partition(" — ")
         active = trace["active"][:, column]
         status = "both phases"
@@ -459,8 +501,8 @@ def render_figure(episode, trace, frames, labels):
         elif np.array_equal(active, trace["pre_phase"] == 1):
             status = f"{transport.lower()} only"
         subtitle = " · ".join(x for x in [symbol, status] if x)
-        ax.set_title(textwrap.fill(description, width=38) + "\n" + subtitle,
-                     fontsize=9.5, pad=31)
+        ax.set_title(textwrap.fill(description, width=30 if presentation else 38) + "\n" + subtitle,
+                     fontsize=12 if presentation else 9.5, pad=33 if presentation else 31)
         ax.stairs(plotted[:, column], edges, color=colors(color_order[column]),
                   lw=1.8, label=label, baseline=None)
         ax.axhline(0, color="#999999", lw=.5, zorder=-1)
@@ -473,13 +515,13 @@ def render_figure(episode, trace, frames, labels):
                                   transform=ax.get_xaxis_transform(), facecolor=color,
                                   edgecolor="none", clip_on=False))
             ax.text((left + right) / 2, 1.0875, phase_name,
-                    transform=ax.get_xaxis_transform(), ha="center", va="center", fontsize=9)
+                    transform=ax.get_xaxis_transform(), ha="center", va="center", fontsize=10.5 if presentation else 9)
         for tag, time_s in zip("ABCD", trace["times"]):
             ax.axvline(time_s, color="#783c85" if tag == "C" else "#777777",
                        lw=1.25 if tag == "C" else .85, ls="--" if tag == "C" else ":")
             ax.text(time_s, .97, tag, transform=ax.get_xaxis_transform(),
                     ha={"A": "left", "D": "right"}.get(tag, "center"), va="top",
-                    fontsize=9, weight="bold", color="#783c85" if tag == "C" else "#444444",
+                    fontsize=10 if presentation else 9, weight="bold", color="#783c85" if tag == "C" else "#444444",
                     bbox=dict(facecolor="white", edgecolor="none", alpha=.85, pad=.5))
         visible_peak = float(np.max(plotted[edges[1:] > start, column]))
         peak = visible_peak if visible_peak else 1.
@@ -488,21 +530,23 @@ def render_figure(episode, trace, frames, labels):
         ax.xaxis.set_major_locator(MaxNLocator(nbins=4, min_n_ticks=3))
         ax.yaxis.set_major_locator(MaxNLocator(nbins=4, min_n_ticks=3))
         ax.ticklabel_format(axis="y", style="plain", useOffset=False)
-        ax.tick_params(labelsize=9)
+        ax.tick_params(labelsize=11 if presentation else 9)
         ax.spines[["top", "right"]].set_visible(False)
         ax.grid(alpha=.17)
     weights_box = grid[1].get_position(fig)
     fig.text(.010, (weights_box.y0 + weights_box.y1) / 2,
              "Phase-masked policy weight — linear, independent y-scales", rotation=90,
-             ha="left", va="center", fontsize=12)
-    fig.text(.52, .06, "Simulation time (s) · original timestamps · C = recorded phase switch",
-             ha="center", fontsize=11)
+             ha="left", va="center", fontsize=13 if presentation else 12)
+    time_label = ("Simulation time (s) · C = recorded phase switch" if presentation else
+                  "Simulation time (s) · original timestamps · C = recorded phase switch")
+    fig.text(.52, .06, time_label, ha="center", fontsize=12 if presentation else 11)
     phase_note = "Inactive terms = 0; fixed planner gains are excluded from these policy-weight plots."
     start_note = (f"Box drop/rebound omitted before {start:g} s; full data retained in CSV." if episode.task == "box" else
                   f"Start snapshot = first saved frame ({episode.dt:g} s).")
-    fig.text(.055, .025, phase_note + " " + start_note + "\n"
-             "Panels show unnormalized policy weights, not cost contributions or causal effects; compare numbers, not heights across panels.",
-             fontsize=9, color="#555555")
+    note = (phase_note + "\nIndependent linear scales; weights are coefficients, not cost contributions." if presentation else
+            phase_note + " " + start_note + "\n"
+            "Panels show unnormalized policy weights, not cost contributions or causal effects; compare numbers, not heights across panels.")
+    fig.text(.055, .025, note, fontsize=10 if presentation else 9, color="#555555")
     return fig
 
 
@@ -573,6 +617,8 @@ def main(argv=None):
     parser.add_argument("--select", action="append", default=[], metavar="TASK:BATCH:SEED:EPISODE")
     parser.add_argument("--rank", action="store_true", help="Print reproducible shortlist from existing audit files; write nothing")
     parser.add_argument("--dry-run", action="store_true", help="Validate selections and decode frames; write nothing")
+    parser.add_argument("--presentation", action="store_true",
+                        help="Write separately named figures with larger fonts and no method, batch, seed, episode or snapshot timestamps")
     parser.add_argument("--output-dir", type=Path)
     parser.add_argument("--overwrite", action="store_true")
     parser.add_argument("--sim-repo", type=Path, default=Path('/home/aks-lab/colcon_ws/src/manipulator_mujoco'))
@@ -624,8 +670,10 @@ def main(argv=None):
         print("No files written.")
         return 0
     output = (args.output_dir or base / "ars_weights_snapshots").resolve()
-    targets = [output / f"ars_{ep.task}_weights_snapshots.{ext}" for ep, *_ in prepared for ext in ("png", "csv")]
-    targets.append(output / "sources.json")
+    targets = [output / f"{figure_stem(ep.task, presentation=args.presentation)}.{ext}"
+               for ep, *_ in prepared for ext in ("png", "csv")]
+    manifest_path = output / ("sources_presentation.json" if args.presentation else "sources.json")
+    targets.append(manifest_path)
     if not args.overwrite and any(p.exists() for p in targets):
         raise ValueError("Output exists; use --overwrite or another --output-dir")
     # Decode and validate every input before writing any artifact.
@@ -641,12 +689,18 @@ def main(argv=None):
                     layout="Top: four snapshots A-D. Below: one independent, unnormalized linear panel per phase-masked policy weight (fixed planner gains excluded); external phase banners and A-D time markers.",
                     snapshot_stages=["start (Box: after settling; others: first saved frame)", "approach", "recorded phase transition", "lift/push at successful end"],
                     limitations=list(LIMITATIONS), figures=[])
+    if args.presentation:
+        manifest["presentation"] = dict(
+            omitted_from_figures=["method", "batch", "seed", "episode", "snapshot timestamps"],
+            component_font_pt=12, tick_font_pt=11,
+            notation_reference=PAPER_NOTATION_REFERENCE,
+            math_text="Paper text subscripts/superscripts use \\text, including literal hyphens.")
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
     for ep, trace, video, frames, fps, audit in prepared:
-        stem = f"ars_{ep.task}_weights_snapshots"
-        figure = render_figure(ep, trace, frames, labels)
+        stem = figure_stem(ep.task, presentation=args.presentation)
+        figure = render_figure(ep, trace, frames, labels, presentation=args.presentation)
         figure.savefig(output / f"{stem}.png", dpi=180, facecolor="white")
         plt.close(figure)
         write_csv(output / f"{stem}.csv", trace, ep.dt)
@@ -670,6 +724,8 @@ def main(argv=None):
             video_times_s=[i / fps for i in trace["indices"]],
             pre_phase_key=rules[TASKS[ep.task]][0], planner_source=source,
             paper_labels=labels[TASKS[ep.task]], plotted_weights=trace["names"],
+            displayed_labels={name: display_cost_label(labels[TASKS[ep.task]][name], presentation=args.presentation)
+                              for name in trace["names"]},
             selection_scoring_weights=list(FOCUS_WEIGHTS[ep.task]),
             visible_phase_weight_changes=phase_changes(trace),
             cost_meanings=COST_MEANINGS[ep.task], goal_distance_source=trace["goal_distance_source"],
@@ -677,7 +733,7 @@ def main(argv=None):
             snapshot_diagnostics=trace["snapshot_diagnostics"],
             penetration_audit=audit, selection_overridden=ep.task in overridden))
         print(f"Saved {output / (stem + '.png')}")
-    (output / "sources.json").write_text(json.dumps(manifest, indent=2) + "\n")
+    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
     return 0
 
 

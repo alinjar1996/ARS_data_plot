@@ -9,7 +9,8 @@ import pytest
 
 from make_ars_video_snapshots import DEFAULT_NOTEBOOK, Episode, TASKS
 from make_ars_weights_snapshots import (
-    DEFAULT_SELECTIONS, FOCUS_WEIGHTS, box_settled_start, effective_weights,
+    DEFAULT_SELECTIONS, FOCUS_WEIGHTS, box_settled_start, display_cost_label,
+    effective_weights, figure_stem,
     goal_distance, masked_weights, phase_changes, plotted_policy_weights,
     read_weight_config, render_figure, snapshot_times, write_csv,
 )
@@ -196,7 +197,26 @@ def test_pinned_choices_and_focus_components_are_explicit(config):
 
 
 @pytest.mark.parametrize("task", TASKS)
-def test_all_linear_panels_and_four_unannotated_photographs(config, tmp_path, task):
+def test_presentation_filenames_preserve_originals(task):
+    assert figure_stem(task) == f"ars_{task}_weights_snapshots"
+    assert figure_stem(task, presentation=True) == f"{task}_weights_snapshots_presentation"
+
+
+def test_presentation_uses_paper_text_math_without_inventing_symbols(config):
+    labels, _ = config
+    assert display_cost_label(labels['Ball Lift']['eef_to_obj'], presentation=True) == (
+        r'End-effector-to-object — $w_{\text{eef-obj}}$')
+    assert display_cost_label(labels['Box Lift']['z-axis'], presentation=True) == (
+        r'Planar alignment — $w_{yz}$')
+    assert display_cost_label(labels['Tray Push']['position_move'], presentation=True) == (
+        r'Contact-maintenance position — $w_p^{\text{push}}$')
+    assert display_cost_label(labels['Ball Lift']['smoothness'], presentation=True) == 'Smoothness'
+    assert display_cost_label(labels['Box Lift']['object_orientation'], presentation=True) == 'Box orientation'
+
+
+@pytest.mark.parametrize("presentation", [False, True])
+@pytest.mark.parametrize("task", TASKS)
+def test_all_linear_panels_and_four_unannotated_photographs(config, tmp_path, task, presentation):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -216,13 +236,20 @@ def test_all_linear_panels_and_four_unannotated_photographs(config, tmp_path, ta
                  pre_phase=phase, post_phase=post, plot_start_s=times[0] if task == "box" else 0.)
     ep = Episode(task, 50, Path("a.npz"), 0, 0, 10, .1, True)
     frames = [Image.new("RGB", (64, 48), color) for color in ["red", "green", "blue", "yellow"]]
-    fig = render_figure(ep, trace, frames, labels)
+    fig = render_figure(ep, trace, frames, labels, presentation=presentation)
     try:
         assert len(fig.axes) == 4 + len(names)
+        if presentation:
+            assert fig._suptitle.get_text() == TASKS[task]
+            figure_notes = " ".join(text.get_text() for text in fig.texts).lower()
+            for forbidden in ('ars', 'batch', 'seed', 'episode', 'timestamps', 'first saved frame'):
+                assert forbidden not in figure_notes
         for ax, frame in zip(fig.axes[:4], frames):
             np.testing.assert_array_equal(np.asarray(ax.images[0].get_array()), np.asarray(frame))
             assert not ax.texts  # Titles are separate from the image; no overlays.
             assert ax.get_position().y0 > fig.axes[4].get_position().y1
+            if presentation:
+                assert not any(char.isdigit() for char in ax.get_title(loc='left'))
         np.testing.assert_allclose([ax.get_position().y0 for ax in fig.axes[:4]], fig.axes[0].get_position().y0)
         for column, weight_ax in enumerate(fig.axes[4:]):
             stairs = [p for p in weight_ax.patches if hasattr(p, 'get_data')]
@@ -233,6 +260,13 @@ def test_all_linear_panels_and_four_unannotated_photographs(config, tmp_path, ta
             assert weight_ax.get_yscale() == 'linear'
             assert weight_ax.get_ylim()[0] <= 0
             assert weight_ax.get_xlim()[0] == trace['plot_start_s']
+            if presentation:
+                expected_label = display_cost_label(labels[TASKS[task]][names[column]], presentation=True)
+                _, _, symbol = expected_label.partition(' — ')
+                if symbol:
+                    assert symbol in weight_ax.get_title()
+                assert weight_ax.title.get_fontsize() == 12
+                assert all(t.get_fontsize() == 11 for t in weight_ax.get_xticklabels() + weight_ax.get_yticklabels())
             for tag, t in zip("ABCD", times):
                 marker = next(text for text in weight_ax.texts if text.get_text() == tag)
                 assert marker.get_position()[0] == t

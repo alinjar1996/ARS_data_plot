@@ -33,6 +33,9 @@ venv/
 # Regenerable ARS weight/video explanatory figures and provenance
 /ars_weights_snapshots/
 
+# Regenerable four-task description row and source provenance
+/task_description_snapshots/
+
 *.json
 *.csv
 *.txt

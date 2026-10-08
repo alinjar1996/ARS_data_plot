@@ -228,7 +228,8 @@ def episode_frame_indices(episode):
         return phase_frame_indices(flags)
 
 
-def extract_frames(video, episode, indices):
+def extract_frames(video, episode, indices, expected_count=3):
+    """Decode exact post-step frames; legacy montages still require three."""
     import cv2
     from PIL import Image
 
@@ -244,8 +245,10 @@ def extract_frames(video, episode, indices):
                              f"{count} frames versus {episode.steps} steps")
         if not np.isfinite(fps) or fps <= 0:
             raise ValueError(f"Invalid video frame rate: {video}")
-        if len(indices) != 3 or not 0 <= indices[0] < indices[1] < indices[2] < count:
-            raise ValueError("Expected three increasing frame indices inside the video")
+        if (len(indices) != expected_count or expected_count < 1
+                or not all(0 <= i < count for i in indices)
+                or any(a >= b for a, b in zip(indices, indices[1:]))):
+            raise ValueError(f"Expected {expected_count} increasing frame indices inside the video")
         frames = []
         for index in indices:
             cap.set(cv2.CAP_PROP_POS_FRAMES, index)

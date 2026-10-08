@@ -1,0 +1,245 @@
+% Standalone LaTeX version of ARS_WEIGHT_EPISODE_EXPLANATIONS.md.
+% Compile from the project root so the existing PNG paths resolve.
+% Uses the same prose and tables; figures reuse the existing PNGs.
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=20mm]{geometry}
+\usepackage{amsmath,graphicx,booktabs,longtable,array}
+\usepackage[hidelinks]{hyperref}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+\setlength{\emergencystretch}{3em}
+\title{Interpreting the ARS weight-and-snapshot figures}
+\author{}
+\date{}
+\begin{document}
+\maketitle
+
+\section{What the revised figures show}
+
+The figures show \textbf{phase-masked, linear policy weights}, using the exact component names printed above the plots. The fixed lifting-spacing gain is \textbf{not} applied to these curves. In particular, the planner's existing \(\times\)10 lifting gain is omitted from the Ball Lift and Box Lift \textbf{Spacing} plots; the simulator, notebook, policies, and recorded inference runs are unchanged.
+
+The plotted value is \texttt{active\_in\_phase * saved\_policy\_weight}. Inactive components are exactly zero, including Box Lift \textbf{Smoothness}, which is unused in this cost implementation. The CSVs additionally retain the actual gain-adjusted CEM coefficients for auditing; those are not the plotted values.
+
+\textbf{Spacing still increases overall within lifting without the fixed gain:} Ball goes from \textbf{36.4 to 113.3 (about 3.1-fold)}, and Box from \textbf{0.813 to 5.74 (about 7.1-fold)}. Removing a gain that is constant throughout lifting changes absolute values, not these within-phase ratios. Neither trajectory is monotonic: both peak higher and then decrease. Box also initially drops from \textbf{1.21 before C to 0.813 after C}, before rising within lift. A phase-boundary change and a within-phase trend are different comparisons.
+
+A larger weight makes a given error more expensive to MPC; a smaller weight relaxes that penalty. It does not follow that an increasing weight reduces the error, or that a decreasing weight means the error has disappeared. Each panel has its own linear y-axis. Neither line heights across panels nor coefficient magnitudes establish which term dominates the total cost.
+
+\textbf{Evidence and intuition are separated below.} Numerical trends and reported motion diagnostics are observations. The physical explanations are plausible interpretations, not identified reasons for the learned policy or causal demonstrations. The Box Lift collision-input decomposition is a separately verified explanation of the policy output, not a proof of why training learned it. Non-monotonic curves are described as such rather than given an artificial increasing/decreasing story.
+
+\section{Episodes and timing}
+
+These are the same three illustrative recorded-success episodes; no episode was replaced to produce a more convenient explanation. Episode numbers are one-based; NPZ/video indices can be zero-based.
+
+\begingroup\small\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}p{0.22\linewidth}p{0.2\linewidth}p{0.1\linewidth}p{0.12\linewidth}p{0.15\linewidth}p{0.12\linewidth}@{}}
+\toprule
+\textbf{Task and ARS checkpoint} & \textbf{Batch / seed / episode} & \textbf{A: start} & \textbf{B: approach} & \textbf{C: phase transition} & \textbf{D: successful end} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Task and ARS checkpoint} & \textbf{Batch / seed / episode} & \textbf{A: start} & \textbf{B: approach} & \textbf{C: phase transition} & \textbf{D: successful end} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Ball Lift, ARS3950 & 50 / 4 / 18 & 0.1 s & 3.5 s & 6.9 s & 9.1 s \\
+Box Lift, ARS4218 & 50 / 5 / 5 & 1.5 s & 3.8 s & 6.1 s & 8.1 s \\
+Tray Push, ARS4124 & 250 / 27 / 4 & 0.1 s & 4.3 s & 8.6 s & 16.6 s \\
+\end{longtable}
+\endgroup
+
+Box Lift starts after the initial drop/rebound settles; its graph also starts at 1.5 s, without rebasing time. Ball/Tray A is the first saved frame, not the reset state. Frame \texttt{k} shows the post-step state at \texttt{(k+1)*dt}; weight \texttt{k} applies on \texttt{[k*dt,(k+1)*dt)}. C marks the recorded controller phase switch, not independently measured first physical contact. ``Start/end of lift/push'' below means its first/last executed policy coefficient; peaks are intermediate unless stated otherwise.
+
+\section{Ball Lift: establish the grasp configuration, then strengthen spacing control}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{ars_weights_snapshots/ars_ball_weights_snapshots.png}
+\caption{Ball Lift: four saved video frames and phase-masked linear policy weights. Fixed planner gains are excluded; panels have independent vertical scales.}
+\end{figure}
+
+\subsection{Overall finding and physical intuition}
+
+During approach, \textbf{End-effector-to-object}, \textbf{Orientation}, and \textbf{Planar alignment} have pronounced intermediate peaks. An intuitive reading is that approaching the ball requires both moving the hands into place and arranging them into a coordinated grasp configuration. These penalties need not stay high once that configuration is approximately established. During lift, \textbf{Spacing} increases strongly even without the fixed planner gain, while \textbf{Object-to-target} is active and ends higher than it starts. A plausible interpretation is stronger regulation of hand separation while transporting the ball, rather than continuing to emphasize acquisition of the initial grasp pose.
+
+This reading has some independent support from the saved diagnostics: the reported hand-midpoint approach error falls from \textbf{48.60 cm at A to 1.88 cm at C}, and the reported mean hand-orientation error falls from \textbf{0.766 to 0.0508 rad}. From C to D, the ball-to-goal distance calculated from saved post-step positions falls from \textbf{15.73 to 4.43 cm}, and ball height increases from \textbf{0.1154 to 0.2268 m}. These are accompanying changes, not evidence that one weight caused them. The reported approach diagnostic follows the current ball position, whereas the planner's approach feature uses its supplied approach reference.
+
+\subsection{Every component, using the figure names}
+
+\begingroup\small\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}p{0.17\linewidth}p{0.26\linewidth}p{0.53\linewidth}@{}}
+\toprule
+\textbf{Name in figure} & \textbf{Observed policy-weight change} & \textbf{Intuition: why that direction could make sense} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Name in figure} & \textbf{Observed policy-weight change} & \textbf{Intuition: why that direction could make sense} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Collision} & Approach peak about \textbf{14,590}; lift \textbf{126 \(\rightarrow\) 6.6}. & The learned policy puts a much larger coefficient on the approach collision penalty than on the late-lift penalty. Moving from reaching to transport also changes the included collision pairs. Relaxation after the reaching maneuver is plausible, but the curve alone does not show that collision risk has fallen. \\
+\textbf{Joint deviation} & Early peak \textbf{16.8}, falling to \textbf{0.58} before transition; lift \textbf{0.49 \(\rightarrow\) 1.71}. & Relaxing the initial-posture penalty can allow the arms to leave their starting configuration to reach the ball. Its partial late recovery could discourage unnecessary joint displacement during completion; it does not imply a return to the initial posture. \\
+\textbf{Relative velocity} & Fluctuating; lift approximately \textbf{0.107 \(\rightarrow\) 0.072 \(\rightarrow\) 0.122}. & This feature penalizes changing inter-hand separation, not overall robot speed. Its varying coefficient can regulate coordination without requiring both arms to move slowly. There is no clear monotonic strategy to claim. \\
+\textbf{Planar alignment} & Approach peak \textbf{91.0}; lift starts at \textbf{7.9}, dips to \textbf{2.5}, ends at \textbf{4.7}. & Matching the hands' y/z positions is useful when forming a balanced grasp configuration. A smaller coefficient after acquisition is consistent with less emphasis on correcting that geometry, but saved weights alone do not establish that its error stayed small. \\
+\textbf{Spacing} & \textbf{26.8} immediately before transition; lift \textbf{36.4 \(\rightarrow\) 141.3 \(\rightarrow\) 113.3}. & Increasing the policy weight makes deviation from the planner's desired \textbf{0.17 m} hand separation more expensive during transport. This is consistent with maintaining the grasp geometry while lifting. The rise shown here is not the omitted fixed gain. \\
+\textbf{Smoothness} & Mid-approach minimum \textbf{0.00064}, rising to \textbf{0.0242} near transition; lift approximately \textbf{0.0177 \(\rightarrow\) 0.0091}. & Stronger joint-acceleration regularization near grasp acquisition is consistent with gentler changes in commanded motion there. Its reduction during lifting permits a different acceleration/transport trade-off. This is not a measurement that the actual trajectory became smoother. \\
+\textbf{Orientation} & Approach peak \textbf{41.2}; lift approximately \textbf{12.0 \(\rightarrow\) 3.0}. & The hands first need to reach the prescribed grasp orientations. Reducing the coefficient later is consistent with those orientations already being approximately established: the reported orientation error is small at C and smaller at D (\textbf{0.0292 rad}). This is an association, not proof that the policy explicitly tests that error. \\
+\textbf{End-effector-to-object} & Approach peak \textbf{115}, falling to \textbf{16.1} before becoming \textbf{zero} in lift. & The intermediate peak is consistent with emphasizing approach to the grasp region. The drop to zero is a programmed phase gate, not evidence that ARS learned to switch this objective off. \\
+\textbf{Object-to-target} & Zero in approach; lift \textbf{4.66 \(\rightarrow\) 7.37 \(\rightarrow\) 6.61}. & Once transport is enabled, a larger coefficient penalizes remaining goal error more strongly. Here the cost uses the hand midpoint plus a \textbf{0.05 m vertical offset} as a transport proxy, not direct ball-to-goal distance. \\
+\end{longtable}
+\endgroup
+
+\subsection{Concise wording for the paper}
+
+\begin{quote}
+In this Ball Lift episode, the approach stage exhibits pronounced peaks in End-effector-to-object, Orientation, and Planar alignment, alongside a reduction in the reported grasp-position and orientation errors. During lifting, the policy's Spacing weight increases substantially while Object-to-target remains active, consistent with a shift from grasp acquisition toward coordinated transport. This interpretation concerns state-dependent reweighting within predefined phase objectives; it does not identify the causal contribution of an individual weight.
+\end{quote}
+
+\section{Box Lift: a transport-and-coordination trade-off, not uniform weight growth}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{ars_weights_snapshots/ars_box_weights_snapshots.png}
+\caption{Box Lift: four saved video frames and phase-masked linear policy weights. Fixed planner gains are excluded; panels have independent vertical scales.}
+\end{figure}
+
+\subsection{Overall finding and physical intuition}
+
+During approach, \textbf{Box-specific alignment}, \textbf{Orientation}, and \textbf{Planar alignment} emphasize setting up the hands relative to the box. During lift, \textbf{Spacing}, \textbf{Relative velocity}, and \textbf{Box orientation} become stronger overall, whereas \textbf{Object-to-target} decreases. An intuitive reading is a changing balance between transporting the object and regulating the two hands and the box pose. A decreasing transport coefficient is not contradictory: transport remains in the objective, other terms also influence the motion, and the object is already approaching its goal.
+
+From C to D, post-step box-to-goal distance falls from \textbf{20.57 to 3.21 cm}, and box height rises from \textbf{0.1001 to 0.2622 m}. The instantaneous box-to-target quaternion-difference norm also decreases, from \textbf{0.0765 to 0.0556}. That last diagnostic uses the same kind of quaternion difference as \textbf{Box orientation}, but it is an instantaneous state error rather than the predicted-horizon cost. It supports an association between the late orientation weighting and pose refinement, not a claim that the weight increase caused the improvement.
+
+\subsection{Every component, using the figure names}
+
+\begingroup\small\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}p{0.17\linewidth}p{0.26\linewidth}p{0.53\linewidth}@{}}
+\toprule
+\textbf{Name in figure} & \textbf{Observed policy-weight change} & \textbf{Intuition: why that direction could make sense} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Name in figure} & \textbf{Observed policy-weight change} & \textbf{Intuition: why that direction could make sense} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Collision} & Lift \textbf{208 \(\rightarrow\) 11,624 \(\rightarrow\) 5,084}. & This is not a programmed lift multiplier. A verified linear-policy decomposition attributes most of the rise to the joint-velocity inputs. It increases the penalty on retained collision terms during this motion, but cannot be interpreted as the policy detecting box penetration: box-contact pairs are excluded from the lifting collision penalty. \\
+\textbf{Joint deviation} & Lift approximately \textbf{0.86 \(\rightarrow\) 0.62 \(\rightarrow\) 3.58}. & The stronger late penalty could discourage unnecessary departure from the initial joint configuration while finishing the lift. It does not require the arms to return to their starting positions. \\
+\textbf{Planar alignment} & Approach peak \textbf{132}; \textbf{30.6 \(\rightarrow\) 106} across transition; ends at \textbf{42.9}. & Renewed emphasis on matching the hands' y/z positions is consistent with coordinating support at lift onset. The term is active in both phases, so this jump is a policy change, not activation from zero. \\
+\textbf{Relative velocity} & Lift approximately \textbf{0.0268 \(\rightarrow\) 0.0142 \(\rightarrow\) 0.1152}. & Stronger late penalization of changing inter-hand separation is consistent with reducing differential squeezing/separation motion while transporting the box. It is not a general penalty on joint speed. \\
+\textbf{Spacing} & \textbf{1.21} before transition; lift \textbf{0.813 \(\rightarrow\) 14.77 \(\rightarrow\) 5.74}. & Importantly, the policy weight initially \textbf{decreases} at the switch when the fixed gain is excluded. It subsequently rises strongly during lifting, consistent with stronger regulation of the desired hand separation. A claim of an immediate learned increase at C would be incorrect. \\
+\textbf{Orientation} & Approach peak \textbf{51.0}; lift \textbf{8.26 \(\rightarrow\) 1.61 \(\rightarrow\) 3.25}. & Once the hands have approximately acquired the grasp orientation, the policy can reduce its coefficient while retaining the term. The late recovery is consistent with continued adjustment. This concerns hand orientation, not the box's own orientation. \\
+\textbf{Box-specific alignment} & Displayed approach peak \textbf{52.2}, falling to \textbf{19.9}, then zero. & Approaching box-attached grasp sites is a natural acquisition objective. Its later deactivation is programmed; hand-to-box contact maintenance still appears in another lifting term. \\
+\textbf{Object-to-target} & Zero in approach; lift \textbf{40.0 \(\rightarrow\) 4.66 \(\rightarrow\) 7.40}. & This coefficient weights both the hand-midpoint-to-goal term and hand-to-grasp-site contact maintenance. Its decline is consistent with relaxing that combined objective as transport progresses while coordination/box-orientation terms strengthen. It is neither a pure box-goal weight nor evidence that grasp maintenance is no longer needed. \\
+\textbf{Box orientation} & Lift starts at \textbf{1.33}, dips slightly, finishes at \textbf{5.59}. & Greater late penalization of box-to-target orientation error is consistent with pose refinement near completion. The observed orientation error decreases, but the association is not a causal test. \\
+\textbf{Smoothness} & Zero throughout. & This output does not enter this revision's CEM cost. No learned smoothness-control explanation is supported for this panel. \\
+\end{longtable}
+\endgroup
+
+\subsection{Verified reason for the Collision rise}
+
+The ARS4218 checkpoint is a linear actor on normalized observations, followed by a baseline log-weight offset, clipping, and exponentiation. Its stored outputs were reproduced from the checkpoint and saved states using forward kinematics, with maximum absolute log-output discrepancy below \textbf{0.000004} over all \textbf{81 \(\times\) 10} cost outputs. No closed-loop simulation was rerun.
+
+From the first lifting solve at \textbf{6.1 s} to the collision-weight peak at \textbf{7.3 s}, the log-weight rises by \textbf{4.024}, corresponding to roughly a \textbf{56-fold} linear increase. The input-group contributions are \textbf{+4.512 from joint velocities}, \textbf{\(-\)0.489 from all other inputs combined}, and \textbf{zero from the unchanged phase flag}. This explains how this actor produces the increase. It does not prove why ARS training learned that mapping or that the increase improved safety.
+
+\subsection{Concise wording for the paper}
+
+\begin{quote}
+In the Box Lift example, acquisition-related alignment weights peak during approach, while Spacing, Relative velocity, and Box orientation strengthen overall during transport. Object-to-target, which also weights contact maintenance in this implementation, decreases as the box approaches its goal. The Collision increase is primarily attributable to the linear actor's joint-velocity dependence and applies only to the collision pairs retained during lifting. The trajectories therefore illustrate a changing transport--coordination trade-off rather than uniform growth of all task weights.
+\end{quote}
+
+\section{Tray Push: goal progress accompanied by relaxed position maintenance}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{ars_weights_snapshots/ars_tray_weights_snapshots.png}
+\caption{Tray Push: four saved video frames and phase-masked linear policy weights. Fixed planner gains are excluded; panels have independent vertical scales.}
+\end{figure}
+
+\subsection{Overall finding and physical intuition}
+
+The prescribed transition switches off \textbf{Approach position} and \textbf{Approach orientation}, and switches on pushing objectives. During pushing, \textbf{Contact-maintenance position} is high early but decreases substantially late, while \textbf{Tray-to-goal position} and \textbf{Tray-to-goal orientation} generally strengthen toward the later part of the episode. A plausible interpretation is reduced emphasis on preserving the initial hand--tray positional relationship while continuing to move the tray toward its goal.
+
+The measured trade-off matters. The reported worst-hand grasp-position error falls from \textbf{40.54 cm at A to 1.52 cm at C}, and its reported orientation error falls from \textbf{1.564 to 0.0355 rad}: approach successfully establishes the grasp region. From C to D, tray-to-goal distance falls from \textbf{19.96 to 3.98 cm}, but the reported worst-hand grasp-position error grows to \textbf{12.77 cm}, and its orientation error grows to \textbf{0.372 rad}. Thus it would be misleading to say Contact-maintenance position decreases because the grasp has become perfect. The episode instead illustrates goal progress alongside deteriorating reported hand--tray grasp geometry.
+
+The tray-to-goal orientation error also increases from \textbf{0.0172 to 0.0352 rad} between C and D, even though its weight ends higher. A stronger orientation coefficient does not guarantee a smaller realized orientation error. These reported grasp diagnostics use the worse hand under the historical ARS protocol; they are not the same aggregation as the CEM contact-maintenance costs and do not measure contact force or certify physical contact.
+
+\subsection{Every component, using the figure names}
+
+\begingroup\small\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}p{0.17\linewidth}p{0.26\linewidth}p{0.53\linewidth}@{}}
+\toprule
+\textbf{Name in figure} & \textbf{Observed policy-weight change} & \textbf{Intuition: why that direction could make sense} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Name in figure} & \textbf{Observed policy-weight change} & \textbf{Intuition: why that direction could make sense} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Collision} & Early approach peak \textbf{1,468}; push fluctuates about \textbf{292--647}, ending at \textbf{512}. & The policy continues to adjust the retained collision penalty during pushing. There is no monotonic safety narrative; neither the coefficient nor its fluctuations establish collision risk. \\
+\textbf{Joint deviation} & Approach peak \textbf{13.0}, falling to about \textbf{4.0}; push \textbf{5.11 \(\rightarrow\) 3.26 \(\rightarrow\) 5.55}. & Relaxation can allow reaching away from the initial arm configuration; later variation is consistent with balancing transport and unnecessary joint displacement. \\
+\textbf{End-effector height alignment} & Approach peak \textbf{2.10}; push ends lower, \textbf{0.906 \(\rightarrow\) 0.550} overall. & Less weight on equal hand height could accommodate asymmetric hand motion during transport. This is an interpretation of the penalty, not evidence that height asymmetry actually increased. \\
+\textbf{Rotation-axis alignment} & Push-only: \textbf{0.781 \(\rightarrow\) 1.066 \(\rightarrow\) 0.571}. & This penalizes the hands' relative-position component along the tray rotation axis. Stronger early weighting is consistent with establishing the pushing geometry, followed by relaxed enforcement later. \\
+\textbf{Relative velocity} & Push-only; fluctuates about \textbf{0.479--1.060}, ending at \textbf{0.868}. & Varying the penalty on changing inter-hand separation can regulate coordination as the tray moves. No simple monotonic explanation is warranted. \\
+\textbf{Approach position} & \textbf{11.3 \(\rightarrow\) 25.6 \(\rightarrow\) 15.1}, then zero. & Temporarily stronger attraction toward the grasp targets is consistent with closing the approach error. Deactivation at C is prescribed, not learned phase discovery. \\
+\textbf{Approach orientation} & \textbf{6.07 \(\rightarrow\) 10.02 \(\rightarrow\) 8.55}, then zero. & The hands must acquire appropriate orientations before pushing. Their reported orientation errors decrease during approach, supporting this interpretation; switching the term off is programmed. \\
+\textbf{End-effector distance} & Push-only: \textbf{14.0 \(\rightarrow\) 16.9 \(\rightarrow\) 3.87 \(\rightarrow\) 11.6}. & The spacing penalty relaxes late and then recovers. This permits a changing coordination trade-off; it should not be described as maintaining perfectly constant spacing. \\
+\textbf{Tray-to-goal position} & Push-only: \textbf{8.67 \(\rightarrow\) 6.66 \(\rightarrow\) 21.1 \(\rightarrow\) 12.9}. & Stronger weighting in the later push is consistent with emphasizing remaining positional goal error. The tray does approach its goal, but the curve alone cannot establish the weight's causal role. \\
+\textbf{Tray-to-goal orientation} & Push-only: \textbf{16.7 \(\rightarrow\) 13.5 \(\rightarrow\) 23.8 \(\rightarrow\) 22.5}. & Increasing late orientation weighting is consistent with resisting pose error while transporting the tray. The realized orientation error nevertheless increases slightly, so do not claim that the higher coefficient demonstrably improves alignment. \\
+\textbf{Contact-maintenance position} & \textbf{121 \(\rightarrow\) 149 \(\rightarrow\) 18.3 \(\rightarrow\) 30.0}. & Its late reduction is consistent with relaxing the hand--tray positional relationship in favor of continued goal progress. The reported grasp-position error grows, so ``less weight because contact is already perfect'' is not supported. This does not prove that reduced weighting caused the deviation. \\
+\textbf{Contact-maintenance orientation} & \textbf{25.0 \(\rightarrow\) 16.8 \(\rightarrow\) 46.3 \(\rightarrow\) 28.5}. & The late peak is consistent with renewed emphasis on orienting the hands relative to the tray as their geometry changes. The reported grasp-orientation error still grows overall; a stronger penalty is not proof of successful correction. \\
+\end{longtable}
+\endgroup
+
+\subsection{Concise wording for the paper}
+
+\begin{quote}
+During Tray Push, acquisition terms are replaced by the prescribed transport and contact-maintenance objectives. The later push exhibits lower Contact-maintenance position weighting alongside stronger goal-pose weighting and continued positional progress. However, reported hand--tray grasp errors increase over the same phase. The episode therefore illustrates a possible transport--maintenance trade-off, not uniformly improving grasp quality or a demonstrated causal effect of a particular coefficient.
+\end{quote}
+
+\section{Scope, physical validity, and provenance}
+
+\begin{itemize}
+\item These are selected illustrative episodes, not averages or representative statistical trends over all runs. Apparent changes are not claims of statistical significance.
+\item The transport collision masks exclude contacts involving the manipulated ball/box/tray geoms. Collision-weight plots therefore do not certify prevention of robot--object penetration.
+\item Existing audits report maximum robot--object depths of \textbf{34.88 mm (Ball)}, \textbf{23.20 mm (Box)}, and \textbf{14.82 mm (Tray)} for these episodes. ``Recorded success'' must not be rewritten as ``penetration-free'' or ``physically validated.''
+\item Predicted cost contributions, candidate comparisons, or controlled re-evaluations would be needed to test which weight changes actually cause different actions. In particular, some changes may be state-correlated side effects of a jointly trained actor rather than independently useful adaptations.
+\item Saved evaluator diagnostics are not interchangeable with CEM horizon features. For example, the Box \texttt{cost\_obj\_to\_targ} log is pre-step; the goal-distance evidence here is computed from saved post-step positions instead. Ball's reward diagnostic and transport proxy also differ as described above.
+\end{itemize}
+
+Frozen planner definitions used for interpretation:
+
+\begingroup\small\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}p{0.15\linewidth}p{0.27\linewidth}p{0.15\linewidth}p{0.35\linewidth}@{}}
+\toprule
+\textbf{Task} & \textbf{Branch lineage} & \textbf{Commit} & \textbf{Cost definition} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Task} & \textbf{Branch lineage} & \textbf{Commit} & \textbf{Cost definition} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Ball Lift & \texttt{issue\_49\_ball\_lift\_ppo} & \texttt{f4202cc} & \nolinkurl{real_demo/sampling_based_planner/mjx_planner.py}, lines 735--845 \\
+Box Lift & \texttt{issue\_50\_box\_lift\_ppo} & \texttt{00898ab} & Same path, lines 729--864 \\
+Tray Push & \texttt{issue\_53\_tray\_push\_ppo} & \texttt{6117e21} & Same path, lines 687--810 \\
+\end{longtable}
+\endgroup
+
+The \href{\detokenize{make_ars_weights_snapshots.py}}{generator} reads the current notebook's source paths without executing the notebook. Exact NPZ/video identities, checkpoint hashes, phase rules, plotted policy-weight summaries, actual CEM coefficients, snapshot diagnostics, and penetration-audit references are recorded in \href{\detokenize{ars_weights_snapshots/sources.json}}{sources.json}. The full per-step CSVs remain beside the three images. Snapshot diagnostics were also checked against the historical evaluators/runners at the commits above; the exact figure labels are inherited from the notebook.
+
+Regenerate the figures and numerical provenance with:
+
+\begin{verbatim}
+/home/aks-lab/manipulator_env/bin/python3 make_ars_weights_snapshots.py --overwrite
+\end{verbatim}
+
+This prose is a reviewed explanation of the pinned episodes, not automatically regenerated text; changing episodes requires reviewing the explanation again. A matching standalone LaTeX draft is provided in \href{\detokenize{ARS_WEIGHT_EPISODE_EXPLANATIONS.tex}}{ARS\_WEIGHT\_EPISODE\_EXPLANATIONS.tex}.
+
+\end{document}

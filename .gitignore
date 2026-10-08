@@ -30,8 +30,10 @@ venv/
 # Generated ARS video montages (script and tests remain tracked)
 /ars_video_snapshots/
 
+# Regenerable ARS weight/video explanatory figures and provenance
+/ars_weights_snapshots/
+
 *.json
 *.csv
 *.txt
 *.sha256
-

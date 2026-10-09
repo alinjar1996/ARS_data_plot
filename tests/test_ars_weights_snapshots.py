@@ -10,7 +10,7 @@ import pytest
 from make_ars_video_snapshots import DEFAULT_NOTEBOOK, Episode, TASKS
 from make_ars_weights_snapshots import (
     DEFAULT_SELECTIONS, FOCUS_WEIGHTS, box_settled_start, display_cost_label,
-    effective_weights, figure_stem,
+    effective_weights, figure_columns, figure_stem,
     goal_distance, masked_weights, phase_changes, plotted_policy_weights,
     read_weight_config, render_figure, snapshot_times, write_csv,
 )
@@ -60,6 +60,22 @@ def test_box_unused_smoothness_is_zero_even_if_raw_is_large(config):
     logs, active, _ = masked_weights([[1e4], [2e4]], [0, 1], ["smoothness"], "Box Lift", labels, rules)
     assert not np.any(active)
     assert np.all(logs == 0)
+
+
+def test_single_row_only_omits_verified_unused_box_smoothness():
+    trace = dict(names=['collision', 'smoothness', 'theta'],
+                 active=np.array([[True, False, True]]),
+                 plotted_linear=np.array([[2., 0., 3.]]))
+    assert figure_columns('box', trace) == [0, 1, 2]
+    assert figure_columns('box', trace, single_row=True) == [0, 2]
+    assert figure_columns('ball', trace, single_row=True) == [0, 1, 2]
+    trace['active'][0, 1] = True
+    with pytest.raises(ValueError, match='Cannot omit active'):
+        figure_columns('box', trace, single_row=True)
+    trace['active'][0, 1] = False
+    trace['plotted_linear'][0, 1] = 4.
+    with pytest.raises(ValueError, match='Cannot omit active'):
+        figure_columns('box', trace, single_row=True)
 
 
 def test_inactive_invalid_values_are_not_logged(config):
@@ -200,6 +216,15 @@ def test_pinned_choices_and_focus_components_are_explicit(config):
 def test_presentation_filenames_preserve_originals(task):
     assert figure_stem(task) == f"ars_{task}_weights_snapshots"
     assert figure_stem(task, presentation=True) == f"{task}_weights_snapshots_presentation"
+    assert figure_stem(task, single_row=True) == f"{task}_weights_snapshots_single_row"
+    assert figure_stem(task, presentation=True, single_row=True) == f"{task}_weights_snapshots_single_row"
+    assert figure_stem(task, two_rows=True) == f"{task}_weights_snapshots_two_rows"
+    assert figure_stem(task, presentation=True, two_rows=True) == f"{task}_weights_snapshots_two_rows"
+
+
+def test_paper_row_layouts_are_mutually_exclusive():
+    with pytest.raises(ValueError, match='only one paper row layout'):
+        figure_stem('tray', single_row=True, two_rows=True)
 
 
 def test_presentation_uses_paper_text_math_without_inventing_symbols(config):
@@ -214,9 +239,11 @@ def test_presentation_uses_paper_text_math_without_inventing_symbols(config):
     assert display_cost_label(labels['Box Lift']['object_orientation'], presentation=True) == 'Box orientation'
 
 
-@pytest.mark.parametrize("presentation", [False, True])
+@pytest.mark.parametrize("presentation,single_row,two_rows", [
+    (False, False, False), (True, False, False), (True, True, False), (True, False, True),
+])
 @pytest.mark.parametrize("task", TASKS)
-def test_all_linear_panels_and_four_unannotated_photographs(config, tmp_path, task, presentation):
+def test_all_linear_panels_and_four_unannotated_photographs(config, tmp_path, task, presentation, single_row, two_rows):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -236,11 +263,31 @@ def test_all_linear_panels_and_four_unannotated_photographs(config, tmp_path, ta
                  pre_phase=phase, post_phase=post, plot_start_s=times[0] if task == "box" else 0.)
     ep = Episode(task, 50, Path("a.npz"), 0, 0, 10, .1, True)
     frames = [Image.new("RGB", (64, 48), color) for color in ["red", "green", "blue", "yellow"]]
-    fig = render_figure(ep, trace, frames, labels, presentation=presentation)
+    columns = figure_columns(task, trace, single_row=single_row)
+    compact = single_row or two_rows
+    ncols = int(np.ceil(len(columns) / 2)) if two_rows else (len(columns) if single_row else {"ball": 3, "box": 5, "tray": 4}[task])
+    fig = render_figure(ep, trace, frames, labels, presentation=presentation, single_row=single_row, two_rows=two_rows)
     try:
-        assert len(fig.axes) == 4 + len(names)
+        assert len(fig.axes) == 4 + len(columns)
+        if single_row:
+            assert len(columns) == {'ball': 9, 'box': 9, 'tray': 12}[task]
+            np.testing.assert_allclose([ax.get_position().y0 for ax in fig.axes[4:]], fig.axes[4].get_position().y0)
+            if task == 'box':
+                assert all('Smoothness' not in ax.get_title() for ax in fig.axes[4:])
+        if two_rows:
+            assert len(columns) == len(names)
+            first, second = fig.axes[4:4 + ncols], fig.axes[4 + ncols:]
+            np.testing.assert_allclose([ax.get_position().y0 for ax in first], first[0].get_position().y0)
+            np.testing.assert_allclose([ax.get_position().y0 for ax in second], second[0].get_position().y0)
+            assert first[0].get_position().y0 > second[0].get_position().y1
+            if task == 'tray':
+                assert len(first) == len(second) == 6
         if presentation:
             assert fig._suptitle.get_text() == TASKS[task]
+            assert [text.get_text() for text in fig.texts] == [TASKS[task], 'Simulation time (s)']
+            assert fig._suptitle.get_fontsize() == 28
+            assert fig.texts[-1].get_fontsize() == 24
+            assert fig.axes[0].get_title(loc='left') == 'A   Start'
             figure_notes = " ".join(text.get_text() for text in fig.texts).lower()
             for forbidden in ('ars', 'batch', 'seed', 'episode', 'timestamps', 'first saved frame'):
                 assert forbidden not in figure_notes
@@ -250,8 +297,9 @@ def test_all_linear_panels_and_four_unannotated_photographs(config, tmp_path, ta
             assert ax.get_position().y0 > fig.axes[4].get_position().y1
             if presentation:
                 assert not any(char.isdigit() for char in ax.get_title(loc='left'))
+                assert ax._left_title.get_fontsize() == (28 if compact else 24)
         np.testing.assert_allclose([ax.get_position().y0 for ax in fig.axes[:4]], fig.axes[0].get_position().y0)
-        for column, weight_ax in enumerate(fig.axes[4:]):
+        for column, weight_ax in zip(columns, fig.axes[4:]):
             stairs = [p for p in weight_ax.patches if hasattr(p, 'get_data')]
             assert len(stairs) == 1
             assert stairs[0].get_data().baseline is None
@@ -265,16 +313,44 @@ def test_all_linear_panels_and_four_unannotated_photographs(config, tmp_path, ta
                 _, _, symbol = expected_label.partition(' — ')
                 if symbol:
                     assert symbol in weight_ax.get_title()
-                assert weight_ax.title.get_fontsize() == 12
-                assert all(t.get_fontsize() == 11 for t in weight_ax.get_xticklabels() + weight_ax.get_yticklabels())
+                assert weight_ax.title.get_fontsize() == 22
+                assert weight_ax.get_ylabel() == weight_ax.get_xlabel() == ''
+                assert weight_ax.get_yticklabels()  # Remove the title, not the numerical scales.
+                assert all(t.get_fontsize() == (18 if compact else 20) for t in weight_ax.get_xticklabels() + weight_ax.get_yticklabels())
             for tag, t in zip("ABCD", times):
                 marker = next(text for text in weight_ax.texts if text.get_text() == tag)
                 assert marker.get_position()[0] == t
                 assert marker.get_position()[1] < 1  # Separate from external phase banner.
+                if presentation:
+                    assert marker.get_fontsize() == (14 if compact else 18)
             for name in ['Approach', 'Push' if task == 'tray' else 'Lift']:
                 banner = next(text for text in weight_ax.texts if text.get_text() == name)
                 assert banner.get_position()[1] > 1  # No vertical line through phase text.
+                if presentation:
+                    assert banner.get_fontsize() == (14 if compact else 18)
+        if presentation:
+            fig.canvas.draw()
+            renderer = fig.canvas.get_renderer()
+            photo_boxes = [ax.get_position() for ax in fig.axes[:4]]
+            np.testing.assert_allclose([photo_boxes[0].x0, photo_boxes[-1].x1], [.015, .985])
+            for left, right in zip(photo_boxes, photo_boxes[1:]):
+                assert left.x1 == pytest.approx(right.x0, abs=1e-12)  # No imshow letterboxing or gutters.
+            for box, frame in zip(photo_boxes, frames):
+                physical_width = box.width * fig.get_figwidth()
+                physical_height = box.height * fig.get_figheight()
+                expected_width = max(24, ncols * 8 / 3) if compact else 18
+                assert physical_width == pytest.approx(expected_width * .97 / 4)
+                assert physical_width / physical_height == pytest.approx(frame.width / frame.height)
+            photo_bottom = min(ax.get_window_extent(renderer).y0 for ax in fig.axes[:4])
+            for weight_ax in fig.axes[4:4 + ncols]:
+                assert weight_ax.title.get_window_extent(renderer).y1 < photo_bottom
+            for weight_ax in fig.axes[4:]:
+                title_bounds = weight_ax.title.get_window_extent(renderer)
+                assert title_bounds.x0 >= fig.bbox.x0
+                assert title_bounds.x1 <= fig.bbox.x1
         fig.savefig(tmp_path / "smoke.png")
+        if compact:
+            fig.savefig(tmp_path / "smoke.pdf")
         write_csv(tmp_path / "trace.csv", trace, .1)
         assert f"masked_ln_{names[-1]}" in (tmp_path / "trace.csv").read_text()
         assert f"effective_linear_{names[-1]}" in (tmp_path / "trace.csv").read_text()

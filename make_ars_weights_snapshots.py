@@ -5,6 +5,8 @@ Run in the project environment (numpy, matplotlib, opencv-python, Pillow):
     python make_ars_weights_snapshots.py --dry-run
     python make_ars_weights_snapshots.py
     python make_ars_weights_snapshots.py --presentation
+    python make_ars_weights_snapshots.py --tasks box --single-row
+    python make_ars_weights_snapshots.py --tasks tray --two-rows
     python make_ars_weights_snapshots.py --rank
     python make_ars_weights_snapshots.py --tasks box --select box:50:0:4
 
@@ -42,6 +44,16 @@ Only trusted local NPZs should be used (their ragged arrays require pickle).
 task-only headings and untimed snapshot captions. Episode/method identities and
 exact times remain in the separate provenance, not on these figures. Existing
 figures, CSVs and sources.json are untouched by this option.
+Presentation figures have no y-axis title or footnotes, and only one shared
+"Simulation time (s)" x-axis title. Numeric axis scales remain visible.
+Their four full video frames fill a nearly full-width row with zero gutters;
+the row height is calculated from the original frame aspect ratio (no crop).
+--single-row implies presentation styling and writes separate *_single_row
+PNG/PDF figures, CSVs and sources_single_row.json. All cost panels occupy one
+row for a full-width paper figure. Only Box's unused Smoothness panel is omitted;
+its recorded values remain in the CSV. Existing presentation outputs are untouched.
+--two-rows uses the same paper styling with two component rows, retains every
+component, and writes separate *_two_rows files plus sources_two_rows.json.
 """
 
 from __future__ import annotations
@@ -159,9 +171,27 @@ PAPER_NOTATION_REFERENCE = {
 }
 
 
-def figure_stem(task, *, presentation=False):
+def figure_stem(task, *, presentation=False, single_row=False, two_rows=False):
     """Keep presentation artifacts distinct from the original figure and CSV."""
+    if single_row and two_rows:
+        raise ValueError("Choose only one paper row layout")
+    if two_rows:
+        return f"{task}_weights_snapshots_two_rows"
+    if single_row:
+        return f"{task}_weights_snapshots_single_row"
     return f"{task}_weights_snapshots_presentation" if presentation else f"ars_{task}_weights_snapshots"
+
+
+def figure_columns(task, trace, *, single_row=False):
+    """Only the single-row Box variant omits the verified-unused Smoothness."""
+    columns = []
+    for column, name in enumerate(trace["names"]):
+        if single_row and task == "box" and name == "smoothness":
+            if np.any(trace["active"][:, column]) or np.any(trace["plotted_linear"][:, column] != 0):
+                raise ValueError("Cannot omit active Box Smoothness")
+            continue
+        columns.append(column)
+    return columns
 
 
 def display_cost_label(label, *, presentation=False):
@@ -454,7 +484,7 @@ def rank_candidates(episodes, base, task, labels, rules):
                           robot_object_lower_quartile_mm=quartile, shortlist_count=len(shortlist))
 
 
-def render_figure(episode, trace, frames, labels, *, presentation=False):
+def render_figure(episode, trace, frames, labels, *, presentation=False, single_row=False, two_rows=False):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -462,15 +492,50 @@ def render_figure(episode, trace, frames, labels, *, presentation=False):
     from matplotlib.ticker import MaxNLocator
     if len(frames) != 4 or len(trace["times"]) != 4:
         raise ValueError("The two-block figure requires four snapshots")
+    if single_row and two_rows:
+        raise ValueError("Choose only one paper row layout")
     title = TASKS[episode.task]
+    compact = single_row or two_rows
+    presentation = presentation or compact
+    columns = figure_columns(episode.task, trace, single_row=single_row)
     # Exactly one panel per component: no shared axis can conceal small weights.
-    ncols = {"ball": 3, "box": 5, "tray": 4}[episode.task]
-    nrows = int(np.ceil(len(trace["names"]) / ncols))
-    fig = plt.figure(figsize=(18, 5 + 2.6 * nrows), facecolor="white")
-    grid = fig.add_gridspec(2, 1, height_ratios=[3, 2.6 * nrows],
-                           left=.055, right=.985, bottom=.095, top=.925, hspace=.30)
-    photo_grid = grid[0].subgridspec(1, 4, wspace=.065)
-    weight_grid = grid[1].subgridspec(nrows, ncols, wspace=.30, hspace=.90)
+    ncols = len(columns) if single_row else {"ball": 3, "box": 5, "tray": 4}[episode.task]
+    if two_rows:
+        ncols = int(np.ceil(len(columns) / 2))
+    nrows = int(np.ceil(len(columns) / ncols))
+    if presentation:
+        # A short shared GridSpec row makes imshow shrink each axes horizontally
+        # to preserve aspect, even with wspace=0. Give the photos their exact
+        # aspect-ratio height and a separate, nearly full-width grid instead.
+        frame_height, frame_width = np.asarray(frames[0]).shape[:2]
+        if any(np.asarray(frame).shape[:2] != (frame_height, frame_width) for frame in frames):
+            raise ValueError("Snapshot frame dimensions must match")
+        figure_width = max(24., ncols * 8. / 3.) if compact else 18.
+        photo_left, photo_right = .015, .985
+        photo_height = figure_width * (photo_right - photo_left) / 4 * frame_height / frame_width
+        header_height, photo_to_weights_gap, footer_height = 1.2, 2.1, 1.25
+        panel_height, row_gap = (1.75 if compact else 1.45), 2.5
+        weights_height = nrows * panel_height + (nrows - 1) * row_gap
+        figure_height = header_height + photo_height + photo_to_weights_gap + weights_height + footer_height
+        fig = plt.figure(figsize=(figure_width, figure_height), facecolor="white")
+        photo_grid = fig.add_gridspec(
+            1, 4, left=photo_left, right=photo_right,
+            top=1 - header_height / figure_height,
+            bottom=1 - (header_height + photo_height) / figure_height, wspace=0)
+        weight_grid = fig.add_gridspec(
+            nrows, ncols, left=.045 if compact else .07, right=.985,
+            bottom=footer_height / figure_height,
+            top=(footer_height + weights_height) / figure_height,
+            wspace=.55 if compact else .40, hspace=row_gap / panel_height)
+        title_y = 1 - .2 / figure_height
+    else:
+        row_height = 2.6
+        fig = plt.figure(figsize=(18, 5 + row_height * nrows), facecolor="white")
+        grid = fig.add_gridspec(2, 1, height_ratios=[3, row_height * nrows],
+                               left=.055, right=.985, bottom=.095, top=.925, hspace=.30)
+        photo_grid = grid[0].subgridspec(1, 4, wspace=.065)
+        weight_grid = grid[1].subgridspec(nrows, ncols, wspace=.30, hspace=.90)
+        title_y = .972
     image_axes = [fig.add_subplot(photo_grid[0, i]) for i in range(4)]
     edges, plotted = trace["edges"], trace["plotted_linear"]
     start = trace["plot_start_s"]
@@ -478,31 +543,38 @@ def render_figure(episode, trace, frames, labels, *, presentation=False):
     transport = "Push" if episode.task == "tray" else "Lift"
     heading = title if presentation else f"{title} | ARS | batch {episode.batch} | seed {episode.seed} | episode {episode.index + 1}"
     fig.suptitle(heading,
-                 fontsize=17, y=.972, weight="bold")
-    stages = ["Start (settled)" if episode.task == "box" else "Start", "Approach", "Transition", transport]
+                 fontsize=28 if presentation else 17, y=title_y, weight="bold")
+    stages = ["Start (settled)" if episode.task == "box" and not presentation else "Start", "Approach", "Transition", transport]
     for ax, frame, tag, stage, time_s in zip(image_axes, frames, "ABCD", stages, trace["times"]):
         ax.imshow(frame)
         caption = f"{tag}   {stage}" if presentation else f"{tag}   {stage} · {time_s:.1f} s"
-        ax.set_title(caption, fontsize=14 if presentation else 12, loc="left", pad=7)
+        ax.set_title(caption, fontsize=28 if compact else (24 if presentation else 12), loc="left", pad=7)
         ax.set_axis_off()
 
     colors = plt.get_cmap("tab20")
     color_order = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 1, 5]
-    for column, name in enumerate(trace["names"]):
-        ax = fig.add_subplot(weight_grid[column // ncols, column % ncols])
+    for panel, column in enumerate(columns):
+        name = trace["names"][column]
+        ax = fig.add_subplot(weight_grid[panel // ncols, panel % ncols])
         label = display_cost_label(labels[title][name], presentation=presentation)
         description, _, symbol = label.partition(" — ")
         active = trace["active"][:, column]
         status = "both phases"
         if not active.any():
-            status = "unused in CEM: always zero"
+            status = "unused: always zero" if presentation else "unused in CEM: always zero"
         elif np.array_equal(active, trace["pre_phase"] == 0):
             status = "approach only"
         elif np.array_equal(active, trace["pre_phase"] == 1):
             status = f"{transport.lower()} only"
-        subtitle = " · ".join(x for x in [symbol, status] if x)
-        ax.set_title(textwrap.fill(description, width=30 if presentation else 38) + "\n" + subtitle,
-                     fontsize=12 if presentation else 9.5, pad=33 if presentation else 31)
+        if presentation and ncols == 5:
+            status = textwrap.fill(status, width=17)
+        subtitle_separator = "\n" if presentation and ncols == 5 else " · "
+        # The phase banners and zero-masked curves already show activation;
+        # omit repeated status text only in the compact paper variants.
+        subtitle = symbol if compact else subtitle_separator.join(x for x in [symbol, status] if x)
+        wrap_width = 20 if two_rows else (12 if single_row else ({3: 30, 4: 21, 5: 17}[ncols] if presentation else 38))
+        ax.set_title(textwrap.fill(description, width=wrap_width) + ("\n" + subtitle if subtitle else ""),
+                     fontsize=22 if presentation else 9.5, pad=50 if presentation else 31)
         ax.stairs(plotted[:, column], edges, color=colors(color_order[column]),
                   lw=1.8, label=label, baseline=None)
         ax.axhline(0, color="#999999", lw=.5, zorder=-1)
@@ -511,17 +583,19 @@ def render_figure(episode, trace, frames, labels, *, presentation=False):
                 (start, transition, "Approach", "#deebf5"),
                 (transition, episode.duration, transport, "#fce5c8")]:
             ax.axvspan(left, right, color=color, alpha=.32, zorder=-2)
-            ax.add_patch(Rectangle((left, 1.035), right - left, .105,
+            banner_height = .20 if presentation else .105
+            ax.add_patch(Rectangle((left, 1.035), right - left, banner_height,
                                   transform=ax.get_xaxis_transform(), facecolor=color,
                                   edgecolor="none", clip_on=False))
-            ax.text((left + right) / 2, 1.0875, phase_name,
-                    transform=ax.get_xaxis_transform(), ha="center", va="center", fontsize=10.5 if presentation else 9)
+            ax.text((left + right) / 2, 1.035 + banner_height / 2, phase_name,
+                    transform=ax.get_xaxis_transform(), ha="center", va="center",
+                    fontsize=14 if compact else (18 if presentation else 9))
         for tag, time_s in zip("ABCD", trace["times"]):
             ax.axvline(time_s, color="#783c85" if tag == "C" else "#777777",
                        lw=1.25 if tag == "C" else .85, ls="--" if tag == "C" else ":")
             ax.text(time_s, .97, tag, transform=ax.get_xaxis_transform(),
                     ha={"A": "left", "D": "right"}.get(tag, "center"), va="top",
-                    fontsize=10 if presentation else 9, weight="bold", color="#783c85" if tag == "C" else "#444444",
+                    fontsize=14 if compact else (18 if presentation else 9), weight="bold", color="#783c85" if tag == "C" else "#444444",
                     bbox=dict(facecolor="white", edgecolor="none", alpha=.85, pad=.5))
         visible_peak = float(np.max(plotted[edges[1:] > start, column]))
         peak = visible_peak if visible_peak else 1.
@@ -530,23 +604,25 @@ def render_figure(episode, trace, frames, labels, *, presentation=False):
         ax.xaxis.set_major_locator(MaxNLocator(nbins=4, min_n_ticks=3))
         ax.yaxis.set_major_locator(MaxNLocator(nbins=4, min_n_ticks=3))
         ax.ticklabel_format(axis="y", style="plain", useOffset=False)
-        ax.tick_params(labelsize=11 if presentation else 9)
+        ax.tick_params(labelsize=18 if compact else (20 if presentation else 9))
         ax.spines[["top", "right"]].set_visible(False)
         ax.grid(alpha=.17)
-    weights_box = grid[1].get_position(fig)
-    fig.text(.010, (weights_box.y0 + weights_box.y1) / 2,
-             "Phase-masked policy weight — linear, independent y-scales", rotation=90,
-             ha="left", va="center", fontsize=13 if presentation else 12)
-    time_label = ("Simulation time (s) · C = recorded phase switch" if presentation else
-                  "Simulation time (s) · original timestamps · C = recorded phase switch")
-    fig.text(.52, .06, time_label, ha="center", fontsize=12 if presentation else 11)
-    phase_note = "Inactive terms = 0; fixed planner gains are excluded from these policy-weight plots."
-    start_note = (f"Box drop/rebound omitted before {start:g} s; full data retained in CSV." if episode.task == "box" else
-                  f"Start snapshot = first saved frame ({episode.dt:g} s).")
-    note = (phase_note + "\nIndependent linear scales; weights are coefficients, not cost contributions." if presentation else
-            phase_note + " " + start_note + "\n"
-            "Panels show unnormalized policy weights, not cost contributions or causal effects; compare numbers, not heights across panels.")
-    fig.text(.055, .025, note, fontsize=10 if presentation else 9, color="#555555")
+    if presentation:
+        # Keep provenance/caveats in the manifest, not as tiny figure footnotes.
+        fig.text(.52, .025, "Simulation time (s)", ha="center", fontsize=24)
+    else:
+        weights_box = grid[1].get_position(fig)
+        fig.text(.010, (weights_box.y0 + weights_box.y1) / 2,
+                 "Phase-masked policy weight — linear, independent y-scales", rotation=90,
+                 ha="left", va="center", fontsize=12)
+        fig.text(.52, .06, "Simulation time (s) · original timestamps · C = recorded phase switch",
+                 ha="center", fontsize=11)
+        phase_note = "Inactive terms = 0; fixed planner gains are excluded from these policy-weight plots."
+        start_note = (f"Box drop/rebound omitted before {start:g} s; full data retained in CSV." if episode.task == "box" else
+                      f"Start snapshot = first saved frame ({episode.dt:g} s).")
+        fig.text(.055, .025, phase_note + " " + start_note + "\n"
+                 "Panels show unnormalized policy weights, not cost contributions or causal effects; compare numbers, not heights across panels.",
+                 fontsize=9, color="#555555")
     return fig
 
 
@@ -619,10 +695,17 @@ def main(argv=None):
     parser.add_argument("--dry-run", action="store_true", help="Validate selections and decode frames; write nothing")
     parser.add_argument("--presentation", action="store_true",
                         help="Write separately named figures with larger fonts and no method, batch, seed, episode or snapshot timestamps")
+    paper_rows = parser.add_mutually_exclusive_group()
+    paper_rows.add_argument("--single-row", action="store_true",
+                        help="Separate full-width-paper PNG/PDF variant: all components in one row, omitting only unused Box Smoothness; implies --presentation")
+    paper_rows.add_argument("--two-rows", action="store_true",
+                        help="Separate full-width-paper PNG/PDF variant: all components in two rows (Tray: six per row); implies --presentation")
     parser.add_argument("--output-dir", type=Path)
     parser.add_argument("--overwrite", action="store_true")
     parser.add_argument("--sim-repo", type=Path, default=Path('/home/aks-lab/colcon_ws/src/manipulator_mujoco'))
     args = parser.parse_args(argv)
+    compact = args.single_row or args.two_rows
+    args.presentation = args.presentation or compact
     if len(set(args.tasks)) != len(args.tasks):
         raise ValueError("Duplicate tasks")
     notebook = args.notebook.resolve()
@@ -670,9 +753,13 @@ def main(argv=None):
         print("No files written.")
         return 0
     output = (args.output_dir or base / "ars_weights_snapshots").resolve()
-    targets = [output / f"{figure_stem(ep.task, presentation=args.presentation)}.{ext}"
-               for ep, *_ in prepared for ext in ("png", "csv")]
-    manifest_path = output / ("sources_presentation.json" if args.presentation else "sources.json")
+    extensions = ("png", "pdf", "csv") if compact else ("png", "csv")
+    targets = [output / f"{figure_stem(ep.task, presentation=args.presentation, single_row=args.single_row, two_rows=args.two_rows)}.{ext}"
+               for ep, *_ in prepared for ext in extensions]
+    manifest_name = ("sources_two_rows.json" if args.two_rows else
+                     ("sources_single_row.json" if args.single_row else
+                      ("sources_presentation.json" if args.presentation else "sources.json")))
+    manifest_path = output / manifest_name
     targets.append(manifest_path)
     if not args.overwrite and any(p.exists() for p in targets):
         raise ValueError("Output exists; use --overwrite or another --output-dir")
@@ -692,16 +779,29 @@ def main(argv=None):
     if args.presentation:
         manifest["presentation"] = dict(
             omitted_from_figures=["method", "batch", "seed", "episode", "snapshot timestamps"],
-            component_font_pt=12, tick_font_pt=11,
+            component_font_pt=22, tick_font_pt=18 if compact else 20,
+            snapshot_font_pt=28 if compact else 24,
+            phase_font_pt=14 if compact else 18,
+            snapshot_marker_font_pt=14 if compact else 18, task_title_font_pt=28,
+            shared_x_label="Simulation time (s)", x_label_font_pt=24,
+            y_axis_title=None, footnotes=False, numeric_axis_scales=True,
+            snapshot_layout="Four edge-to-edge full frames; 97% of figure width; original aspect ratio; no crop or distortion",
+            snapshot_gap=0,
+            single_component_row=args.single_row,
+            two_component_rows=args.two_rows,
+            component_activation_subtitles=not compact,
             notation_reference=PAPER_NOTATION_REFERENCE,
             math_text="Paper text subscripts/superscripts use \\text, including literal hyphens.")
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
     for ep, trace, video, frames, fps, audit in prepared:
-        stem = figure_stem(ep.task, presentation=args.presentation)
-        figure = render_figure(ep, trace, frames, labels, presentation=args.presentation)
+        stem = figure_stem(ep.task, presentation=args.presentation, single_row=args.single_row, two_rows=args.two_rows)
+        columns = figure_columns(ep.task, trace, single_row=args.single_row)
+        figure = render_figure(ep, trace, frames, labels, presentation=args.presentation, single_row=args.single_row, two_rows=args.two_rows)
         figure.savefig(output / f"{stem}.png", dpi=180, facecolor="white")
+        if compact:
+            figure.savefig(output / f"{stem}.pdf", facecolor="white")
         plt.close(figure)
         write_csv(output / f"{stem}.csv", trace, ep.dt)
         branch, commit, lines = SOURCE_REVISIONS[ep.task]
@@ -723,9 +823,13 @@ def main(argv=None):
             displayed_time_start_s=trace["plot_start_s"], start_selection=trace["start_selection"],
             video_times_s=[i / fps for i in trace["indices"]],
             pre_phase_key=rules[TASKS[ep.task]][0], planner_source=source,
-            paper_labels=labels[TASKS[ep.task]], plotted_weights=trace["names"],
+            paper_labels=labels[TASKS[ep.task]], plotted_weights=[trace["names"][j] for j in columns],
+            recorded_weight_keys=trace["names"],
+            omitted_plot_weights=[name for j, name in enumerate(trace["names"]) if j not in columns],
+            weight_panel_rows=2 if args.two_rows else (1 if args.single_row else int(np.ceil(len(columns) / {"ball": 3, "box": 5, "tray": 4}[ep.task]))),
+            additional_outputs={"pdf": str(output / f"{stem}.pdf")} if compact else {},
             displayed_labels={name: display_cost_label(labels[TASKS[ep.task]][name], presentation=args.presentation)
-                              for name in trace["names"]},
+                              for j, name in enumerate(trace["names"]) if j in columns},
             selection_scoring_weights=list(FOCUS_WEIGHTS[ep.task]),
             visible_phase_weight_changes=phase_changes(trace),
             cost_meanings=COST_MEANINGS[ep.task], goal_distance_source=trace["goal_distance_source"],

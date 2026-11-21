@@ -54,7 +54,7 @@ group_rows = []
 total_files = 0
 
 for task, task_cfg in namespace["DOC_FILES"].items():
-    for method in namespace["METHOD_TOKENS"]:
+    for method in task_cfg["candidates"]:
         for batch in namespace["ALL_BATCHES"]:
             files = task_cfg["candidates"][method].get(batch, [])
             total_files += len(files)
@@ -146,9 +146,8 @@ if errors:
         print(f"  - {error}", file=sys.stderr)
     raise SystemExit(1)
 
-expected_groups = len(namespace["DOC_FILES"]) * len(namespace["METHOD_TOKENS"]) * len(namespace["ALL_BATCHES"])
 print(
-    f"PASS: {expected_groups} groups, {total_files} files, and "
+    f"PASS: {len(group_rows)} groups, {total_files} files, and "
     f"{total_files * expected_episodes} aligned episode records validated."
 )
 PY

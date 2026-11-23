@@ -119,14 +119,15 @@ def scalar(data, key):
     return np.asarray(data[key]).item()
 
 
-def load_episodes(task, batch, files):
+def load_episodes(task, batch, files, *, expected_algorithm=None):
     episodes = []
+    if expected_algorithm is None:
+        expected_algorithm = "ars4124" if task == "tray" else "ars"
     for path in files:
         with np.load(path, allow_pickle=True) as data:
             if int(scalar(data, "batch_size")) != batch:
                 raise ValueError(f"Batch metadata mismatch: {path}")
             algorithm_key = "policy_algorithm" if task == "ball" else "checkpoint_algorithm"
-            expected_algorithm = "ars4124" if task == "tray" else "ars"
             if str(scalar(data, algorithm_key)) != expected_algorithm:
                 raise ValueError(f"Not the expected ARS checkpoint: {path}")
             success = np.asarray(data["success"])

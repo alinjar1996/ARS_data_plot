@@ -91,6 +91,8 @@ From the first lifting solve at **6.1 s** to the collision-weight peak at **7.3 
 
 [Open the Tray Push figure](ars_weights_snapshots/ars_tray_weights_snapshots.png).
 
+The phase-mean baseline has its own snapshot. Each panel lists the fixed approach and push coefficients for one of the 12 weights. [Open the ARS4124 phase-mean snapshot](ars_weights_snapshots/tray_ars4124_phase_mean_weights_snapshots.png).
+
 ### Overall finding and physical intuition
 
 The prescribed transition switches off **Approach position** and **Approach orientation**, and switches on pushing objectives. During pushing, **Contact-maintenance position** is high early but decreases substantially late, while **Tray-to-goal position** and **Tray-to-goal orientation** generally strengthen toward the later part of the episode. A plausible interpretation is reduced emphasis on preserving the initial hand–tray positional relationship while continuing to move the tray toward its goal.

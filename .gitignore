@@ -40,3 +40,8 @@ venv/
 *.csv
 *.txt
 *.sha256
+
+real_demo/
+/ball_lift_ars3950_phase_mean_run-20261122T073703Z-1-001/ball_lift_ars3950_phase_mean_run-*
+
+

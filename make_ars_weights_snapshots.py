@@ -341,12 +341,17 @@ def goal_distance(data, task, index):
     return np.linalg.norm(qpos[:, offset:offset + 3] - target[:, :3], axis=1), f"norm({qkey}[:,{offset}:{offset + 3}] - target[:,:3])"
 
 
-def load_trace(episode, labels, rules, settle_box=True):
+def load_trace(episode, labels, rules, settle_box=True, *, tray_phase_mean=False):
     task, i = episode.task, episode.index
     with np.load(episode.npz, allow_pickle=True) as d:
         if not bool(d["success"][i]):
             raise ValueError("Only recorded-success episodes may be illustrated")
-        if task in CHECKPOINT_HASHES:
+        if tray_phase_mean:
+            if (task != "tray" or d["checkpoint_algorithm"].item() != "ars4124_phase_mean"
+                    or Path(d["checkpoint_path"].item()).name != "tray_ars4124_phase_means.json"):
+                raise ValueError("Expected the Tray ARS4124 phase-mean checkpoint")
+            checkpoint_hash = None  # This run records the path but does not ship the checkpoint.
+        elif task in CHECKPOINT_HASHES:
             key = "policy_checkpoint_sha256" if task == "ball" else "checkpoint_sha256"
             if d[key].item() != CHECKPOINT_HASHES[task]:
                 raise ValueError(f"Unexpected ARS checkpoint in {episode.npz}")
@@ -368,6 +373,11 @@ def load_trace(episode, labels, rules, settle_box=True):
         if task == "box" and settle_box:
             start, start_selection = box_settled_start(d["qpos_post"][i], d["qvel_post"][i], post, episode.dt)
         indices, edges, times = snapshot_times(phase, post, episode.dt, start=start)
+        if tray_phase_mean:
+            for flag in (0, 1):
+                rows = values[phase == flag]
+                if not len(rows) or not np.array_equal(rows, np.broadcast_to(rows[0], rows.shape)):
+                    raise ValueError(f"Expected constant recorded weights throughout phase {flag}")
         effective = effective_weights(values, active, multiplier)
         plotted = plotted_policy_weights(values, active)
         distance, distance_source = goal_distance(d, task, i)
@@ -395,7 +405,8 @@ def load_trace(episode, labels, rules, settle_box=True):
                 tq = np.asarray(d["target"][i], float)[indices, 3:7]
                 snapshot_diagnostics["post_step_box_quaternion_error_norm"] = np.linalg.norm(qp[:, 15:19] - tq, axis=1).tolist()
         ck_key = "policy_path" if task == "ball" else "checkpoint_path"
-        return dict(names=names, linear=values, masked_log=logs, effective=effective,
+        return dict(method="ARS4124 (phase mean)" if tray_phase_mean else "ARS",
+                    names=names, linear=values, masked_log=logs, effective=effective,
                     plotted_linear=plotted, active=active,
                     multiplier=multiplier, pre_phase=phase, post_phase=post,
                     indices=indices, edges=edges, times=times, goal_distance=distance,
@@ -541,7 +552,8 @@ def render_figure(episode, trace, frames, labels, *, presentation=False, single_
     start = trace["plot_start_s"]
     transition = float(trace["times"][2])
     transport = "Push" if episode.task == "tray" else "Lift"
-    heading = title if presentation else f"{title} | ARS | batch {episode.batch} | seed {episode.seed} | episode {episode.index + 1}"
+    method = trace.get("method", "ARS")
+    heading = title if presentation else f"{title} | {method} | batch {episode.batch} | seed {episode.seed} | episode {episode.index + 1}"
     fig.suptitle(heading,
                  fontsize=28 if presentation else 17, y=title_y, weight="bold")
     stages = ["Start (settled)" if episode.task == "box" and not presentation else "Start", "Approach", "Transition", transport]
@@ -572,6 +584,10 @@ def render_figure(episode, trace, frames, labels, *, presentation=False, single_
         # The phase banners and zero-masked curves already show activation;
         # omit repeated status text only in the compact paper variants.
         subtitle = symbol if compact else subtitle_separator.join(x for x in [symbol, status] if x)
+        if method == "ARS4124 (phase mean)":
+            # Raw coefficients are still defined when the corresponding phase gate is off.
+            approach, push = trace["linear"][[0, -1], column]
+            subtitle += f"\nRaw weight: approach {approach:.3g}   ·   push {push:.3g}"
         wrap_width = 20 if two_rows else (12 if single_row else ({3: 30, 4: 21, 5: 17}[ncols] if presentation else 38))
         ax.set_title(textwrap.fill(description, width=wrap_width) + ("\n" + subtitle if subtitle else ""),
                      fontsize=22 if presentation else 9.5, pad=50 if presentation else 31)

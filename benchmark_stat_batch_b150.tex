@@ -1,0 +1,22 @@
+\begin{table*}[t]
+\centering\footnotesize
+\setlength{\tabcolsep}{2pt}
+\caption{Success rate and task time at batch size 150. }
+\label{tab:benchmark-b150}
+\begin{tabular}{@{}l*{4}{rr}@{}}
+ & \multicolumn{6}{c}{Bimanual manipulation} & \multicolumn{2}{c}{Quadrotor} \\
+\cline{2-7}\cline{8-9}
+ & \multicolumn{2}{c}{Ball Lift} & \multicolumn{2}{c}{Box Lift} & \multicolumn{2}{c}{Tray Push} & \multicolumn{2}{c}{Obstacle Avoidance} \\
+Method & Success (\%) & Task time (s) & Success (\%) & Task time (s) & Success (\%) & Task time (s) & Success (\%) & Task time (s) \\
+\hline
+Hand-Tuned & 1 & $ 9.10 \pm 0.00 $ & 7 & $ 8.61 \pm 1.48 $ & 6 & $ 43.24 \pm 3.26 $ & 2 & $7.83 \pm 1.83$ \\
+ESS best & 57 & $ 12.56 \pm 1.25 $ & 4 & $ 8.20 \pm 1.98 $ & 17 & $ 29.77 \pm 1.16 $ & 8 & $6.75 \pm 1.25$ \\
+Bayesian & 39 & $ 14.57 \pm 1.49 $ & 17 & $ 13.99 \pm 5.67 $ & 13 & $ 38.55 \pm 6.04 $ & 30 & $6.75 \pm 1.64$ \\
+PPO & 98 & $ 7.78 \pm 0.12 $ & 21 & $ 11.60 \pm 1.86 $ & 45 & $ 22.83 \pm 2.31 $ & 55 & $5.32 \pm 1.18$ \\
+ARS & 99 & $ 8.55 \pm 0.28 $ & 55 & $ 9.58 \pm 2.63 $ & 56 & $ 21.23 \pm 2.59 $ & 74 & $5.04 \pm 0.93$ \\
+Normalized ARS & 100 & $ 8.80 \pm 0.20 $ & 50 & $ 8.17 \pm 0.63 $ & 46 & $ 22.40 \pm 2.78 $ & 71 & $4.91 \pm 1.03$ \\
+ARS mean & 83 & $ 10.88 \pm 0.25 $ & 8 & $ 19.38 \pm 4.42 $ & 25 & $ 33.59 \pm 7.37 $ & 0 & -- \\
+Trained constant ARS & 65 & $ 13.53 \pm 1.05 $ & 24 & $ 9.18 \pm 0.74 $ &  &  & 26 & $7.15 \pm 1.44$ \\
+\hline
+\end{tabular}
+\end{table*}
